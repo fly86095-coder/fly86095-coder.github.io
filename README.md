@@ -1,5 +1,5 @@
 # English Country Reading Atlas
 
-Live site: https://fly86095-coder.github.io/
+A responsive GitHub Pages reading archive with an interactive world map, country and article navigation, English + Simplified Chinese + pinyin study mode, and topic-matched visual references.
 
-A responsive, data-driven English reading archive. Every completed country is stored in `articles.js`; the homepage map, country count, regional collections, article library, search, and reading journey update from that shared data.
+The site is data-driven from `articles.js`; adding one country updates counts, regions, map highlights, article library, search, and journey order.
