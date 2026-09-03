@@ -21,7 +21,102 @@ function pinyinText(zh){try{if(window.pinyinPro?.pinyin)return pinyinPro.pinyin(
 function setDisplay(mode){state.display=mode;document.querySelectorAll('.displaybtn').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));document.querySelectorAll('.zhbox').forEach(el=>el.classList.toggle('hidden-lang',mode==='en'));document.querySelectorAll('.pinyin').forEach(el=>el.classList.toggle('hidden-lang',mode!=='all'))}
 function country(slug,level='B1'){const c=bySlug[slug];if(!c)return library();level=(level==='A1'?'A1':'B1');const v=c.versions[level];const ordered=[...COUNTRIES].sort((a,b)=>a.readOrder-b.readOrder);const i=ordered.findIndex(x=>x.slug===slug),prev=ordered[i-1],next=ordered[i+1];const secs=v.sections.map((s,idx)=>`<section id="sec${idx}" class="article-section"><div class="section-text"><div class="eyebrow">${String(idx+1).padStart(2,'0')}</div><h2>${esc(s.heading)}</h2><p class="en">${esc(s.en)}</p><div class="zhbox"><p class="zh">${esc(s.zh)}</p><p class="pinyin">${esc(pinyinText(s.zh))}</p></div></div><figure class="article-figure"><img loading="lazy" src="${flag(c)}" data-wiki="${esc(s.imagePages.join('|'))}" alt="${esc(c.name+' '+s.heading)}"><figcaption data-caption="${esc(s.caption||s.heading)}">${esc(s.caption||s.heading)}</figcaption></figure></section>`).join('');const facts=Object.entries(c.facts).map(([k,val])=>`<div class="fact"><small>${esc(k)}</small><b>${esc(val)}</b></div>`).join('');const toc=v.sections.map((s,i)=>`<a href="#" onclick="event.preventDefault();document.getElementById('sec${i}').scrollIntoView({behavior:'smooth',block:'start'})">${i+1}. ${esc(s.heading)}</a>`).join('');const content=`<div class="country-page"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#library">Library</a> / ${esc(c.name)}</div><div class="country-header"><div><div class="eyebrow">${esc(c.region)} · Reading #${c.readOrder}</div><h1 class="country-title">${esc(v.title)}</h1><p class="country-summary">${esc(v.summary)}</p><div class="version-switch"><button class="levelbtn a1 ${level==='A1'?'active':''}" onclick="go('#country=${c.slug}&level=A1')">A1 Easy Guide</button><button class="levelbtn b1 ${level==='B1'?'active':''}" onclick="go('#country=${c.slug}&level=B1')">B1 Deep Guide</button></div></div><aside class="country-facts"><div class="eyebrow">At a glance</div><div style="display:flex;align-items:center;gap:12px;margin:8px 0 14px"><img src="${flag(c)}" style="width:66px;border-radius:5px"><b style="font-family:Georgia,serif;color:var(--navy);font-size:25px">${esc(c.name)}</b></div><div class="facts-grid">${facts}</div></aside></div><div class="reading-controls"><div><b style="color:var(--navy)">${level} reading · ${v.sections.length} illustrated sections</b></div><div class="display-buttons"><button data-mode="en" class="displaybtn" onclick="setDisplay('en')">English only</button><button data-mode="zh" class="displaybtn" onclick="setDisplay('zh')">English + 简中</button><button data-mode="all" class="displaybtn active" onclick="setDisplay('all')">English + 简中 + Pinyin</button></div></div><div class="reading-layout"><article class="article">${secs}<div class="prevnext"><button class="pn" ${prev?`onclick="go('#country=${prev.slug}&level=${level}')"`:''}><small>← Previous country</small><b>${prev?esc(prev.name):'Start of journey'}</b></button><button class="pn" ${next?`onclick="go('#country=${next.slug}&level=${level}')"`:`onclick="go('#library')"`}><small>Next country →</small><b>${next?esc(next.name):'Choose the next country'}</b></button></div></article><aside class="sidebar"><div class="side-card toc"><h3>Contents</h3>${toc}</div><div class="side-card"><h3>Reading design</h3><p class="source-note">Each section uses a topic-specific reference image. Images are intentionally small so the text remains the main focus. If an image page has no thumbnail, the country flag appears as a fallback.</p></div><div class="side-card"><h3>Level choice</h3><p class="source-note"><b>A1</b>: shorter sentences and essential ideas.<br><b>B1</b>: more historical cause, cultural context, architecture, festivals, craft, and social meaning.</p></div></aside></div></div>`;shell(content,'Library');hydrate();setDisplay('all')}
 let mapState={svg:null,g:null,zoom:null};
-function renderMap(){const svg=d3.select('#mapSvg');if(svg.empty())return;const node=svg.node(),w=node.clientWidth||800,h=node.clientHeight||480;svg.attr('viewBox',`0 0 ${w} ${h}`);const g=svg.append('g');const projection=d3.geoNaturalEarth1().fitExtent([[12,12],[w-12,h-12]],{type:'Sphere'});const path=d3.geoPath(projection);const zoom=d3.zoom().scaleExtent([1,8]).on('zoom',e=>{g.attr('transform',e.transform);g.selectAll('.map-label').style('display',e.transform.k>=2.15?'block':'none').style('font-size',`${9/Math.sqrt(e.transform.k)}px`)});svg.call(zoom);mapState={svg,g,zoom,projection,path};fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r=>r.json()).then(world=>{const feats=topojson.feature(world,world.objects.countries).features;g.selectAll('path').data(feats).join('path').attr('d',path).attr('class',d=>`country-shape ${byMapId[String(Number(d.id))]?'read':''}`).style('cursor',d=>byMapId[String(Number(d.id))]?'pointer':'default').on('click',(e,d)=>{const c=byMapId[String(Number(d.id))];if(c)go(`#country=${c.slug}&level=B1`)}).append('title').text(d=>byMapId[String(Number(d.id))]?.name||'');const read=feats.filter(d=>byMapId[String(Number(d.id))]);g.selectAll('text').data(read).join('text').attr('class','map-label').attr('transform',d=>`translate(${path.centroid(d)})`).attr('text-anchor','middle').attr('dy','.35em').style('display','none').text(d=>byMapId[String(Number(d.id))].name)})}
+function renderMap(){
+ const svg=d3.select('#mapSvg'); if(svg.empty())return;
+ const node=svg.node(),w=node.clientWidth||800,h=node.clientHeight||480;
+ svg.attr('viewBox',`0 0 ${w} ${h}`);
+ const g=svg.append('g').attr('class','map-world');
+ const projection=d3.geoNaturalEarth1().fitExtent([[12,12],[w-12,h-12]],{type:'Sphere'});
+ const path=d3.geoPath(projection);
+ const host=d3.select(node.parentNode);
+ let tooltip=host.select('.map-tooltip');
+ if(tooltip.empty()) tooltip=host.append('div').attr('class','map-tooltip');
+ let readFeatures=[];
+
+ function labelBoxesOverlap(a,b,pad=5){
+   return !(a.x2+pad<b.x1 || a.x1-pad>b.x2 || a.y2+pad<b.y1 || a.y1-pad>b.y2);
+ }
+ function updateLabels(t){
+   if(!readFeatures.length)return;
+   const k=t.k;
+   const labels=g.selectAll('.map-label');
+   if(k<2.15){labels.style('display','none');return}
+   const candidates=readFeatures.map(d=>{
+     const c=byMapId[String(Number(d.id))];
+     const centroid=path.centroid(d);
+     const bounds=path.bounds(d);
+     const screenX=t.applyX(centroid[0]),screenY=t.applyY(centroid[1]);
+     const screenW=(bounds[1][0]-bounds[0][0])*k;
+     const screenH=(bounds[1][1]-bounds[0][1])*k;
+     const textW=Math.max(44,c.name.length*7.2);
+     const priority=screenW*screenH;
+     return {d,c,screenX,screenY,screenW,screenH,textW,priority};
+   }).filter(x=>{
+     const minW=x.textW+10;
+     const minH=18;
+     if(k<3.2) return x.screenW>Math.max(100,minW*1.65) && x.screenH>32;
+     if(k<5.2) return x.screenW>Math.max(70,minW*1.25) && x.screenH>24;
+     if(k<8.0) return x.screenW>Math.max(52,minW) && x.screenH>18;
+     return x.screenW>Math.max(34,minW*.72) && x.screenH>13;
+   }).sort((a,b)=>b.priority-a.priority);
+
+   const accepted=[];
+   const visible=new Set();
+   for(const x of candidates){
+     const box={x1:x.screenX-x.textW/2,y1:x.screenY-8,x2:x.screenX+x.textW/2,y2:x.screenY+8};
+     if(!accepted.some(a=>labelBoxesOverlap(box,a))){
+       accepted.push(box); visible.add(String(Number(x.d.id)));
+     }
+   }
+   labels
+     .style('display',d=>visible.has(String(Number(d.id)))?'block':'none')
+     .style('font-size',`${12/k}px`)
+     .style('stroke-width',`${3/k}px`);
+ }
+
+ const zoom=d3.zoom().scaleExtent([1,18]).on('zoom',e=>{
+   g.attr('transform',e.transform);
+   updateLabels(e.transform);
+ });
+ svg.call(zoom).on('dblclick.zoom',null);
+ mapState={svg,g,zoom,projection,path};
+
+ fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r=>r.json()).then(world=>{
+   const feats=topojson.feature(world,world.objects.countries).features;
+   readFeatures=feats.filter(d=>byMapId[String(Number(d.id))]);
+   g.selectAll('path').data(feats).join('path')
+     .attr('d',path)
+     .attr('class',d=>`country-shape ${byMapId[String(Number(d.id))]?'read':''}`)
+     .style('cursor',d=>byMapId[String(Number(d.id))]?'pointer':'grab')
+     .on('mouseenter',(e,d)=>{
+       const c=byMapId[String(Number(d.id))];
+       if(!c)return;
+       tooltip.classed('show',true).html(`<b>${esc(c.name)}</b><small>Reading #${c.readOrder} · Click to open B1</small>`);
+     })
+     .on('mousemove',(e,d)=>{
+       const c=byMapId[String(Number(d.id))]; if(!c)return;
+       const rect=node.parentNode.getBoundingClientRect();
+       const x=Math.min(e.clientX-rect.left+14,rect.width-190);
+       const y=Math.max(10,e.clientY-rect.top-12);
+       tooltip.style('left',`${x}px`).style('top',`${y}px`);
+     })
+     .on('mouseleave',()=>tooltip.classed('show',false))
+     .on('click',(e,d)=>{
+       const c=byMapId[String(Number(d.id))];
+       if(c)go(`#country=${c.slug}&level=B1`);
+     });
+
+   g.selectAll('text').data(readFeatures).join('text')
+     .attr('class','map-label')
+     .attr('transform',d=>`translate(${path.centroid(d)})`)
+     .attr('text-anchor','middle')
+     .attr('dy','.35em')
+     .style('display','none')
+     .text(d=>byMapId[String(Number(d.id))].name);
+
+   updateLabels(d3.zoomIdentity);
+ });
+}
 function mapZoom(f){if(!mapState.svg)return;mapState.svg.transition().duration(250).call(mapState.zoom.scaleBy,f)}function mapReset(){if(!mapState.svg)return;mapState.svg.transition().duration(350).call(mapState.zoom.transform,d3.zoomIdentity)}
 function mapPage(){const content=`<section class="page-pad"><div class="eyebrow">Interactive world map</div><h1 class="page-title">Zoom Your Reading Map</h1><p style="color:var(--muted);max-width:760px;line-height:1.7">Dark countries are already in your archive. Drag the map, use the wheel or buttons to zoom, and once you zoom in far enough the names of your read countries appear. Click a highlighted country to open its B1 guide.</p></section><section class="section"><div class="map-card" style="min-height:650px"><svg id="mapSvg" style="min-height:650px"></svg><div class="legend"><div><span class="swatch read"></span>Read</div><div><span class="swatch"></span>Not yet read</div><small>Labels appear after zooming in</small></div><div class="map-tools"><button onclick="mapZoom(1.45)">+</button><button onclick="mapZoom(.69)">−</button><button onclick="mapReset()">↺</button></div></div></section>`;shell(content,'Map');renderMap()}
 function journey(){const list=[...COUNTRIES].sort((a,b)=>a.readOrder-b.readOrder);const content=`<section class="page-pad"><div class="eyebrow">Chronological reading path</div><h1 class="page-title">My Country Journey</h1><p style="color:var(--muted)">Only countries you have already read appear here. New countries can be appended later without changing the old order.</p></section><div class="journey-list">${list.map(c=>`<div class="journey-item" onclick="go('#country=${c.slug}&level=B1')"><span class="n">#${c.readOrder}</span><b>${esc(c.name)}</b><small style="color:var(--muted)">${esc(c.region)}</small></div>`).join('')}</div>`;shell(content,'Journey')}
