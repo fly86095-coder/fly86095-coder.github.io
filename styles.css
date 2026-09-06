@@ -8,3 +8,6 @@
 .level-actions .levelbtn{min-width:64px}
 .version-switch{flex-wrap:wrap}
 @media(max-width:480px){.version-switch .levelbtn{padding:10px 12px}.display-buttons{width:100%}.displaybtn{flex:1 1 100%}}
+
+/* 0907_1: source-title fidelity and UK constituent-country map markers */
+.title-zh{font-size:18px;line-height:1.55;color:#48535f;margin:4px 0}.title-pinyin{font-size:13px;margin:5px 0 0;color:#7b6e58}.subcountry-marker{cursor:pointer}.subcountry-marker circle{fill:var(--gold);stroke:#fff}.subcountry-marker text{font-weight:800;fill:#fff;paint-order:stroke;stroke:rgba(16,45,79,.96);pointer-events:none;letter-spacing:.01em}.subcountry-marker:hover circle{fill:#d1a64d}

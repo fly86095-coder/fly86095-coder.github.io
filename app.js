@@ -1,7 +1,7 @@
 
 const app=document.getElementById('app');
 const bySlug=Object.fromEntries(COUNTRIES.map(c=>[c.slug,c]));
-const byMapId=Object.fromEntries(COUNTRIES.map(c=>[String(Number(c.mapId)),c]));
+const byMapIdGroups={};COUNTRIES.forEach(c=>{const id=String(Number(c.mapId));(byMapIdGroups[id]??=[]).push(c)});
 const state={region:'All',query:'',page:1,perPage:12,display:'all'};
 const imgCache=new Map();
 function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -20,7 +20,7 @@ function card(c){const levels=availableLevels(c);const heroLevel=c.versions.B1?'
 function stat(n,l){return `<div class="stat"><strong>${n}</strong><span>${l}</span></div>`}
 function home(){const latest=[...COUNTRIES].sort((a,b)=>b.readOrder-a.readOrder).slice(0,4);const content=`<section class="hero"><div><div class="eyebrow">Bilingual country encyclopedia</div><h1>Read the World<br>One Country at a Time</h1><p>Each country keeps the reading levels you have prepared. New entries can include A1, A2, and B1, with English-only, English + simplified Chinese, or English + simplified Chinese + word-grouped pinyin display.</p><div class="stats">${stat(COUNTRIES.length,'Countries read')}${stat(articleCount(),'Reading versions')}${stat(SITE.regions.length,'Main regions')}</div></div><div class="map-card"><svg id="mapSvg"></svg><div class="legend"><div><span class="swatch read"></span>Read</div><div><span class="swatch"></span>Not yet read</div><small>Zoom in to reveal country names</small></div><div class="map-tools"><button onclick="mapZoom(1.45)">+</button><button onclick="mapZoom(.69)">−</button><button onclick="mapReset()">↺</button></div></div></section><section class="section"><div class="section-head"><div><h2>Latest Countries</h2><p>Choose any available reading level before you enter.</p></div><button class="outline" onclick="go('#library')">Open full library →</button></div><div class="country-grid">${latest.map(card).join('')}</div></section><section class="section"><div class="section-head"><div><h2>Browse by Region</h2><p>The archive only includes countries you have already read.</p></div></div><div class="region-tabs">${['All',...SITE.regions].map(r=>`<button class="tab" onclick="state.region='${esc(r)}';go('#library');render()">${esc(r)}</button>`).join('')}</div></section>`;shell(content,'Home');hydrate();renderMap()}
 function filtered(){let a=[...COUNTRIES];if(state.region!=='All')a=a.filter(c=>c.region===state.region);const q=state.query.trim().toLowerCase();if(q)a=a.filter(c=>JSON.stringify(c).toLowerCase().includes(q));return a}
-function library(){const all=filtered();const pages=Math.max(1,Math.ceil(all.length/state.perPage));state.page=Math.min(state.page,pages);const list=all.slice((state.page-1)*state.perPage,state.page*state.perPage);const content=`<section class="page-pad"><div class="eyebrow">Country library</div><h1 class="page-title">Choose a Country, Then a Level</h1><p style="color:var(--muted);max-width:760px;line-height:1.7">Choose from the levels available for each country. New 0905_1 entries include A1, A2, and B1.</p></section><div class="library-wrap"><div class="library-toolbar"><div class="filterbar">${['All',...SITE.regions].map(r=>`<button class="tab ${state.region===r?'active':''}" onclick="state.region='${esc(r)}';state.page=1;library()">${esc(r)}</button>`).join('')}</div><input class="search" placeholder="Search…" value="${esc(state.query)}" oninput="state.query=this.value;state.page=1;library()"></div><div class="country-grid">${list.map(card).join('')}</div><div class="pagination">${Array.from({length:pages},(_,i)=>`<button class="pagebtn ${state.page===i+1?'active':''}" onclick="state.page=${i+1};library();scrollTo({top:180,behavior:'smooth'})">${i+1}</button>`).join('')}</div></div>`;shell(content,'Library');hydrate()}
+function library(){const all=filtered();const pages=Math.max(1,Math.ceil(all.length/state.perPage));state.page=Math.min(state.page,pages);const list=all.slice((state.page-1)*state.perPage,state.page*state.perPage);const content=`<section class="page-pad"><div class="eyebrow">Country library</div><h1 class="page-title">Choose a Country, Then a Level</h1><p style="color:var(--muted);max-width:760px;line-height:1.7">Choose from the levels available for each country. New 0907_1 entries include A1, A2, and B1.</p></section><div class="library-wrap"><div class="library-toolbar"><div class="filterbar">${['All',...SITE.regions].map(r=>`<button class="tab ${state.region===r?'active':''}" onclick="state.region='${esc(r)}';state.page=1;library()">${esc(r)}</button>`).join('')}</div><input class="search" placeholder="Search…" value="${esc(state.query)}" oninput="state.query=this.value;state.page=1;library()"></div><div class="country-grid">${list.map(card).join('')}</div><div class="pagination">${Array.from({length:pages},(_,i)=>`<button class="pagebtn ${state.page===i+1?'active':''}" onclick="state.page=${i+1};library();scrollTo({top:180,behavior:'smooth'})">${i+1}</button>`).join('')}</div></div>`;shell(content,'Library');hydrate()}
 function pinyinText(zh){
  try{
   if(!window.pinyinPro?.pinyin)return 'Pinyin library is loading. Refresh once if this line remains.';
@@ -42,7 +42,7 @@ function pinyinText(zh){
   return py.join(' ');
  }catch(e){return 'Pinyin unavailable.'}
 }
-function setDisplay(mode){state.display=mode;document.querySelectorAll('.displaybtn').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));document.querySelectorAll('.zhbox').forEach(el=>el.classList.toggle('hidden-lang',mode==='en'));document.querySelectorAll('.pinyin').forEach(el=>el.classList.toggle('hidden-lang',mode!=='all'))}
+function setDisplay(mode){state.display=mode;document.querySelectorAll('.displaybtn').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));document.querySelectorAll('.zhbox,.title-zh').forEach(el=>el.classList.toggle('hidden-lang',mode==='en'));document.querySelectorAll('.pinyin,.title-pinyin').forEach(el=>el.classList.toggle('hidden-lang',mode!=='all'))}
 function country(slug,level='B1'){
  const c=bySlug[slug];if(!c)return library();
  const levels=availableLevels(c);
@@ -50,13 +50,13 @@ function country(slug,level='B1'){
  const v=c.versions[level];
  const ordered=[...COUNTRIES].sort((a,b)=>a.readOrder-b.readOrder);
  const i=ordered.findIndex(x=>x.slug===slug),prev=ordered[i-1],next=ordered[i+1];
- const secs=v.sections.map((s,idx)=>`<section id="sec${idx}" class="article-section"><div class="section-text"><div class="eyebrow">${String(idx+1).padStart(2,'0')}</div><h2>${esc(s.heading)}</h2><p class="en">${esc(s.en)}</p><div class="zhbox"><p class="zh">${esc(s.zh)}</p><p class="pinyin">${esc(pinyinText(s.zh))}</p></div></div><figure class="article-figure"><img loading="lazy" src="${flag(c)}" data-wiki="${esc(s.imagePages.join('|'))}" alt="${esc(c.name+' '+s.heading)}"><figcaption data-caption="${esc(s.caption||s.heading)}">${esc(s.caption||s.heading)}</figcaption></figure></section>`).join('');
+ const secs=v.sections.map((s,idx)=>`<section id="sec${idx}" class="article-section"><div class="section-text"><div class="eyebrow">${String(idx+1).padStart(2,'0')}</div><h2>${esc(s.heading)}</h2><p class="en">${esc(s.en)}</p><div class="zhbox"><p class="zh">${esc(s.zh)}</p><p class="pinyin">${esc(s.pinyin||pinyinText(s.zh))}</p></div></div><figure class="article-figure"><img loading="lazy" src="${flag(c)}" data-wiki="${esc(s.imagePages.join('|'))}" alt="${esc(c.name+' '+s.heading)}"><figcaption data-caption="${esc(s.caption||s.heading)}">${esc(s.caption||s.heading)}</figcaption></figure></section>`).join('');
  const facts=Object.entries(c.facts).map(([k,val])=>`<div class="fact"><small>${esc(k)}</small><b>${esc(val)}</b></div>`).join('');
  const toc=v.sections.map((s,i)=>`<a href="#" onclick="event.preventDefault();document.getElementById('sec${i}').scrollIntoView({behavior:'smooth',block:'start'})">${i+1}. ${esc(s.heading)}</a>`).join('');
  const levelButtons=levels.map(l=>`<button class="levelbtn ${l.toLowerCase()} ${level===l?'active':''}" onclick="go('#country=${c.slug}&level=${l}')">${levelLabel(l)}</button>`).join('');
  const prevLevel=prev?(prev.versions[level]?level:preferredLevel(prev)):level;
  const nextLevel=next?(next.versions[level]?level:preferredLevel(next)):level;
- const content=`<div class="country-page"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#library">Library</a> / ${esc(c.name)}</div><div class="country-header"><div><div class="eyebrow">${esc(c.region)} · Reading #${c.readOrder}</div><h1 class="country-title">${esc(v.title)}</h1><p class="country-summary">${esc(v.summary)}</p><div class="version-switch">${levelButtons}</div></div><aside class="country-facts"><div class="eyebrow">At a glance</div><div style="display:flex;align-items:center;gap:12px;margin:8px 0 14px"><img src="${flag(c)}" style="width:66px;border-radius:5px"><b style="font-family:Georgia,serif;color:var(--navy);font-size:25px">${esc(c.name)}</b></div><div class="facts-grid">${facts}</div></aside></div><div class="reading-controls"><div><b style="color:var(--navy)">${level} reading · ${v.sections.length} illustrated sections</b></div><div class="display-buttons"><button data-mode="en" class="displaybtn" onclick="setDisplay('en')">English only</button><button data-mode="zh" class="displaybtn" onclick="setDisplay('zh')">English + 简中</button><button data-mode="all" class="displaybtn active" onclick="setDisplay('all')">English + 简中 + Pinyin</button></div></div><div class="reading-layout"><article class="article">${secs}<div class="prevnext"><button class="pn" ${prev?`onclick="go('#country=${prev.slug}&level=${prevLevel}')"`:''}><small>← Previous country</small><b>${prev?esc(prev.name):'Start of journey'}</b></button><button class="pn" ${next?`onclick="go('#country=${next.slug}&level=${nextLevel}')"`:`onclick="go('#library')"`}><small>Next country →</small><b>${next?esc(next.name):'Choose the next country'}</b></button></div></article><aside class="sidebar"><div class="side-card toc"><h3>Contents</h3>${toc}</div><div class="side-card"><h3>Reading design</h3><p class="source-note">Each paragraph uses topic-specific image searches instead of a generic country image. Images stay secondary to the text and appear beside the matching idea.</p></div><div class="side-card"><h3>Level choice</h3><p class="source-note">${levels.map(l=>`<b>${l}</b>: ${l==='A1'?'shorter, simpler foundation':l==='A2'?'clear standard reading with more detail':'richer cultural and historical context'}.`).join('<br>')}</p></div></aside></div></div>`;
+ const content=`<div class="country-page"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#library">Library</a> / ${esc(c.name)}</div><div class="country-header"><div><div class="eyebrow">${esc(c.region)} · Reading #${c.readOrder}</div><h1 class="country-title">${esc(v.title)}</h1>${v.titleZh?`<div class="title-zh">${esc(v.titleZh)}</div>`:''}${v.titlePinyin?`<div class="title-pinyin pinyin">${esc(v.titlePinyin)}</div>`:''}<p class="country-summary">${esc(v.summary)}</p><div class="version-switch">${levelButtons}</div></div><aside class="country-facts"><div class="eyebrow">At a glance</div><div style="display:flex;align-items:center;gap:12px;margin:8px 0 14px"><img src="${flag(c)}" style="width:66px;border-radius:5px"><b style="font-family:Georgia,serif;color:var(--navy);font-size:25px">${esc(c.name)}</b></div><div class="facts-grid">${facts}</div></aside></div><div class="reading-controls"><div><b style="color:var(--navy)">${level} reading${v.degree?` · ${esc(v.degree)}`:''} · ${v.sections.length} illustrated sections</b></div><div class="display-buttons"><button data-mode="en" class="displaybtn" onclick="setDisplay('en')">English only</button><button data-mode="zh" class="displaybtn" onclick="setDisplay('zh')">English + 简中</button><button data-mode="all" class="displaybtn active" onclick="setDisplay('all')">English + 简中 + Pinyin</button></div></div><div class="reading-layout"><article class="article">${secs}<div class="prevnext"><button class="pn" ${prev?`onclick="go('#country=${prev.slug}&level=${prevLevel}')"`:''}><small>← Previous country</small><b>${prev?esc(prev.name):'Start of journey'}</b></button><button class="pn" ${next?`onclick="go('#country=${next.slug}&level=${nextLevel}')"`:`onclick="go('#library')"`}><small>Next country →</small><b>${next?esc(next.name):'Choose the next country'}</b></button></div></article><aside class="sidebar"><div class="side-card toc"><h3>Contents</h3>${toc}</div><div class="side-card"><h3>Reading design</h3><p class="source-note">Each paragraph uses topic-specific image searches instead of a generic country image. Images stay secondary to the text and appear beside the matching idea.</p></div><div class="side-card"><h3>Level choice</h3><p class="source-note">${levels.map(l=>`<b>${l}</b>: ${l==='A1'?'shorter, simpler foundation':l==='A2'?'clear standard reading with more detail':'richer cultural and historical context'}.`).join('<br>')}</p></div></aside></div></div>`;
  shell(content,'Library');hydrate();setDisplay('all')
 }
 
@@ -72,88 +72,57 @@ function renderMap(){
  let tooltip=host.select('.map-tooltip');
  if(tooltip.empty()) tooltip=host.append('div').attr('class','map-tooltip');
  let readFeatures=[];
+ const ukChildren=COUNTRIES.filter(c=>String(Number(c.mapId))==='826'&&Array.isArray(c.mapPoint));
+ const groupFor=d=>byMapIdGroups[String(Number(d.id))]||[];
+ const labelFor=d=>{const a=groupFor(d);return a.length===1?a[0].name:(String(Number(d.id))==='826'?'United Kingdom':`${a.length} readings`)};
 
- function labelBoxesOverlap(a,b,pad=5){
-   return !(a.x2+pad<b.x1 || a.x1-pad>b.x2 || a.y2+pad<b.y1 || a.y1-pad>b.y2);
- }
+ function labelBoxesOverlap(a,b,pad=5){return !(a.x2+pad<b.x1||a.x1-pad>b.x2||a.y2+pad<b.y1||a.y1-pad>b.y2)}
  function updateLabels(t){
    if(!readFeatures.length)return;
    const k=t.k;
    const labels=g.selectAll('.map-label');
-   if(k<2.15){labels.style('display','none');return}
-   const candidates=readFeatures.map(d=>{
-     const c=byMapId[String(Number(d.id))];
-     const centroid=path.centroid(d);
-     const bounds=path.bounds(d);
-     const screenX=t.applyX(centroid[0]),screenY=t.applyY(centroid[1]);
-     const screenW=(bounds[1][0]-bounds[0][0])*k;
-     const screenH=(bounds[1][1]-bounds[0][1])*k;
-     const textW=Math.max(44,c.name.length*7.2);
-     const priority=screenW*screenH;
-     return {d,c,screenX,screenY,screenW,screenH,textW,priority};
-   }).filter(x=>{
-     const minW=x.textW+10;
-     const minH=18;
-     if(k<3.2) return x.screenW>Math.max(100,minW*1.65) && x.screenH>32;
-     if(k<5.2) return x.screenW>Math.max(70,minW*1.25) && x.screenH>24;
-     if(k<8.0) return x.screenW>Math.max(52,minW) && x.screenH>18;
-     return x.screenW>Math.max(34,minW*.72) && x.screenH>13;
-   }).sort((a,b)=>b.priority-a.priority);
-
-   const accepted=[];
-   const visible=new Set();
-   for(const x of candidates){
-     const box={x1:x.screenX-x.textW/2,y1:x.screenY-8,x2:x.screenX+x.textW/2,y2:x.screenY+8};
-     if(!accepted.some(a=>labelBoxesOverlap(box,a))){
-       accepted.push(box); visible.add(String(Number(x.d.id)));
-     }
+   if(k<2.15){labels.style('display','none')}else{
+     const candidates=readFeatures.map(d=>{
+       const name=labelFor(d),centroid=path.centroid(d),bounds=path.bounds(d);
+       const screenX=t.applyX(centroid[0]),screenY=t.applyY(centroid[1]);
+       const screenW=(bounds[1][0]-bounds[0][0])*k,screenH=(bounds[1][1]-bounds[0][1])*k;
+       const textW=Math.max(44,name.length*7.2),priority=screenW*screenH;
+       return {d,name,screenX,screenY,screenW,screenH,textW,priority,group:groupFor(d)};
+     }).filter(x=>{
+       if(x.group.length>1&&k>=4.8)return false;
+       const minW=x.textW+10;
+       if(k<3.2)return x.screenW>Math.max(100,minW*1.65)&&x.screenH>32;
+       if(k<5.2)return x.screenW>Math.max(70,minW*1.25)&&x.screenH>24;
+       if(k<8)return x.screenW>Math.max(52,minW)&&x.screenH>18;
+       return x.screenW>Math.max(34,minW*.72)&&x.screenH>13;
+     }).sort((a,b)=>b.priority-a.priority);
+     const accepted=[],visible=new Set();
+     for(const x of candidates){const box={x1:x.screenX-x.textW/2,y1:x.screenY-8,x2:x.screenX+x.textW/2,y2:x.screenY+8};if(!accepted.some(a=>labelBoxesOverlap(box,a))){accepted.push(box);visible.add(String(Number(x.d.id)))}}
+     labels.style('display',d=>visible.has(String(Number(d.id)))?'block':'none').style('font-size',`${12/k}px`).style('stroke-width',`${3/k}px`);
    }
-   labels
-     .style('display',d=>visible.has(String(Number(d.id)))?'block':'none')
-     .style('font-size',`${12/k}px`)
-     .style('stroke-width',`${3/k}px`);
+   const markers=g.selectAll('.subcountry-marker');
+   markers.style('display',k>=4.8?'block':'none');
+   markers.select('circle').attr('r',6/k).style('stroke-width',`${2/k}px`);
+   markers.select('text').style('font-size',`${12/k}px`).style('stroke-width',`${3/k}px`).attr('x',d=>(d.mapLabelSide==='left'?-10:10)/k).attr('dy',`${4/k}px`);
  }
-
- const zoom=d3.zoom().scaleExtent([1,18]).on('zoom',e=>{
-   g.attr('transform',e.transform);
-   updateLabels(e.transform);
- });
- svg.call(zoom).on('dblclick.zoom',null);
- mapState={svg,g,zoom,projection,path};
-
+ const zoom=d3.zoom().scaleExtent([1,18]).on('zoom',e=>{g.attr('transform',e.transform);updateLabels(e.transform)});
+ svg.call(zoom).on('dblclick.zoom',null);mapState={svg,g,zoom,projection,path};
+ function showTip(e,html){tooltip.classed('show',true).html(html);const rect=node.parentNode.getBoundingClientRect();tooltip.style('left',`${Math.min(e.clientX-rect.left+14,rect.width-205)}px`).style('top',`${Math.max(10,e.clientY-rect.top-12)}px`)}
  fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r=>r.json()).then(world=>{
    const feats=topojson.feature(world,world.objects.countries).features;
-   readFeatures=feats.filter(d=>byMapId[String(Number(d.id))]);
-   g.selectAll('path').data(feats).join('path')
-     .attr('d',path)
-     .attr('class',d=>`country-shape ${byMapId[String(Number(d.id))]?'read':''}`)
-     .style('cursor',d=>byMapId[String(Number(d.id))]?'pointer':'grab')
-     .on('mouseenter',(e,d)=>{
-       const c=byMapId[String(Number(d.id))];
-       if(!c)return;
-       tooltip.classed('show',true).html(`<b>${esc(c.name)}</b><small>Reading #${c.readOrder} · Click to open</small>`);
-     })
-     .on('mousemove',(e,d)=>{
-       const c=byMapId[String(Number(d.id))]; if(!c)return;
-       const rect=node.parentNode.getBoundingClientRect();
-       const x=Math.min(e.clientX-rect.left+14,rect.width-190);
-       const y=Math.max(10,e.clientY-rect.top-12);
-       tooltip.style('left',`${x}px`).style('top',`${y}px`);
-     })
-     .on('mouseleave',()=>tooltip.classed('show',false))
-     .on('click',(e,d)=>{
-       const c=byMapId[String(Number(d.id))];
-       if(c)go(`#country=${c.slug}&level=${preferredLevel(c)}`);
-     });
-
-   g.selectAll('text').data(readFeatures).join('text')
-     .attr('class','map-label')
-     .attr('transform',d=>`translate(${path.centroid(d)})`)
-     .attr('text-anchor','middle')
-     .attr('dy','.35em')
-     .style('display','none')
-     .text(d=>byMapId[String(Number(d.id))].name);
-
+   readFeatures=feats.filter(d=>groupFor(d).length);
+   g.selectAll('path').data(feats).join('path').attr('d',path)
+    .attr('class',d=>`country-shape ${groupFor(d).length?'read':''}`)
+    .style('cursor',d=>groupFor(d).length?'pointer':'grab')
+    .on('mouseenter',(e,d)=>{const a=groupFor(d);if(!a.length)return;showTip(e,a.length===1?`<b>${esc(a[0].name)}</b><small>Reading #${a[0].readOrder} · Click to open</small>`:`<b>United Kingdom</b><small>${a.length} reading entries · Click to zoom in</small>`)})
+    .on('mousemove',(e,d)=>{if(groupFor(d).length)showTip(e,groupFor(d).length===1?`<b>${esc(groupFor(d)[0].name)}</b><small>Reading #${groupFor(d)[0].readOrder} · Click to open</small>`:`<b>United Kingdom</b><small>${groupFor(d).length} reading entries · Click to zoom in</small>`)})
+    .on('mouseleave',()=>tooltip.classed('show',false))
+    .on('click',(e,d)=>{const a=groupFor(d);if(a.length===1)return go(`#country=${a[0].slug}&level=${preferredLevel(a[0])}`);if(a.length>1){const b=path.bounds(d),cx=(b[0][0]+b[1][0])/2,cy=(b[0][1]+b[1][1])/2;const target=Math.min(10,Math.max(5.6,.72/Math.max((b[1][0]-b[0][0])/w,(b[1][1]-b[0][1])/h)));svg.transition().duration(500).call(zoom.transform,d3.zoomIdentity.translate(w/2,h/2).scale(target).translate(-cx,-cy))}});
+   g.selectAll('.map-label').data(readFeatures).join('text').attr('class','map-label').attr('transform',d=>`translate(${path.centroid(d)})`).attr('text-anchor','middle').attr('dy','.35em').style('display','none').text(labelFor);
+   const markerData=ukChildren.map(c=>({...c,mapLabelSide:(c.slug==='wales'||c.slug==='northern-ireland')?'left':'right'}));
+   const mg=g.selectAll('.subcountry-marker').data(markerData).join('g').attr('class','subcountry-marker').attr('transform',d=>{const p=projection(d.mapPoint);return `translate(${p[0]},${p[1]})`}).style('display','none')
+    .on('mouseenter',(e,d)=>showTip(e,`<b>${esc(d.name)}</b><small>Reading #${d.readOrder} · Click to open ${preferredLevel(d)}</small>`)).on('mousemove',(e,d)=>showTip(e,`<b>${esc(d.name)}</b><small>Reading #${d.readOrder} · Click to open ${preferredLevel(d)}</small>`)).on('mouseleave',()=>tooltip.classed('show',false)).on('click',(e,d)=>{e.stopPropagation();go(`#country=${d.slug}&level=${preferredLevel(d)}`)});
+   mg.append('circle');mg.append('text').attr('text-anchor',d=>d.mapLabelSide==='left'?'end':'start').text(d=>d.name);
    updateLabels(d3.zoomIdentity);
  });
 }
