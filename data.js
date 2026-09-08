@@ -7,7 +7,7 @@ window.SITE = {
     "Middle East & Caucasus",
     "Europe"
   ],
-  "version": "0908_1",
+  "version": "0908_2",
   "readCount": 37
 };
 
