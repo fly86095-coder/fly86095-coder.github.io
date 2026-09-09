@@ -165,7 +165,7 @@ function renderMap(){
  let tooltip=host.select('.map-tooltip');
  if(tooltip.empty()) tooltip=host.append('div').attr('class','map-tooltip');
  let readFeatures=[];
- const ukChildren=COUNTRIES.filter(c=>String(Number(c.mapId))==='826'&&Array.isArray(c.mapPoint));
+ const pointCountries=COUNTRIES.filter(c=>Array.isArray(c.mapPoint));
  const groupFor=d=>byMapIdGroups[String(Number(d.id))]||[];
  const labelFor=d=>{const a=groupFor(d);return a.length===1?a[0].name:(String(Number(d.id))==='826'?'United Kingdom':`${a.length} readings`)};
 
@@ -194,7 +194,7 @@ function renderMap(){
      labels.style('display',d=>visible.has(String(Number(d.id)))?'block':'none').style('font-size',`${12/k}px`).style('stroke-width',`${3/k}px`);
    }
    const markers=g.selectAll('.subcountry-marker');
-   markers.style('display',k>=4.8?'block':'none');
+   markers.style('display',d=>k>=(d.mapMarkerMinZoom||4.8)?'block':'none');
    markers.select('circle').attr('r',6/k).style('stroke-width',`${2/k}px`);
    markers.select('text').style('font-size',`${12/k}px`).style('stroke-width',`${3/k}px`).attr('x',d=>(d.mapLabelSide==='left'?-10:10)/k).attr('dy',`${4/k}px`);
  }
@@ -212,7 +212,7 @@ function renderMap(){
     .on('mouseleave',()=>tooltip.classed('show',false))
     .on('click',(e,d)=>{const a=groupFor(d);if(a.length===1)return go(`#country=${a[0].slug}&level=${preferredLevel(a[0])}`);if(a.length>1){const b=path.bounds(d),cx=(b[0][0]+b[1][0])/2,cy=(b[0][1]+b[1][1])/2;const target=Math.min(10,Math.max(5.6,.72/Math.max((b[1][0]-b[0][0])/w,(b[1][1]-b[0][1])/h)));svg.transition().duration(500).call(zoom.transform,d3.zoomIdentity.translate(w/2,h/2).scale(target).translate(-cx,-cy))}});
    g.selectAll('.map-label').data(readFeatures).join('text').attr('class','map-label').attr('transform',d=>`translate(${path.centroid(d)})`).attr('text-anchor','middle').attr('dy','.35em').style('display','none').text(labelFor);
-   const markerData=ukChildren.map(c=>({...c,mapLabelSide:(c.slug==='wales'||c.slug==='northern-ireland')?'left':'right'}));
+   const markerData=pointCountries.map(c=>({...c,mapLabelSide:c.mapLabelSide||((c.slug==='wales'||c.slug==='northern-ireland')?'left':'right')}));
    const mg=g.selectAll('.subcountry-marker').data(markerData).join('g').attr('class','subcountry-marker').attr('transform',d=>{const p=projection(d.mapPoint);return `translate(${p[0]},${p[1]})`}).style('display','none')
     .on('mouseenter',(e,d)=>showTip(e,`<b>${esc(d.name)}</b><small>Reading #${d.readOrder} · Click to open ${preferredLevel(d)}</small>`)).on('mousemove',(e,d)=>showTip(e,`<b>${esc(d.name)}</b><small>Reading #${d.readOrder} · Click to open ${preferredLevel(d)}</small>`)).on('mouseleave',()=>tooltip.classed('show',false)).on('click',(e,d)=>{e.stopPropagation();go(`#country=${d.slug}&level=${preferredLevel(d)}`)});
    mg.append('circle');mg.append('text').attr('text-anchor',d=>d.mapLabelSide==='left'?'end':'start').text(d=>d.name);
