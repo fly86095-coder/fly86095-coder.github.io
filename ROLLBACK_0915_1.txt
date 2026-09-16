@@ -1,0 +1,6 @@
+ROLLBACK 0915_1
+
+Preferred: use Git revert on the 0915_1 deployment commit.
+Before deployment create a tag at the current production commit: pre-0915_1.
+The ZIP also contains rollback/0914_1/app.js, data.js, styles.css as the exact previous production snapshot.
+Do not force-push published history unless explicitly requested.

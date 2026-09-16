@@ -1,0 +1,8 @@
+Rollback target included: 0915_1
+
+If you want to undo 0916_1, restore these files from rollback/0915_1 into site/:
+- data.js
+- app.js
+- styles.css
+
+Then commit and push again.

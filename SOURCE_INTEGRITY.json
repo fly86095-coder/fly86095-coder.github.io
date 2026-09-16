@@ -1,0 +1,140 @@
+{
+  "version": "0907_1",
+  "source_file": "0907.txt",
+  "source_sha256": "f231b82d9be8a6f03c530912e4b67bd5698b2bb83bfc9d73e5fe901c524fd474",
+  "policy": "English, Simplified Chinese, pinyin, titles, and source degree labels are copied verbatim from the uploaded source. Only website metadata, section headings, image targets, and map metadata are generated.",
+  "entries": [
+    {
+      "slug": "england",
+      "readOrder": 34,
+      "versions": {
+        "A1": {
+          "source_lines": [
+            70,
+            94
+          ],
+          "paragraphs": 4,
+          "title": "England – London, Football, Tea, and Fish and Chips",
+          "degree": "程度：簡單｜A0–A1"
+        },
+        "A2": {
+          "source_lines": [
+            38,
+            67
+          ],
+          "paragraphs": 5,
+          "title": "England – Rivers, History, Factories, Football, and Pub Life",
+          "degree": "程度：中｜A1–A2"
+        },
+        "B1": {
+          "source_lines": [
+            1,
+            35
+          ],
+          "paragraphs": 6,
+          "title": "England – Old Kingdoms, Industry, Football, and Pub Culture",
+          "degree": "程度：難｜A2–B1"
+        }
+      }
+    },
+    {
+      "slug": "scotland",
+      "readOrder": 35,
+      "versions": {
+        "A1": {
+          "source_lines": [
+            165,
+            189
+          ],
+          "paragraphs": 4,
+          "title": "Scotland – Mountains, Kilts, Bagpipes, and Whisky",
+          "degree": "程度：簡單｜A0–A1"
+        },
+        "A2": {
+          "source_lines": [
+            133,
+            162
+          ],
+          "paragraphs": 5,
+          "title": "Scotland – Highlands, Clans, Whisky, Music, and Its Own Culture",
+          "degree": "程度：中｜A1–A2"
+        },
+        "B1": {
+          "source_lines": [
+            96,
+            130
+          ],
+          "paragraphs": 6,
+          "title": "Scotland – Highlands, Clans, Whisky, Music, and a Different National Identity",
+          "degree": "程度：難｜A2–B1"
+        }
+      }
+    },
+    {
+      "slug": "wales",
+      "readOrder": 36,
+      "versions": {
+        "A1": {
+          "source_lines": [
+            261,
+            285
+          ],
+          "paragraphs": 4,
+          "title": "Wales – Mountains, Welsh, Rugby, and Singing",
+          "degree": "程度：簡單｜A0–A1"
+        },
+        "A2": {
+          "source_lines": [
+            229,
+            258
+          ],
+          "paragraphs": 5,
+          "title": "Wales – Mountains, Welsh, Castles, Rugby, and Music",
+          "degree": "程度：中｜A1–A2"
+        },
+        "B1": {
+          "source_lines": [
+            192,
+            226
+          ],
+          "paragraphs": 6,
+          "title": "Wales – Mountains, Welsh Language, Castles, Coal, Rugby, and Music",
+          "degree": "程度：難｜A2–B1"
+        }
+      }
+    },
+    {
+      "slug": "northern-ireland",
+      "readOrder": 37,
+      "versions": {
+        "A1": {
+          "source_lines": [
+            358,
+            382
+          ],
+          "paragraphs": 4,
+          "title": "Northern Ireland – Green Land, Ships, Food, and Music",
+          "degree": "程度：簡單｜A0–A1"
+        },
+        "A2": {
+          "source_lines": [
+            326,
+            355
+          ],
+          "paragraphs": 5,
+          "title": "Northern Ireland – Green Land, Two Identities, Shipbuilding, and Local Food",
+          "degree": "程度：中｜A1–A2"
+        },
+        "B1": {
+          "source_lines": [
+            289,
+            323
+          ],
+          "paragraphs": 6,
+          "title": "Northern Ireland – Two Identities, Coastal Land, Industry, and Local Culture",
+          "degree": "程度：難｜A2–B1"
+        }
+      }
+    }
+  ]
+}

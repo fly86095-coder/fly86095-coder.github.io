@@ -1,0 +1,11 @@
+const fs=require('fs');
+const vm=require('vm');
+const path=require('path');
+const base=__dirname;
+const ctx={window:{}};
+vm.createContext(ctx);
+vm.runInContext(fs.readFileSync(path.join(base,'site','data.js'),'utf8'),ctx);
+const SITE=ctx.window.SITE;
+const COUNTRIES=ctx.window.COUNTRIES;
+const versions=COUNTRIES.reduce((n,c)=>n+Object.keys(c.versions||{}).length,0);
+console.log(JSON.stringify({version:SITE.version,countries:COUNTRIES.length,readingVersions:versions,regions:SITE.regions},null,2));

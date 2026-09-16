@@ -1,0 +1,23 @@
+{
+  "version": "0915_1",
+  "base": "0914_1",
+  "source_sha256": "8fbdce53b3414fa9b115828e274c37d214f558f37fe7a0e4d5b7887c3def44b8",
+  "countries": 43,
+  "reading_versions": 99,
+  "new_entries": [
+    "Poland",
+    "Czechia",
+    "Slovakia"
+  ],
+  "source_corrections_documented_in": "SOURCE_NOTES_0915.md",
+  "files": {
+    "app.js": "c817086cc11fb1423c679aac498b90c614f7278440562c8b5182bfabcdc3526c",
+    "data.js": "254dd67759c5d0e1302321a27f4160e11dcade5c7ea81db717fb5e01bf0773eb",
+    "styles.css": "19af31689aa511fa1a9f5845aa557cbcb93f9704abc87111e290f64f69f13858"
+  },
+  "rollback_0914_1": {
+    "app.js": "c817086cc11fb1423c679aac498b90c614f7278440562c8b5182bfabcdc3526c",
+    "data.js": "95c2470df6ef2319800b11c9dd12ac9cb61bae4a584a34e2c61d89224d3c8e57",
+    "styles.css": "19af31689aa511fa1a9f5845aa557cbcb93f9704abc87111e290f64f69f13858"
+  }
+}

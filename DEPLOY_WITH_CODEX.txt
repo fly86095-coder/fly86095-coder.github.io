@@ -1,0 +1,10 @@
+Package: english-country-reading-atlas-0916_1.zip
+
+What this update contains:
+- Responsive atlas navigation menu
+- New header logo
+- Refined home-page learning positioning
+- Map matching and tiny-country marker improvements
+- Rollback snapshot for 0915_1
+
+Deploy by replacing the website files with the contents of site/.

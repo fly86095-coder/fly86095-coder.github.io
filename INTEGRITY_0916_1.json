@@ -1,0 +1,16 @@
+{
+  "version": "0916_1",
+  "countries": 43,
+  "readingVersions": 99,
+  "regions": [
+    "Asia",
+    "Middle East & Caucasus",
+    "Europe"
+  ],
+  "changedFiles": [
+    "site/app.js",
+    "site/styles.css",
+    "site/data.js"
+  ],
+  "rollbackIncluded": "0915_1"
+}
