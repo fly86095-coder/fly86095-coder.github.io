@@ -77,3 +77,17 @@ body.explore-open{overflow:hidden}
 @media(max-width:1100px){.brandtext small{display:none}}
 @media(max-width:760px){.topbar{overflow:visible}.nav{padding:0 14px;height:64px;grid-template-columns:minmax(0,1fr) auto}.brand{min-width:0;gap:8px}.brandtext strong{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44vw}.brandmark{width:34px;height:34px;padding:4px}.explore-backdrop{inset:64px 0 0}.explore-menu{top:64px;padding:0 0 0;display:flex;align-items:flex-end;min-height:calc(100vh - 64px)}.explore-panel{width:100%;max-width:none;margin:0;border-radius:24px 24px 0 0;padding:16px 14px 18px;max-height:calc(100vh - 72px);overflow:auto}.explore-head h2{font-size:27px}.explore-search{padding:12px 0}.explore-groups{grid-template-columns:1fr}.explore-quick{display:grid;grid-template-columns:1fr 1fr}.explore-country-list{max-height:none}.map-card,#mapSvg{min-height:400px}}
 @media(max-width:520px){.explore-quick{grid-template-columns:1fr}.explore-search{flex-direction:column;align-items:stretch}.explore-search button{width:100%}.hero-actions .primary,.hero-actions .outline{width:100%}}
+
+/* 0917_1 — return to the simpler pre-0916 navigation and improve reading flow */
+.explore-backdrop,.explore-menu{display:none!important}
+body.explore-open{overflow:auto!important}
+.topbar{position:relative!important;top:auto!important}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer;color:var(--navy);font-family:Georgia,serif;font-size:19px;background:transparent;border:0;padding:0}
+.brand strong{font-size:19px;font-weight:700}
+.brandmark{width:34px;height:34px;padding:4px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;background:transparent;box-shadow:none;color:var(--navy)}
+.brandmark svg{width:100%;height:100%}
+.reading-controls{position:static!important;top:auto!important;z-index:auto!important;backdrop-filter:none!important}
+.sidebar{position:static!important;top:auto!important;align-self:start}
+.hero-actions{display:none!important}
+@media(max-width:1100px){.brand strong{font-size:17px}.nav{grid-template-columns:auto 1fr auto}}
+@media(max-width:760px){.topbar{position:relative!important}.nav{grid-template-columns:minmax(0,1fr) auto}.brand{min-width:0}.brand strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw;font-size:15px}.brandmark{width:32px;height:32px;flex:0 0 32px}.reading-controls{position:static!important;top:auto!important}.sidebar{position:static!important}}
