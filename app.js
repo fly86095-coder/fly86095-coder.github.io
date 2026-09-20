@@ -31,6 +31,8 @@ const SMALL_COUNTRY_MARKERS=[
  {slug:'belgium',mapPoint:[4.47,50.67],mapLabelSide:'left'},
  {slug:'netherlands',mapPoint:[5.30,52.13],mapLabelSide:'right'},
  {slug:'kosovo',mapPoint:[21.05,42.67],mapLabelSide:'right'},
+ {slug:'vatican-city',mapPoint:[12.4534,41.9029],mapLabelSide:'right'},
+ {slug:'malta',mapPoint:[14.3754,35.9375],mapLabelSide:'right'},
  {slug:'san-marino',mapPoint:[12.4578,43.9424],mapLabelSide:'right'}
 ];
 function brandmarkSvg(){return `<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><defs><linearGradient id="ecra-g" x1="0" x2="1"><stop offset="0" stop-color="#b99143"/><stop offset="1" stop-color="#d6b46c"/></linearGradient></defs><circle cx="32" cy="32" r="28" fill="none" stroke="url(#ecra-g)" stroke-width="2.4"/><path d="M16 24c5-3.4 10.4-5 16-5s11 1.6 16 5v18c-5-3.2-10.4-4.8-16-4.8S21 38.8 16 42V24Z" fill="rgba(185,145,67,.13)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M32 19v18" stroke="currentColor" stroke-width="2"/><path d="M21 15c4 2 7 5.8 8.6 11.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".88"/><path d="M43 15c-4 2-7 5.8-8.6 11.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".88"/></svg>`}
