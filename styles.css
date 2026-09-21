@@ -100,3 +100,26 @@ html[data-theme="dark"] .practice-home-guide,html[data-theme="dark"] .practice-p
 @media(max-width:1050px){.practice-home-hero{grid-template-columns:1fr}.practice-path-grid,.practice-path-grid.compact{grid-template-columns:repeat(2,minmax(0,1fr))}.dialogue-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.conversation-method{grid-template-columns:repeat(2,1fr)}.dialogue-detail-head{grid-template-columns:1fr}.country-home-grid{grid-template-columns:1fr}}
 @media(max-width:900px){.nav{height:auto;min-height:64px;display:flex;flex-wrap:wrap;gap:8px 14px;padding:10px 14px}.brand{flex:1;min-width:210px}.nav-actions{margin-left:auto}.nav-actions .nav-search{display:none}.links{display:flex;order:3;width:100%;justify-content:flex-start;gap:20px;overflow-x:auto;scrollbar-width:none}.links::-webkit-scrollbar{display:none}.links a{white-space:nowrap;padding:7px 0 9px}.practice-home-hero{padding-top:46px}}
 @media(max-width:680px){.practice-home-hero{padding:38px 18px 28px}.practice-home-copy h1{font-size:46px}.practice-home-copy>p{font-size:16px}.practice-home-actions{display:grid}.practice-home-actions button{width:100%}.practice-path-grid,.practice-path-grid.compact,.dialogue-grid,.practice-how,.conversation-method{grid-template-columns:1fr}.practice-how,.conversation-method{padding-left:18px;padding-right:18px}.practice-path-card{min-height:205px}.dialogue-detail{padding:28px 18px 52px}.dialogue-practice-card{padding:16px}.dialogue-turn{grid-template-columns:34px minmax(0,1fr);gap:9px}.speaker{width:30px;height:30px}.turn-en{font-size:19px}.blank-tools{display:block}.blank-type{display:block;padding:0;margin:10px 0 6px}.hint-details{min-width:0}.dialogue-card-heading{align-items:flex-start;flex-direction:column}.your-version-box{grid-template-columns:1fr}.detail-title-line{align-items:flex-start;flex-direction:column}.practice-home-guide{padding:18px}.country-home-copy{padding:18px}}
+
+
+/* 0921_3 — Hanyu Pinyin under every Chinese learning line in practice content */
+.path-pinyin,.dialogue-title-pinyin,.detail-title-pinyin,.turn-pinyin,.hint-pinyin,.example-pinyin{
+ color:var(--muted);
+ font-size:12px;
+ line-height:1.55;
+ letter-spacing:.01em;
+ margin-top:2px;
+ font-weight:500;
+}
+.dialogue-title-pinyin{font-size:11px;margin-top:3px}
+.detail-title-pinyin{font-size:13px;margin-top:5px}
+.turn-pinyin{font-size:13px;margin-top:5px;color:color-mix(in srgb,var(--muted) 86%,var(--ink))}
+.hint-list .hint-zh{display:block;margin-top:4px;color:var(--muted)}
+.hint-list .hint-pinyin{display:block;margin-top:1px;font-size:10px;line-height:1.45;color:var(--muted)}
+.example-line .example-zh{display:block;margin-top:4px;color:var(--muted)}
+.example-line .example-pinyin{display:block;margin-top:2px;font-size:11px;line-height:1.5;color:var(--muted)}
+@media(max-width:760px){
+ .turn-pinyin{font-size:12.5px}
+ .detail-title-pinyin{font-size:12px}
+ .path-pinyin,.dialogue-title-pinyin{font-size:10.5px}
+}
