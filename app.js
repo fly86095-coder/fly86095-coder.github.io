@@ -320,26 +320,70 @@ function dialogueLibrary(level=dialogueLevelState){
  dialogueLevelState=level;
  const all=practiceCatalog().dialogues||[];
  const list=level==='All'?all:all.filter(d=>d.level===level);
- const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Daily Conversation</div><div class="eyebrow">Daily Conversation Practice</div><h1 class="page-title">Practice Everyday Conversation</h1><p>Choose a topic, complete the missing parts, and say the conversation out loud. Use a hint when you need one, then check the example after you try.</p></section>
- <section class="conversation-method"><div><span class="method-n">1</span><b>Try the sentence</b><p>Complete the missing part before opening a hint.</p></div><div><span class="method-n">2</span><b>Use a hint if you need one</b><p>Choose an option or use it as an idea for your own answer.</p></div><div><span class="method-n">3</span><b>Say the full sentence</b><p>Read the whole line out loud, not only the missing part.</p></div><div><span class="method-n">4</span><b>Make it personal</b><p>Try the same conversation again with your own information.</p></div></section>
+ const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Daily Conversation</div><div class="eyebrow">Daily Conversation Practice</div><h1 class="page-title">Practice Everyday Conversation</h1><p>Choose a topic, read the complete eight-line conversation, practice with natural replies, and finish with a quick check.</p></section>
+ <section class="conversation-method"><div><span class="method-n">1</span><b>Read the complete example</b><p>See how the full eight-line conversation flows.</p></div><div><span class="method-n">2</span><b>Practice the conversation</b><p>Choose a reply or let the page pick one at random.</p></div><div><span class="method-n">3</span><b>Say every full sentence</b><p>Read each completed line out loud at a natural speed.</p></div><div><span class="method-n">4</span><b>Take the quick check</b><p>Choose the most natural next reply in three short questions.</p></div></section>
  <section class="section dialogue-library"><div class="section-head"><div><h2>Choose a Level</h2><p>Five everyday conversation topics are available at each level.</p></div><span class="dialogue-count">${list.length} sets</span></div><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="dialogueLibrary('${l}')">${l}</button>`).join('')}</div><div class="dialogue-grid">${list.map(dialogueCard).join('')}</div></section>`;
  shell(content,'Practice')
 }
+function fillDialogueBlank(text,value){
+ const blankCount=(text.match(/_____/g)||[]).length;
+ const parts=blankCount>1?String(value).split(/\s*[\/／]\s*/):[String(value)];
+ return text.includes('_____')?text.replace(/_____/g,()=>parts.shift()||'_____'):text
+}
+function chooseDialogueOption(button){
+ const turn=button.closest('.dialogue-turn');if(!turn)return;
+ turn.querySelectorAll('.hint-choice').forEach(b=>b.classList.toggle('selected',b===button));
+ const en=fillDialogueBlank(turn.dataset.en||'',button.dataset.en||'');
+ const zh=fillDialogueBlank(turn.dataset.zh||'',button.dataset.zh||'');
+ const result=turn.querySelector('.choice-result');
+ result.hidden=false;
+ result.innerHTML=`<b>Say this:</b><span>${esc(en)}</span><small>${esc(zh)}</small><small class="choice-pinyin">${practicePinyin(zh)}</small>`;
+}
+function randomDialogueReply(){
+ const options=[...document.querySelectorAll('.hint-choice')];if(!options.length)return;
+ const button=options[Math.floor(Math.random()*options.length)];
+ const details=button.closest('details');if(details)details.open=true;
+ chooseDialogueOption(button);
+ button.scrollIntoView({behavior:'smooth',block:'center'});
+}
 function hintDetails(t){
  if(!t.blankType||!t.hints?.length)return '';
- return `<div class="blank-tools"><span class="blank-type">${blankTypeLabel(t.blankType)}</span><details class="hint-details"><summary>Show hints</summary><div class="hint-list">${t.hints.map(h=>`<span><b>${esc(h.en)}</b><small class="hint-zh">${esc(h.zh)}</small><small class="hint-pinyin">${practicePinyin(h.zh)}</small></span>`).join('')}</div></details></div>`
+ return `<div class="blank-tools"><span class="blank-type">${blankTypeLabel(t.blankType)}</span><details class="hint-details"><summary>Choose a reply</summary><div class="hint-list">${t.hints.map(h=>`<button class="hint-choice" type="button" data-en="${esc(h.en)}" data-zh="${esc(h.zh)}" onclick="chooseDialogueOption(this)"><b>${esc(h.en)}</b><small class="hint-zh">${esc(h.zh)}</small><small class="hint-pinyin">${practicePinyin(h.zh)}</small></button>`).join('')}</div></details></div>`
+}
+function dialogueHash(text){return [...text].reduce((n,c)=>(n*31+c.charCodeAt(0))>>>0,7)}
+function dialogueQuiz(d){
+ const pairs=[];for(let i=0;i+1<(d.example||[]).length;i+=2)pairs.push({prompt:d.example[i],answer:d.example[i+1]});
+ const pool=practiceCatalog().dialogues.flatMap(x=>(x.example||[]).filter((_,i)=>i%2===1));
+ return `<div class="quiz-list">${pairs.slice(0,3).map((q,index)=>{
+  const distractors=pool.filter(x=>x.en!==q.answer.en).sort((a,b)=>dialogueHash(`${d.id}-${index}-${a.en}`)-dialogueHash(`${d.id}-${index}-${b.en}`)).slice(0,2);
+  const choices=[{...q.answer,correct:true},...distractors.map(x=>({...x,correct:false}))].sort((a,b)=>dialogueHash(`${index}-${a.en}-${d.id}`)-dialogueHash(`${index}-${b.en}-${d.id}`));
+  return `<article class="quiz-question"><div class="quiz-number">${index+1}</div><div class="quiz-prompt"><b>${esc(q.prompt.en)}</b><span>${esc(q.prompt.zh)}</span><small>${practicePinyin(q.prompt.zh)}</small></div><p>Which reply fits best?</p><div class="quiz-options">${choices.map(x=>`<button type="button" data-correct="${x.correct?'1':'0'}" data-zh="${esc(x.zh)}" onclick="answerDialogueQuiz(this)">${esc(x.en)}</button>`).join('')}</div><div class="quiz-feedback" aria-live="polite"></div></article>`
+ }).join('')}</div>`
+}
+function answerDialogueQuiz(button){
+ const question=button.closest('.quiz-question');if(!question)return;
+ const feedback=question.querySelector('.quiz-feedback');
+ if(button.dataset.correct==='1'){
+  question.querySelectorAll('.quiz-options button').forEach(b=>b.classList.toggle('correct',b===button));
+  const zh=button.dataset.zh||'';
+  feedback.className='quiz-feedback success';
+  feedback.innerHTML=`<b>Correct ✓</b><span>${esc(zh)}</span><small>${practicePinyin(zh)}</small>`;
+ }else{
+  button.classList.add('wrong');
+  feedback.className='quiz-feedback retry';
+  feedback.textContent='Try again — choose the reply that naturally follows the prompt.';
+ }
 }
 function dialoguePage(id){
  const all=practiceCatalog().dialogues||[];
  const d=all.find(x=>x.id===id);if(!d)return dialogueLibrary();
  const same=all.filter(x=>x.level===d.level),i=same.findIndex(x=>x.id===id),prev=same[i-1],next=same[i+1];
- const turns=(d.turns||[]).map((t,idx)=>`<div class="dialogue-turn"><div class="speaker speaker-${t.speaker.toLowerCase()}">${esc(t.speaker)}</div><div class="turn-body"><div class="turn-en">${esc(t.en)}</div><div class="turn-zh">${esc(t.zh)}</div><div class="turn-pinyin">${practicePinyin(t.zh)}</div>${hintDetails(t)}</div></div>`).join('');
+ const turns=(d.turns||[]).map((t,idx)=>`<div class="dialogue-turn" data-en="${esc(t.en)}" data-zh="${esc(t.zh)}"><div class="speaker speaker-${t.speaker.toLowerCase()}">${esc(t.speaker)}</div><div class="turn-body"><div class="turn-en">${esc(t.en)}</div><div class="turn-zh">${esc(t.zh)}</div><div class="turn-pinyin">${practicePinyin(t.zh)}</div>${hintDetails(t)}<div class="choice-result" hidden></div></div></div>`).join('');
  const example=(d.example||[]).map(t=>`<div class="example-line"><b>${esc(t.speaker)}:</b><div><span>${esc(t.en)}</span><small class="example-zh">${esc(t.zh)}</small><small class="example-pinyin">${practicePinyin(t.zh)}</small></div></div>`).join('');
- const your=(d.yourVersion||[]).map(x=>`<li>${esc(x)}</li>`).join('');
- const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#dialogues">Daily Conversation</a> / ${esc(d.title)}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc(d.scene)}</div><div class="detail-title-line"><span class="level-pill ${d.level.toLowerCase()}">${d.level}</span><h1>${esc(d.title)}</h1></div>${practiceZhPair(d.titleZh,'detail-title-zh','detail-title-pinyin')}<p>${esc(d.goal)}</p></div><aside class="practice-rule"><b>How to practice</b><ol><li>Try each missing part before opening the hint.</li><li>Say the full sentence out loud.</li><li>Check the example after your first attempt.</li><li>Try it again with your own information.</li></ol></aside></div>
- <div class="dialogue-practice-card"><div class="dialogue-card-heading"><div><div class="eyebrow">Conversation</div><h2>Try it first · Use a hint · Check the example</h2></div><span>${dialogueBlankCount(d)} practice points</span></div>${turns}</div>
- <details class="complete-example"><summary>Show complete example</summary><div class="complete-example-body">${example}</div></details>
- <section class="your-version-box"><div><div class="eyebrow">Your version</div><h2>Try your own version</h2><ul>${your}</ul></div><textarea class="your-version-input" rows="6" placeholder="Write your own answer here, then say it out loud…"></textarea></section>
+ const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#dialogues">Daily Conversation</a> / ${esc(d.title)}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc(d.scene)}</div><div class="detail-title-line"><span class="level-pill ${d.level.toLowerCase()}">${d.level}</span><h1>${esc(d.title)}</h1></div>${practiceZhPair(d.titleZh,'detail-title-zh','detail-title-pinyin')}<p>${esc(d.goal)}</p></div><aside class="practice-rule"><b>Three-part practice</b><ol><li>Read the complete eight-line example.</li><li>Choose replies or use the random reply button.</li><li>Finish the quick check without looking back.</li></ol></aside></div>
+ <section class="dialogue-stage example-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 1 · Complete Example</div><h2>Read the whole conversation first</h2></div><span>${(d.example||[]).length} lines</span></div><div class="complete-example-body">${example}</div></section>
+ <section class="dialogue-stage practice-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 2 · Practice</div><h2>Choose a reply and say the full line</h2></div><button class="random-reply-btn" type="button" onclick="randomDialogueReply()">Random reply</button></div>${turns}</section>
+ <section class="dialogue-stage quiz-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 3 · Quick Check</div><h2>Choose the most natural next reply</h2></div><span>3 questions</span></div>${dialogueQuiz(d)}</section>
  <div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#dialogue=${prev.id}')"`:`onclick="go('#dialogues')"`}><small>← ${prev?'Previous '+d.level:'All conversations'}</small><b>${prev?esc(prev.title):'Daily Conversation'}</b></button><button class="pn" ${next?`onclick="go('#dialogue=${next.id}')"`:`onclick="go('#dialogues')"`}><small>${next?'Next '+d.level:'Back to library'} →</small><b>${next?esc(next.title):'Choose another set'}</b></button></div></section>`;
  shell(content,'Practice')
 }
