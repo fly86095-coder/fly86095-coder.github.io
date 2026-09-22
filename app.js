@@ -73,22 +73,20 @@ function card(c){const levels=availableLevels(c);const heroLevel=c.versions.B1?'
 function stat(n,l){return `<div class="stat"><strong>${n}</strong><span>${l}</span></div>`}
 function home(){
  const latest=[...COUNTRIES].sort((a,b)=>b.readOrder-a.readOrder).slice(0,4);
- const dialogueCount=(window.PRACTICE_CATALOG?.dialogues||[]).length;
+ const catalog=window.PRACTICE_CATALOG||{};
+ const dialogueCount=(catalog.dialogues||[]).length;
+ const activePracticeCount=(catalog.paths||[]).filter(p=>p.status==='active').length;
  const content=`
- <section class="practice-home-hero">
+ <section class="practice-home-hero practice-home-hero-simple">
   <div class="practice-home-copy">
    <div class="eyebrow">English Practice Atlas</div>
    <h1>Practice English<br>in More Than One Way</h1>
-   <p>Choose what you want to practice today. Read about countries and culture, or practice everyday conversations at A1, A2, and B1. More types of English practice will be added over time.</p>
+   <p>Choose the kind of English you want to practice: country reading, everyday conversation, classic film and TV dialogue practice, or short sentence drills.</p>
    <div class="practice-home-actions"><button class="primary" onclick="go('#practice')">Choose a practice</button><button class="outline" onclick="go('#dialogues')">Try daily conversation</button></div>
-   <div class="stats">${stat(2,'Practice sections')}${stat(COUNTRIES.length,'Country entries')}${stat(dialogueCount,'Conversation sets')}</div>
-  </div>
-  <div class="practice-home-guide">
-   <div class="eyebrow">How to use the site</div>
-   <ol><li><b>Choose a practice.</b><span>Start with country reading or daily conversation.</span></li><li><b>Choose your level or topic.</b><span>Start where the material feels useful, not where it feels impressive.</span></li><li><b>Use the English.</b><span>Read it, say it out loud, use a hint when needed, and try your own answer.</span></li></ol>
+   <div class="stats">${stat(activePracticeCount,'Practice sections')}${stat(COUNTRIES.length,'Country entries')}${stat(dialogueCount,'Conversation sets')}</div>
   </div>
  </section>
- <section class="section"><div class="section-head"><div><h2>Choose a Practice</h2><p>Start with country reading or everyday conversation.</p></div><button class="outline" onclick="go('#practice')">View all practice →</button></div>${practicePathCards(true)}</section>
+ <section class="section"><div class="section-head"><div><h2>Choose a Practice</h2></div><button class="outline" onclick="go('#practice')">View all practice →</button></div>${practicePathCards(true)}</section>
  <section class="section"><div class="section-head"><div><div class="eyebrow">Country & Culture Reading</div><h2>Read the World</h2><p>Choose a country, select a level, and read with the language display that works best for you.</p></div><button class="outline" onclick="go('#library')">Browse countries →</button></div><div class="country-home-grid"><div class="country-home-copy"><h3>${COUNTRIES.length} country entries</h3><p>Choose A1, A2, or B1 where available, then switch between English, Simplified Chinese, and word-grouped pinyin while you read.</p><div class="mini-metrics"><span>${articleCount()} reading versions</span><span>${SITE.regions.length} regions</span></div></div><div class="map-card"><svg id="mapSvg"></svg><div class="legend"><div><span class="swatch read"></span>Read</div><div><span class="swatch"></span>Not yet read</div><small>Zoom in to reveal country names</small></div><div class="map-tools"><button onclick="mapZoom(1.45)">+</button><button onclick="mapZoom(.69)">−</button><button onclick="mapReset()">↺</button></div></div></div></section>
  <section class="section"><div class="section-head"><div><h2>Latest Countries</h2><p>Choose any available reading level before you enter.</p></div><button class="outline" onclick="go('#library')">Open full library →</button></div><div class="country-grid">${latest.map(card).join('')}</div></section>
  <section class="section"><div class="section-head"><div><h2>Browse by Region</h2><p>Browse the countries currently available in your reading library.</p></div></div><div class="region-tabs">${['All',...SITE.regions].map(r=>`<button class="tab" onclick="state.region='${esc(r)}';state.page=1;go('#library');render()">${esc(r)}</button>`).join('')}</div></section>`;
@@ -294,7 +292,8 @@ function renderMap(){
 function mapZoom(f){if(!mapState.svg)return;mapState.svg.transition().duration(250).call(mapState.zoom.scaleBy,f)}function mapReset(){if(!mapState.svg)return;mapState.svg.transition().duration(350).call(mapState.zoom.transform,d3.zoomIdentity)}
 function mapPage(){const content=`<section class="page-pad"><div class="eyebrow">Interactive world map</div><h1 class="page-title">Zoom Your Reading Map</h1><p style="color:var(--muted);max-width:760px;line-height:1.7">Highlighted countries already have reading materials. Drag the map, zoom in to reveal country names and small-country markers, or click a highlighted area to open the richest available reading version.</p></section><section class="section"><div class="map-card" style="min-height:650px"><svg id="mapSvg" style="min-height:650px"></svg><div class="legend"><div><span class="swatch read"></span>Read</div><div><span class="swatch"></span>Not yet read</div><small>Markers appear for tiny countries and UK subregions</small></div><div class="map-tools"><button onclick="mapZoom(1.45)">+</button><button onclick="mapZoom(.69)">−</button><button onclick="mapReset()">↺</button></div></div></section>`;shell(content,'Map');renderMap()}
 let dialogueLevelState='All';
-function practiceCatalog(){return window.PRACTICE_CATALOG||{paths:[],dialogues:[]}}
+let sentenceLevelState='A1';
+function practiceCatalog(){return window.PRACTICE_CATALOG||{paths:[],dialogues:[],screenLines:[],sentencePractice:[]}}
 function practicePinyin(zh){return zh?esc(pinyinText(zh)):''}
 function practiceZhPair(zh,zhClass='practice-zh',pyClass='practice-pinyin'){
  if(!zh)return '';
@@ -308,21 +307,26 @@ function practicePathCards(compact=false){
  }).join('')}</div>`
 }
 function practiceHub(){
- const content=`<section class="page-pad practice-page-head"><div class="eyebrow">English practice</div><h1 class="page-title">Choose What You Want to Practice</h1><p>Choose the type of English you want to work on today. Country reading and daily conversation are available now, with more practice types coming later.</p></section>
- <section class="practice-how"><div class="practice-how-step"><span>1</span><div><b>Choose a practice</b><p>Start with reading or daily conversation.</p></div></div><div class="practice-how-step"><span>2</span><div><b>Choose a level or topic</b><p>A1, A2, B1, country, or real-life situation.</p></div></div><div class="practice-how-step"><span>3</span><div><b>Use the English</b><p>Read it, say it out loud, and try your own answer.</p></div></div></section>
- <section class="section practice-section"><div class="section-head"><div><h2>Practice Areas</h2><p>Country reading and daily conversation are available now. More practice types will be added later.</p></div></div>${practicePathCards(false)}</section>`;
+ const content=`<section class="page-pad practice-page-head"><div class="eyebrow">English practice</div><h1 class="page-title">Choose What You Want to Practice</h1></section>
+ <section class="section practice-section"><div class="section-head"><div><h2>Practice Areas</h2></div></div>${practicePathCards(false)}</section>`;
  shell(content,'Practice')
 }
 function blankTypeLabel(type){return type==='information'?'Your information':type==='pattern'?'Longer answer':'Word / phrase'}
 function dialogueBlankCount(d){return (d.turns||[]).filter(t=>t.blankType).length}
-function dialogueCard(d){return `<article class="dialogue-card" onclick="go('#dialogue=${d.id}')" role="button" tabindex="0"><div class="dialogue-card-top"><span class="level-pill ${d.level.toLowerCase()}">${d.level}</span><span>${esc(d.scene)}</span></div><h3>${esc(d.title)}</h3>${practiceZhPair(d.titleZh,'dialogue-title-zh','dialogue-title-pinyin')}<p>${esc(d.goal)}</p><div class="dialogue-card-meta"><span>${dialogueBlankCount(d)} practice points</span><span>${(d.turns||[]).length} lines</span></div><div class="dialogue-open">Start practice →</div></article>`}
+function dialogueCode(d){
+ const same=(practiceCatalog().dialogues||[]).filter(x=>x.level===d.level);
+ const index=same.findIndex(x=>x.id===d.id);
+ return `${d.level}-${index>=0?index+1:'?'}`
+}
+function dialogueCard(d){return `<article class="dialogue-card" onclick="go('#dialogue=${d.id}')" role="button" tabindex="0"><div class="dialogue-card-top"><span class="level-pill ${d.level.toLowerCase()}">${dialogueCode(d)}</span><span>${esc(d.scene)}</span></div><h3>${esc(d.title)}</h3>${practiceZhPair(d.titleZh,'dialogue-title-zh','dialogue-title-pinyin')}<p>${esc(d.goal)}</p><div class="dialogue-card-meta"><span>${dialogueBlankCount(d)} practice points</span><span>${(d.turns||[]).length} lines</span></div><div class="dialogue-open">Start practice →</div></article>`}
 function dialogueLibrary(level=dialogueLevelState){
  dialogueLevelState=level;
  const all=practiceCatalog().dialogues||[];
  const list=level==='All'?all:all.filter(d=>d.level===level);
- const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Daily Conversation</div><div class="eyebrow">Daily Conversation Practice</div><h1 class="page-title">Practice Everyday Conversation</h1><p>Choose a topic, read the complete eight-line conversation, practice with natural replies, and finish with a quick check.</p></section>
- <section class="conversation-method"><div><span class="method-n">1</span><b>Read the complete example</b><p>See how the full eight-line conversation flows.</p></div><div><span class="method-n">2</span><b>Practice the conversation</b><p>Choose a reply or let the page pick one at random.</p></div><div><span class="method-n">3</span><b>Say every full sentence</b><p>Read each completed line out loud at a natural speed.</p></div><div><span class="method-n">4</span><b>Take the quick check</b><p>Choose the most natural next reply in three short questions.</p></div></section>
- <section class="section dialogue-library"><div class="section-head"><div><h2>Choose a Level</h2><p>Five everyday conversation topics are available at each level.</p></div><span class="dialogue-count">${list.length} sets</span></div><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="dialogueLibrary('${l}')">${l}</button>`).join('')}</div><div class="dialogue-grid">${list.map(dialogueCard).join('')}</div></section>`;
+ const levelCounts=Object.fromEntries(['A1','A2','B1'].map(l=>[l,all.filter(d=>d.level===l).length]));
+ const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Daily Conversation</div><div class="eyebrow">Daily Conversation Practice</div><h1 class="page-title">Practice Everyday Conversation</h1><p>Choose a real-life situation, read the complete conversation, practice with natural replies, and finish with a quick check.</p></section>
+ <section class="conversation-method"><div><span class="method-n">1</span><b>Read the complete example</b><p>See how the conversation flows.</p></div><div><span class="method-n">2</span><b>Practice the conversation</b><p>Choose a reply or let the page pick one at random.</p></div><div><span class="method-n">3</span><b>Say every full sentence</b><p>Read each completed line out loud at a natural speed.</p></div><div><span class="method-n">4</span><b>Take the quick check</b><p>Choose the most natural next reply in three short questions.</p></div></section>
+ <section class="section dialogue-library"><div class="section-head"><div><h2>Choose a Level</h2><p>A1 ${levelCounts.A1} · A2 ${levelCounts.A2} · B1 ${levelCounts.B1}</p></div><span class="dialogue-count">${list.length} sets</span></div><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="dialogueLibrary('${l}')">${l}</button>`).join('')}</div><div class="dialogue-grid">${list.map(dialogueCard).join('')}</div></section>`;
  shell(content,'Practice')
 }
 function fillDialogueBlank(text,value){
@@ -337,14 +341,14 @@ function chooseDialogueOption(button){
  const zh=fillDialogueBlank(turn.dataset.zh||'',button.dataset.zh||'');
  const result=turn.querySelector('.choice-result');
  result.hidden=false;
- result.innerHTML=`<b>Say this:</b><span>${esc(en)}</span><small>${esc(zh)}</small><small class="choice-pinyin">${practicePinyin(zh)}</small>`;
+ result.innerHTML=`<b>Say this:</b><span>${esc(en)}</span><small>${esc(zh)}</small><small class="choice-pinyin">${practicePinyin(zh)}</small>`
 }
 function randomDialogueReply(){
  const options=[...document.querySelectorAll('.hint-choice')];if(!options.length)return;
  const button=options[Math.floor(Math.random()*options.length)];
  const details=button.closest('details');if(details)details.open=true;
  chooseDialogueOption(button);
- button.scrollIntoView({behavior:'smooth',block:'center'});
+ button.scrollIntoView({behavior:'smooth',block:'center'})
 }
 function hintDetails(t){
  if(!t.blankType||!t.hints?.length)return '';
@@ -367,11 +371,11 @@ function answerDialogueQuiz(button){
   question.querySelectorAll('.quiz-options button').forEach(b=>b.classList.toggle('correct',b===button));
   const zh=button.dataset.zh||'';
   feedback.className='quiz-feedback success';
-  feedback.innerHTML=`<b>Correct ✓</b><span>${esc(zh)}</span><small>${practicePinyin(zh)}</small>`;
+  feedback.innerHTML=`<b>Correct ✓</b><span>${esc(zh)}</span><small>${practicePinyin(zh)}</small>`
  }else{
   button.classList.add('wrong');
   feedback.className='quiz-feedback retry';
-  feedback.textContent='Try again — choose the reply that naturally follows the prompt.';
+  feedback.textContent='Try again — choose the reply that naturally follows the prompt.'
  }
 }
 function dialoguePage(id){
@@ -380,13 +384,58 @@ function dialoguePage(id){
  const same=all.filter(x=>x.level===d.level),i=same.findIndex(x=>x.id===id),prev=same[i-1],next=same[i+1];
  const turns=(d.turns||[]).map((t,idx)=>`<div class="dialogue-turn" data-en="${esc(t.en)}" data-zh="${esc(t.zh)}"><div class="speaker speaker-${t.speaker.toLowerCase()}">${esc(t.speaker)}</div><div class="turn-body"><div class="turn-en">${esc(t.en)}</div><div class="turn-zh">${esc(t.zh)}</div><div class="turn-pinyin">${practicePinyin(t.zh)}</div>${hintDetails(t)}<div class="choice-result" hidden></div></div></div>`).join('');
  const example=(d.example||[]).map(t=>`<div class="example-line"><b>${esc(t.speaker)}:</b><div><span>${esc(t.en)}</span><small class="example-zh">${esc(t.zh)}</small><small class="example-pinyin">${practicePinyin(t.zh)}</small></div></div>`).join('');
- const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#dialogues">Daily Conversation</a> / ${esc(d.title)}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc(d.scene)}</div><div class="detail-title-line"><span class="level-pill ${d.level.toLowerCase()}">${d.level}</span><h1>${esc(d.title)}</h1></div>${practiceZhPair(d.titleZh,'detail-title-zh','detail-title-pinyin')}<p>${esc(d.goal)}</p></div><aside class="practice-rule"><b>Three-part practice</b><ol><li>Read the complete eight-line example.</li><li>Choose replies or use the random reply button.</li><li>Finish the quick check without looking back.</li></ol></aside></div>
+ const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#dialogues">Daily Conversation</a> / ${esc(d.title)}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc(d.scene)}</div><div class="detail-title-line"><span class="level-pill ${d.level.toLowerCase()}">${dialogueCode(d)}</span><h1>${esc(d.title)}</h1></div>${practiceZhPair(d.titleZh,'detail-title-zh','detail-title-pinyin')}<p>${esc(d.goal)}</p></div><aside class="practice-rule"><b>Three-part practice</b><ol><li>Read the complete example.</li><li>Choose replies or use the random reply button.</li><li>Finish the quick check without looking back.</li></ol></aside></div>
  <section class="dialogue-stage example-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 1 · Complete Example</div><h2>Read the whole conversation first</h2></div><span>${(d.example||[]).length} lines</span></div><div class="complete-example-body">${example}</div></section>
  <section class="dialogue-stage practice-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 2 · Practice</div><h2>Choose a reply and say the full line</h2></div><button class="random-reply-btn" type="button" onclick="randomDialogueReply()">Random reply</button></div>${turns}</section>
  <section class="dialogue-stage quiz-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 3 · Quick Check</div><h2>Choose the most natural next reply</h2></div><span>3 questions</span></div>${dialogueQuiz(d)}</section>
  <div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#dialogue=${prev.id}')"`:`onclick="go('#dialogues')"`}><small>← ${prev?'Previous '+d.level:'All conversations'}</small><b>${prev?esc(prev.title):'Daily Conversation'}</b></button><button class="pn" ${next?`onclick="go('#dialogue=${next.id}')"`:`onclick="go('#dialogues')"`}><small>${next?'Next '+d.level:'Back to library'} →</small><b>${next?esc(next.title):'Choose another set'}</b></button></div></section>`;
  shell(content,'Practice')
 }
+function screenLineCard(item,index){
+ return `<article class="screen-card" onclick="go('#screen-line=${item.id}')" role="button" tabindex="0"><div class="screen-card-top"><span>Scene ${String(index+1).padStart(2,'0')}</span><span>${esc(item.theme)}</span></div><h3>${esc(item.title)}</h3>${practiceZhPair(item.titleZh,'screen-title-zh','screen-title-pinyin')}<div class="screen-card-meta">${(item.lines||[]).length} lines · source title hidden</div><div class="dialogue-open">Start practice →</div></article>`
+}
+function screenLineLibrary(){
+ const list=practiceCatalog().screenLines||[];
+ const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Classic Film & TV Lines</div><div class="eyebrow">Classic Film & TV Lines</div><h1 class="page-title">Practice Dialogue Through Famous Screen Worlds</h1><p>Read the bilingual dialogue first, then reveal the film or TV title at the end. The practice dialogue is adapted for learning rather than copied from the original screenplay.</p></section><section class="section"><div class="screen-grid">${list.map(screenLineCard).join('')}</div></section>`;
+ shell(content,'Practice')
+}
+function screenLinePage(id){
+ const all=practiceCatalog().screenLines||[];
+ const item=all.find(x=>x.id===id);if(!item)return screenLineLibrary();
+ const i=all.findIndex(x=>x.id===id),prev=all[i-1],next=all[i+1];
+ const lines=(item.lines||[]).map(t=>`<div class="screen-line"><div class="speaker speaker-${t.speaker.toLowerCase()}">${esc(t.speaker)}</div><div><div class="screen-en">${esc(t.en)}</div><div class="screen-zh">${esc(t.zh)}</div><div class="screen-pinyin">${practicePinyin(t.zh)}</div></div></div>`).join('');
+ const content=`<section class="dialogue-detail screen-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#screen-lines">Classic Film & TV Lines</a> / ${esc(item.title)}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc(item.theme)}</div><h1>${esc(item.title)}</h1>${practiceZhPair(item.titleZh,'detail-title-zh','detail-title-pinyin')}</div></div><section class="screen-dialogue">${lines}</section><details class="screen-source"><summary>Show film / TV title</summary><div><b>${esc(item.sourceTitle)}</b><span>${esc(item.sourceType)} · ${esc(item.year)}</span><small>Adapted learning dialogue; not original screenplay text.</small></div></details><div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#screen-line=${prev.id}')"`:`onclick="go('#screen-lines')"`}><small>← ${prev?'Previous scene':'All scenes'}</small><b>${prev?esc(prev.title):'Classic Film & TV Lines'}</b></button><button class="pn" ${next?`onclick="go('#screen-line=${next.id}')"`:`onclick="go('#screen-lines')"`}><small>${next?'Next scene':'Back to library'} →</small><b>${next?esc(next.title):'Choose another scene'}</b></button></div></section>`;
+ shell(content,'Practice')
+}
+function sentenceCode(item){
+ const same=(practiceCatalog().sentencePractice||[]).filter(x=>x.level===item.level);
+ const i=same.findIndex(x=>x.id===item.id);
+ return `${item.level}-${i>=0?i+1:'?'}`
+}
+function sentenceCard(item){
+ return `<article class="sentence-card"><div class="sentence-card-top"><span class="level-pill ${item.level.toLowerCase()}">${sentenceCode(item)}</span><span>${esc(item.title)}</span></div>${practiceZhPair(item.titleZh,'sentence-title-zh','sentence-title-pinyin')}<div class="sentence-pattern">${esc(item.pattern)}</div>${practiceZhPair(item.zh,'sentence-zh','sentence-pinyin')}<details class="sentence-options"><summary>Try different endings</summary><div class="sentence-hints">${(item.hints||[]).map(h=>`<div><b>${esc(h.en)}</b><span>${esc(h.zh)}</span><small>${practicePinyin(h.zh)}</small></div>`).join('')}</div></details><details class="sentence-example"><summary>Show example</summary><div><b>${esc(item.example?.en||'')}</b><span>${esc(item.example?.zh||'')}</span><small>${practicePinyin(item.example?.zh||'')}</small></div></details></article>`
+}
+function sentenceLibrary(level=sentenceLevelState){
+ sentenceLevelState=level;
+ const all=practiceCatalog().sentencePractice||[];
+ const list=all.filter(x=>x.level===level);
+ const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Single Sentence Practice</div><div class="eyebrow">Single Sentence Practice</div><h1 class="page-title">Practice One Useful Sentence at a Time</h1><p>Choose a level, say the sentence with your own information, then open the options or example when you need ideas.</p></section><section class="section sentence-library"><div class="section-head"><div><h2>Choose a Level</h2><p>${list.length} sentence patterns</p></div></div><div class="dialogue-level-tabs">${['A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="sentenceLibrary('${l}')">${l}</button>`).join('')}</div><div class="sentence-grid">${list.map(sentenceCard).join('')}</div></section>`;
+ shell(content,'Practice')
+}
 function journey(){const list=[...COUNTRIES].sort((a,b)=>a.readOrder-b.readOrder);const content=`<section class="page-pad"><div class="eyebrow">Chronological reading path</div><h1 class="page-title">My Country Journey</h1><p style="color:var(--muted)">Only countries you have already read appear here. New countries can be appended later without changing the old order.</p></section><div class="journey-list">${list.map(c=>`<div class="journey-item" onclick="go('#country=${c.slug}&level=${preferredLevel(c)}')"><span class="n">#${c.readOrder}</span><b>${esc(c.name)}</b><small style="color:var(--muted)">${esc(c.region)}</small></div>`).join('')}</div>`;shell(content,'Journey')}
-function render(){const h=location.hash||'#home';if(h.startsWith('#country=')){const p=new URLSearchParams(h.slice(1));return country(p.get('country'),p.get('level')||'B1')}if(h.startsWith('#article=')){const slug=h.split('=')[1];return country(slug,'B1')}if(h.startsWith('#dialogue=')){const p=new URLSearchParams(h.slice(1));return dialoguePage(p.get('dialogue'))}if(h==='#practice')return practiceHub();if(h==='#dialogues')return dialogueLibrary();if(h==='#library'||h==='#articles')return library();if(h==='#map')return mapPage();if(h==='#journey')return journey();return home()}
+function render(){
+ const h=location.hash||'#home';
+ if(h.startsWith('#country=')){const p=new URLSearchParams(h.slice(1));return country(p.get('country'),p.get('level')||'B1')}
+ if(h.startsWith('#article=')){const slug=h.split('=')[1];return country(slug,'B1')}
+ if(h.startsWith('#dialogue=')){const p=new URLSearchParams(h.slice(1));return dialoguePage(p.get('dialogue'))}
+ if(h.startsWith('#screen-line=')){const p=new URLSearchParams(h.slice(1));return screenLinePage(p.get('screen-line'))}
+ if(h==='#practice')return practiceHub();
+ if(h==='#dialogues')return dialogueLibrary();
+ if(h==='#screen-lines')return screenLineLibrary();
+ if(h==='#sentences')return sentenceLibrary();
+ if(h==='#library'||h==='#articles')return library();
+ if(h==='#map')return mapPage();
+ if(h==='#journey')return journey();
+ return home()
+}
 window.addEventListener('hashchange',render);window.addEventListener('DOMContentLoaded',render);window.mapZoom=mapZoom;window.mapReset=mapReset;window.toggleTheme=toggleTheme;window.setWordHelp=setWordHelp;window.showWordPopup=showWordPopup;window.closeWordPopup=closeWordPopup;window.copyArticle=copyArticle;window.toggleExploreMenu=toggleExploreMenu;window.closeExploreMenu=closeExploreMenu;window.openCountryFromMenu=openCountryFromMenu;window.jumpRegion=jumpRegion;window.menuSearch=menuSearch;

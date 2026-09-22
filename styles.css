@@ -165,3 +165,47 @@ html[data-theme="dark"] .quiz-feedback.success{color:#9fd1ae}html[data-theme="da
  .quiz-prompt{font-size:15px}
  .quiz-options button{overflow-wrap:anywhere}
 }
+
+
+/* 0922_1 — simplified home + screen dialogue + single sentence practice */
+.practice-home-hero-simple{grid-template-columns:minmax(0,1fr)!important}
+.practice-home-hero-simple .practice-home-copy{max-width:920px}
+.practice-home-guide,.practice-how{display:none!important}
+
+.screen-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.screen-card{border:1px solid var(--line);border-radius:18px;background:var(--paper);padding:20px;box-shadow:var(--shadow);cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+.screen-card:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(18,39,61,.12)}
+.screen-card-top,.sentence-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.screen-card h3{margin:12px 0 5px;color:var(--navy);font-family:Georgia,serif;font-size:25px}
+.screen-title-zh,.sentence-title-zh{margin-top:4px;color:var(--ink);font-size:14px;font-weight:750}
+.screen-title-pinyin,.sentence-title-pinyin{margin-top:2px;color:var(--muted);font-size:12px;line-height:1.5}
+.screen-card-meta{margin-top:15px;color:var(--muted);font-size:12px}
+.screen-detail{max-width:1050px;margin:0 auto}
+.screen-dialogue{margin:24px 0;border:1px solid var(--line);border-radius:20px;background:var(--paper);overflow:hidden}
+.screen-line{display:grid;grid-template-columns:52px minmax(0,1fr);gap:15px;padding:20px;border-bottom:1px solid var(--line)}
+.screen-line:last-child{border-bottom:0}
+.screen-en{font-size:18px;line-height:1.8;color:var(--ink)}
+.screen-zh{margin-top:8px;font-size:15px;line-height:1.7;color:var(--navy)}
+.screen-pinyin{margin-top:3px;font-size:13px;line-height:1.65;color:var(--muted)}
+.screen-source{margin:22px 0;border:1px solid var(--line);border-radius:14px;background:var(--soft);overflow:hidden}
+.screen-source summary{cursor:pointer;padding:14px 16px;font-weight:800;color:var(--navy)}
+.screen-source>div{display:flex;flex-direction:column;gap:5px;padding:0 16px 16px}
+.screen-source b{font-size:18px;color:var(--navy)}
+.screen-source span,.screen-source small{color:var(--muted)}
+
+.sentence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:18px}
+.sentence-card{border:1px solid var(--line);border-radius:18px;background:var(--paper);padding:18px;box-shadow:var(--shadow)}
+.sentence-pattern{margin-top:16px;color:var(--navy);font-family:Georgia,serif;font-size:23px;line-height:1.45}
+.sentence-zh{margin-top:9px;font-size:15px;line-height:1.7;color:var(--ink)}
+.sentence-pinyin{margin-top:2px;font-size:13px;line-height:1.6;color:var(--muted)}
+.sentence-options,.sentence-example{margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--soft)}
+.sentence-options summary,.sentence-example summary{cursor:pointer;padding:11px 12px;font-weight:800;color:var(--navy)}
+.sentence-hints{display:grid;gap:8px;padding:0 12px 12px}
+.sentence-hints>div,.sentence-example>div{display:flex;flex-direction:column;gap:2px;padding:10px;border-radius:10px;background:var(--paper)}
+.sentence-hints b,.sentence-example b{color:var(--navy)}
+.sentence-hints span,.sentence-example span{font-size:13px;color:var(--ink)}
+.sentence-hints small,.sentence-example small{font-size:11px;line-height:1.5;color:var(--muted)}
+.sentence-example>div{margin:0 12px 12px}
+
+@media(max-width:850px){.screen-grid,.sentence-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.screen-line{grid-template-columns:42px minmax(0,1fr);padding:16px 14px}.screen-en{font-size:17px}.sentence-pattern{font-size:21px}}
