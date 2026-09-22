@@ -81,7 +81,7 @@ function home(){
   <div class="practice-home-copy">
    <div class="eyebrow">English Practice Atlas</div>
    <h1>Practice English<br>in More Than One Way</h1>
-   <p>Choose the kind of English you want to practice: country reading, everyday conversation, classic film and TV dialogue practice, or short sentence drills.</p>
+   <p>Choose the kind of English you want to practice: country reading, everyday conversation, translation, classic film and TV dialogue practice, or short sentence drills.</p>
    <div class="practice-home-actions"><button class="primary" onclick="go('#practice')">Choose a practice</button><button class="outline" onclick="go('#dialogues')">Try daily conversation</button></div>
    <div class="stats">${stat(activePracticeCount,'Practice sections')}${stat(COUNTRIES.length,'Country entries')}${stat(dialogueCount,'Conversation sets')}</div>
   </div>
@@ -422,6 +422,59 @@ function sentenceLibrary(level=sentenceLevelState){
  const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Single Sentence Practice</div><div class="eyebrow">Single Sentence Practice</div><h1 class="page-title">Practice One Useful Sentence at a Time</h1><p>Choose a level, say the sentence with your own information, then open the options or example when you need ideas.</p></section><section class="section sentence-library"><div class="section-head"><div><h2>Choose a Level</h2><p>${list.length} sentence patterns</p></div></div><div class="dialogue-level-tabs">${['A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="sentenceLibrary('${l}')">${l}</button>`).join('')}</div><div class="sentence-grid">${list.map(sentenceCard).join('')}</div></section>`;
  shell(content,'Practice')
 }
+let translationLevelState='All';
+function translationItems(){return practiceCatalog().translations||[]}
+function translationCode(item){
+ const same=translationItems().filter(x=>x.level===item.level);
+ const index=same.findIndex(x=>x.id===item.id);
+ return `${item.level}-${index>=0?index+1:'?'}`
+}
+function translationCard(item){
+ return `<article class="translation-card" onclick="go('#translation=${item.id}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('#translation=${item.id}')}" aria-label="Open ${esc(item.title)}">
+  <div class="translation-card-top"><span class="level-pill ${item.level.toLowerCase()}">${translationCode(item)}</span><span>${esc(item.topic)}</span></div>
+  <h3>${esc(item.title)}</h3>
+  ${practiceZhPair(item.titleZh,'translation-title-zh','translation-title-pinyin')}
+  <p>${esc(item.goal)}</p>
+  <div class="translation-card-meta"><span>${(item.zhLines||[]).length} sentences</span><span>${(item.keyPhrases||[]).length} useful phrases</span></div>
+  <div class="translation-open">Start translating →</div>
+ </article>`
+}
+function translationLibrary(level=translationLevelState){
+ translationLevelState=level;
+ const all=translationItems();
+ const list=level==='All'?all:all.filter(x=>x.level===level);
+ const counts=Object.fromEntries(['A1','A2','B1'].map(l=>[l,all.filter(x=>x.level===l).length]));
+ const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Translation Practice</div><div class="eyebrow">Translation Practice</div><h1 class="page-title">Translate Real-Life Chinese into Natural English</h1><p>Read the Chinese first, write your own English, then open the reference answer. Focus on natural meaning rather than translating word by word.</p></section>
+ <section class="section translation-library"><div class="section-head"><div><h2>Choose a Practice Text</h2><p>${counts.A1} A1 · ${counts.A2} A2 · ${counts.B1} B1</p></div><span class="dialogue-count">${list.length} texts</span></div><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="translationLibrary('${l}')">${l}</button>`).join('')}</div><div class="translation-grid">${list.map(translationCard).join('')}</div></section>`;
+ shell(content,'Practice')
+}
+function translationReferenceLine(en,index){return `<div class="translation-reference-line"><span class="translation-line-number">${index+1}</span><p>${esc(en)}</p></div>`}
+function translationSourceLine(zh,index){return `<div class="translation-source-line"><span class="translation-line-number">${index+1}</span><div><div class="translation-source-zh">${esc(zh)}</div><div class="translation-source-pinyin">${practicePinyin(zh)}</div></div></div>`}
+function translationAlternativeBlock(item){
+ const rows=(item.alternatives||[]).map(a=>`<div class="translation-alt-row"><div>${practiceZhPair(a.zh,'translation-alt-zh','translation-alt-pinyin')}</div><ul>${(a.en||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('');
+ return rows?`<details class="translation-details"><summary>Show natural alternatives</summary><div class="translation-alternatives">${rows}</div></details>`:''
+}
+function translationPhraseBlock(item){
+ const rows=(item.keyPhrases||[]).map(p=>`<div class="translation-phrase"><div><b>${esc(p.zh)}</b><small>${practicePinyin(p.zh)}</small></div><span>${esc(p.en)}</span></div>`).join('');
+ return rows?`<section class="translation-phrases"><div class="eyebrow">Useful language</div><h2>Useful phrases from this text</h2><div class="translation-phrase-grid">${rows}</div></section>`:''
+}
+function translationPage(id){
+ const all=translationItems();
+ const item=all.find(x=>x.id===id);if(!item)return translationLibrary();
+ const same=all.filter(x=>x.level===item.level),i=same.findIndex(x=>x.id===id),prev=same[i-1],next=same[i+1];
+ const source=(item.zhLines||[]).map(translationSourceLine).join('');
+ const reference=(item.enLines||[]).map(translationReferenceLine).join('');
+ const content=`<section class="translation-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#translations">Translation Practice</a> / ${esc(item.title)}</div>
+ <div class="translation-detail-head"><div><div class="eyebrow">${esc(item.topic)}</div><div class="detail-title-line"><span class="level-pill ${item.level.toLowerCase()}">${translationCode(item)}</span><h1>${esc(item.title)}</h1></div>${practiceZhPair(item.titleZh,'detail-title-zh','detail-title-pinyin')}<p>${esc(item.goal)}</p></div><aside class="translation-rule"><b>Practice order</b><ol><li>Read the Chinese and pinyin.</li><li>Translate the full meaning into natural English.</li><li>Compare with the reference only after you finish.</li></ol></aside></div>
+ <section class="translation-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 1 · Source Text</div><h2>Translate this into natural English</h2></div><span>${(item.zhLines||[]).length} sentences</span></div><div class="translation-source-list">${source}</div></section>
+ <section class="translation-writing"><label for="translation-${esc(item.id)}"><b>Your translation</b><span>Write your version before opening the answer.</span></label><textarea id="translation-${esc(item.id)}" rows="12" placeholder="Write your English translation here…"></textarea></section>
+ <details class="translation-details translation-answer"><summary>Show reference answer</summary><div class="translation-reference-list">${reference}</div></details>
+ ${translationAlternativeBlock(item)}
+ ${translationPhraseBlock(item)}
+ <div class="prevnext translation-prevnext"><button class="pn" ${prev?`onclick="go('#translation=${prev.id}')"`:`onclick="go('#translations')"`}><small>← ${prev?'Previous '+item.level:'All translations'}</small><b>${prev?esc(prev.title):'Translation Practice'}</b></button><button class="pn" ${next?`onclick="go('#translation=${next.id}')"`:`onclick="go('#translations')"`}><small>${next?'Next '+item.level:'Back to library'} →</small><b>${next?esc(next.title):'Choose another text'}</b></button></div>
+ </section>`;
+ shell(content,'Practice')
+}
 function journey(){const list=[...COUNTRIES].sort((a,b)=>a.readOrder-b.readOrder);const content=`<section class="page-pad"><div class="eyebrow">Chronological reading path</div><h1 class="page-title">My Country Journey</h1><p style="color:var(--muted)">Only countries you have already read appear here. New countries can be appended later without changing the old order.</p></section><div class="journey-list">${list.map(c=>`<div class="journey-item" onclick="go('#country=${c.slug}&level=${preferredLevel(c)}')"><span class="n">#${c.readOrder}</span><b>${esc(c.name)}</b><small style="color:var(--muted)">${esc(c.region)}</small></div>`).join('')}</div>`;shell(content,'Journey')}
 function render(){
  const h=location.hash||'#home';
@@ -429,6 +482,8 @@ function render(){
  if(h.startsWith('#article=')){const slug=h.split('=')[1];return country(slug,'B1')}
  if(h.startsWith('#dialogue=')){const p=new URLSearchParams(h.slice(1));return dialoguePage(p.get('dialogue'))}
  if(h.startsWith('#screen-line=')){const p=new URLSearchParams(h.slice(1));return screenLinePage(p.get('screen-line'))}
+ if(h.startsWith('#translation=')){const p=new URLSearchParams(h.slice(1));return translationPage(p.get('translation'))}
+ if(h==='#translations')return translationLibrary();
  if(h==='#practice')return practiceHub();
  if(h==='#dialogues')return dialogueLibrary();
  if(h==='#screen-lines')return screenLineLibrary();
