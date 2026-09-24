@@ -54,12 +54,22 @@ function menuSearch(q){state.query=(q||'').trim();state.region='All';state.page=
 function header(active='Home'){
  const navItems=[
   {label:'Home',hash:'home',key:'Home'},
-  {label:'Practice',hash:'practice',key:'Practice'},
-  {label:'Countries',hash:'library',key:'Library'},
-  {label:'Map',hash:'map',key:'Map'},
-  {label:'Journey',hash:'journey',key:'Journey'}
+  {label:'Reading',hash:'reading',key:'Reading'},
+  {label:'Conversation',hash:'dialogues',key:'Conversation'},
+  {label:'Translation',hash:'translations',key:'Translation'},
+  {label:'Film & TV',hash:'screen-lines',key:'Film'},
+  {label:'Single Sentence',hash:'sentences',key:'Sentence'}
  ];
- return `<header class="topbar"><nav class="nav"><div class="brand" onclick="go('#home')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('#home')}" aria-label="Back to home"><span class="brandmark">${brandmarkSvg()}</span><strong>${SITE.name}</strong></div><div class="links">${navItems.map(x=>`<a class="${active===x.key?'active':''}" href="#${x.hash}">${x.label}</a>`).join('')}</div><div class="nav-actions"><input class="nav-search" placeholder="Search countries…" onkeydown="if(event.key==='Enter'){state.query=this.value;state.page=1;go('#library');render()}"><button class="theme-btn" type="button" onclick="toggleTheme()" aria-label="${themeLabel()} mode" title="Switch reading theme"><span class="theme-icon">${themeIcon()}</span><span class="theme-label">${themeLabel()}</span></button></div></nav></header>`
+ const links=navItems.map(x=>`<a class="${active===x.key?'active':''}" href="#${x.hash}" onclick="closeExploreMenu()">${x.label}</a>`).join('');
+ return `<header class="topbar"><nav class="nav clean-nav">
+  <button class="brand-toggle mobile-menu-btn" type="button" onclick="toggleExploreMenu()" aria-expanded="false" aria-label="Open menu">☰</button>
+  <div class="brand" onclick="go('#home')" role="button" tabindex="0" aria-label="Back to home"><span class="brandmark">${brandmarkSvg()}</span><strong>${SITE.name}</strong></div>
+  <div class="links desktop-main-links">${links}</div>
+  <div class="nav-actions"><button class="theme-btn" type="button" onclick="toggleTheme()" aria-label="${themeLabel()} mode"><span class="theme-icon">${themeIcon()}</span><span class="theme-label">${themeLabel()}</span></button></div>
+ </nav>
+ <div class="explore-backdrop" hidden onclick="closeExploreMenu()"></div>
+ <aside class="explore-menu mobile-drawer"><div class="drawer-head"><strong>${SITE.name}</strong><button onclick="closeExploreMenu()" aria-label="Close menu">×</button></div><div class="drawer-links">${links}</div></aside>
+ </header>`
 }
 function articleCount(){return COUNTRIES.reduce((n,c)=>n+Object.keys(c.versions||{}).length,0)}
 function availableLevels(c){return ['A1','A2','B1'].filter(l=>c.versions&&c.versions[l])}
@@ -69,31 +79,85 @@ function footer(){return `<footer class="footer"><span>本網站由 <b>Han</b> �
 function shell(content,active){app.innerHTML=`<div class="shell">${header(active)}<main class="main">${content}</main>${footer()}</div>`}
 async function wikiImage(titles){const key=titles.join('|');if(imgCache.has(key))return imgCache.get(key);for(const title of titles){try{const u=`https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail&pithumbsize=700&redirects=1&titles=${encodeURIComponent(title)}`;const j=await fetch(u).then(r=>r.json());const p=Object.values(j.query?.pages||{})[0];if(p?.thumbnail?.source){const v={src:p.thumbnail.source,title};imgCache.set(key,v);return v}}catch(e){}}const v={src:'',title:titles[0]||''};imgCache.set(key,v);return v}
 function hydrate(root=document){root.querySelectorAll('[data-wiki]').forEach(async el=>{if(el.dataset.loaded)return;el.dataset.loaded='1';const titles=(el.dataset.wiki||'').split('|').filter(Boolean);const r=await wikiImage(titles);if(r.src)el.src=r.src;const cap=el.closest('figure')?.querySelector('figcaption');if(cap&&r.title)cap.innerHTML=`${esc(cap.dataset.caption||r.title)} · <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/${encodeURIComponent(r.title.replaceAll(' ','_'))}">image source</a>`})}
-function card(c){const levels=availableLevels(c);const heroLevel=c.versions.B1?'B1':levels[levels.length-1];const hero=c.versions[heroLevel];return `<article class="country-card"><div class="card-top"><img loading="lazy" src="${flag(c)}" data-wiki="${esc(hero.sections[0].imagePages.join('|'))}" alt="${esc(c.name)}"><img class="flag-small" src="${flag(c)}" alt=""></div><div class="card-body"><div class="eyebrow">Reading #${c.readOrder} · ${esc(c.region)}</div><h3>${esc(c.name)}</h3><p>${esc(c.summary)}</p><div class="level-actions">${levels.map(l=>`<button class="levelbtn ${l.toLowerCase()}" onclick="go('#country=${c.slug}&level=${l}')">${l}</button>`).join('')}</div></div></article>`}
+function card(c){
+ const levels=availableLevels(c);
+ const today=c.publishedOn===todayString();
+ return `<article class="country-card compact-practice-card ${today?'today-card':''}">
+  <div class="compact-top"><span>Reading #${c.readOrder}</span><span>${esc(c.region)}</span>${today?'<em>TODAY</em>':''}</div>
+  <h3>${esc(c.name)}</h3>
+  <div class="level-actions">${levels.map(l=>`<button class="levelbtn ${l.toLowerCase()}" onclick="go('#country=${c.slug}&level=${l}')">${l}</button>`).join('')}</div>
+ </article>`
+}
 function stat(n,l){return `<div class="stat"><strong>${n}</strong><span>${l}</span></div>`}
+let readingLevelState='All',readingSortState='Newest';
+function readingTopicNav(active='country'){
+ const items=[
+  ['Country & Culture','国家与文化','#reading','country'],
+  ['Business & Current Affairs','商业时事','#reading-business','business'],
+  ['Encyclopedia Articles','百科文章','#reading-encyclopedia','encyclopedia']
+ ];
+ return `<div class="reading-topic-tabs">${items.map(([en,zh,route,key])=>`<button class="${active===key?'active':''}" onclick="go('${route}')"><b>${en}</b><span>${zh}</span></button>`).join('')}</div>`
+}
+function countryReadingNav(active='countries'){
+ return `<div class="reading-subtabs"><button class="${active==='countries'?'active':''}" onclick="go('#reading')">Countries</button><button class="${active==='map'?'active':''}" onclick="go('#map')">Map</button><button class="${active==='journey'?'active':''}" onclick="go('#journey')">Journey</button></div>`
+}
+function sortSelect(current,handler){
+ return `<select class="sort-select" onchange="${handler}(this.value)"><option value="Newest" ${current==='Newest'?'selected':''}>Newest</option><option value="Oldest" ${current==='Oldest'?'selected':''}>Oldest</option></select>`
+}
+function readingPlaceholder(kind){
+ const isBusiness=kind==='business';
+ const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Reading</div><h1 class="page-title">Reading</h1>${readingTopicNav(kind)}</section>
+ <section class="reading-placeholder"><div class="placeholder-mark">${isBusiness?'B':'E'}</div><h2>${isBusiness?'Business & Current Affairs':'Encyclopedia Articles'}</h2><p>${isBusiness?'商业时事':'百科文章'}</p><span>Coming later</span></section>`;
+ shell(content,'Reading')
+}
+function todayString(){
+ const d=new Date(),pad=n=>String(n).padStart(2,'0');
+ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
+}
+function isTodayItem(item){return !!item?.publishedOn && item.publishedOn===todayString()}
+function recentUpdateRows(){
+ const p=practiceCatalog();
+ const groups=[
+  {label:'Conversation',route:'#dialogues',items:p.dialogues||[],code:dialogueCode},
+  {label:'Translation',route:'#translations',items:p.translations||[],code:translationCode},
+  {label:'Film & TV',route:'#screen-lines',items:p.screenLines||[],code:screenLineCode},
+  {label:'Single Sentence',route:'#sentences',items:p.sentencePractice||[],code:sentenceCode}
+ ];
+ return groups.map(g=>{
+  const item=[...g.items].filter(x=>x.publishedOn).sort((a,b)=>(b.publishedOn||'').localeCompare(a.publishedOn||''))[0];
+  if(!item)return '';
+  return `<button class="recent-row" onclick="go('${g.route}')"><span>${g.label}</span><b>${esc(g.code(item))} · ${esc(item.title)}</b><small>${esc(item.titleZh||'')}</small></button>`
+ }).join('')
+}
 function home(){
- const latest=[...COUNTRIES].sort((a,b)=>b.readOrder-a.readOrder).slice(0,4);
- const catalog=window.PRACTICE_CATALOG||{};
- const dialogueCount=(catalog.dialogues||[]).length;
- const activePracticeCount=(catalog.paths||[]).filter(p=>p.status==='active').length;
- const content=`
- <section class="practice-home-hero practice-home-hero-simple">
-  <div class="practice-home-copy">
-   <div class="eyebrow">English Practice Atlas</div>
-   <h1>Practice English<br>in More Than One Way</h1>
-   <p>Choose the kind of English you want to practice: country reading, everyday conversation, translation, classic film and TV dialogue practice, or short sentence drills.</p>
-   <div class="practice-home-actions"><button class="primary" onclick="go('#practice')">Choose a practice</button><button class="outline" onclick="go('#dialogues')">Try daily conversation</button></div>
-   <div class="stats">${stat(activePracticeCount,'Practice sections')}${stat(COUNTRIES.length,'Country entries')}${stat(dialogueCount,'Conversation sets')}</div>
-  </div>
+ const cards=[
+  ['Reading','阅读','#reading','R'],
+  ['Conversation','日常对话','#dialogues','C'],
+  ['Translation','翻译练习','#translations','T'],
+  ['Film & TV','影视对话','#screen-lines','F'],
+  ['Single Sentence','单句练习','#sentences','S']
+ ];
+ const content=`<section class="minimal-home">
+  <div class="home-title-block"><div class="eyebrow">${esc(SITE.name)}</div><h1>English / 中文 Practice</h1><p>双语英语练习</p></div>
+  <div class="home-practice-grid">${cards.map(([en,zh,route,mark])=>`<button class="home-practice-card" onclick="go('${route}')"><span class="home-mark">${mark}</span><b>${en}</b><small>${zh}</small></button>`).join('')}</div>
  </section>
- <section class="section"><div class="section-head"><div><h2>Choose a Practice</h2></div><button class="outline" onclick="go('#practice')">View all practice →</button></div>${practicePathCards(true)}</section>
- <section class="section"><div class="section-head"><div><div class="eyebrow">Country & Culture Reading</div><h2>Read the World</h2><p>Choose a country, select a level, and read with the language display that works best for you.</p></div><button class="outline" onclick="go('#library')">Browse countries →</button></div><div class="country-home-grid"><div class="country-home-copy"><h3>${COUNTRIES.length} country entries</h3><p>Choose A1, A2, or B1 where available, then switch between English, Simplified Chinese, and word-grouped pinyin while you read.</p><div class="mini-metrics"><span>${articleCount()} reading versions</span><span>${SITE.regions.length} regions</span></div></div><div class="map-card"><svg id="mapSvg"></svg><div class="legend"><div><span class="swatch read"></span>Read</div><div><span class="swatch"></span>Not yet read</div><small>Zoom in to reveal country names</small></div><div class="map-tools"><button onclick="mapZoom(1.45)">+</button><button onclick="mapZoom(.69)">−</button><button onclick="mapReset()">↺</button></div></div></div></section>
- <section class="section"><div class="section-head"><div><h2>Latest Countries</h2><p>Choose any available reading level before you enter.</p></div><button class="outline" onclick="go('#library')">Open full library →</button></div><div class="country-grid">${latest.map(card).join('')}</div></section>
- <section class="section"><div class="section-head"><div><h2>Browse by Region</h2><p>Browse the countries currently available in your reading library.</p></div></div><div class="region-tabs">${['All',...SITE.regions].map(r=>`<button class="tab" onclick="state.region='${esc(r)}';state.page=1;go('#library');render()">${esc(r)}</button>`).join('')}</div></section>`;
- shell(content,'Home');hydrate();renderMap()
+ <section class="recent-section"><div class="section-head"><div><h2>Recently Added</h2><p>最新更新</p></div></div><div class="recent-list">${recentUpdateRows()}</div></section>`;
+ shell(content,'Home')
 }
 function filtered(){let a=[...COUNTRIES];if(state.region!=='All')a=a.filter(c=>c.region===state.region);const q=state.query.trim().toLowerCase();if(q)a=a.filter(c=>JSON.stringify(c).toLowerCase().includes(q));return a}
-function library(){const all=filtered();const pages=Math.max(1,Math.ceil(all.length/state.perPage));state.page=Math.min(state.page,pages);const list=all.slice((state.page-1)*state.perPage,state.page*state.perPage);const content=`<section class="page-pad"><div class="eyebrow">Country library</div><h1 class="page-title">Choose a Country, Then a Level</h1><p style="color:var(--muted);max-width:760px;line-height:1.7">Choose from the levels available for each reading entry. Recent entries can include A1, A2, and B1.</p></section><div class="library-wrap"><div class="library-toolbar"><div class="filterbar">${['All',...SITE.regions].map(r=>`<button class="tab ${state.region===r?'active':''}" onclick="state.region='${esc(r)}';state.page=1;library()">${esc(r)}</button>`).join('')}</div><input class="search" placeholder="Search…" value="${esc(state.query)}" oninput="state.query=this.value;state.page=1;library()"></div><div class="country-grid">${list.map(card).join('')}</div><div class="pagination">${Array.from({length:pages},(_,i)=>`<button class="pagebtn ${state.page===i+1?'active':''}" onclick="state.page=${i+1};library();scrollTo({top:180,behavior:'smooth'})">${i+1}</button>`).join('')}</div></div>`;shell(content,'Library');hydrate()}
+function library(level=readingLevelState,sort=readingSortState){
+ readingLevelState=level;readingSortState=sort;
+ let list=[...COUNTRIES];
+ if(state.region!=='All')list=list.filter(c=>c.region===state.region);
+ if(level!=='All')list=list.filter(c=>availableLevels(c).includes(level));
+ list.sort((a,b)=>sort==='Newest'?b.readOrder-a.readOrder:a.readOrder-b.readOrder);
+ const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Reading</div><h1 class="page-title">Country & Culture</h1>${readingTopicNav('country')}${countryReadingNav('countries')}</section>
+ <section class="section compact-library"><div class="library-control-row"><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="library('${l}','${sort}')">${l}</button>`).join('')}</div>${sortSelect(sort,"setReadingSort")}</div>
+ <div class="region-tabs compact-regions">${['All',...SITE.regions].map(r=>`<button class="tab ${state.region===r?'active':''}" onclick="state.region='${esc(r)}';library('${level}','${sort}')">${esc(r)}</button>`).join('')}</div>
+ <div class="country-grid compact-grid">${list.map(card).join('')}</div></section>`;
+ shell(content,'Reading')
+}
+function setReadingSort(v){readingSortState=v;library(readingLevelState,v)}
 function pinyinText(zh){
  try{
   if(!window.pinyinPro?.pinyin)return 'Pinyin library is loading. Refresh once if this line remains.';
@@ -290,9 +354,9 @@ function renderMap(){
  }).catch(err=>console.error('Map load failed',err));
 }
 function mapZoom(f){if(!mapState.svg)return;mapState.svg.transition().duration(250).call(mapState.zoom.scaleBy,f)}function mapReset(){if(!mapState.svg)return;mapState.svg.transition().duration(350).call(mapState.zoom.transform,d3.zoomIdentity)}
-function mapPage(){const content=`<section class="page-pad"><div class="eyebrow">Interactive world map</div><h1 class="page-title">Zoom Your Reading Map</h1><p style="color:var(--muted);max-width:760px;line-height:1.7">Highlighted countries already have reading materials. Drag the map, zoom in to reveal country names and small-country markers, or click a highlighted area to open the richest available reading version.</p></section><section class="section"><div class="map-card" style="min-height:650px"><svg id="mapSvg" style="min-height:650px"></svg><div class="legend"><div><span class="swatch read"></span>Read</div><div><span class="swatch"></span>Not yet read</div><small>Markers appear for tiny countries and UK subregions</small></div><div class="map-tools"><button onclick="mapZoom(1.45)">+</button><button onclick="mapZoom(.69)">−</button><button onclick="mapReset()">↺</button></div></div></section>`;shell(content,'Map');renderMap()}
-let dialogueLevelState='All';
-let sentenceLevelState='A1';
+function mapPage(){const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Reading</div><h1 class="page-title">Country & Culture</h1>${readingTopicNav('country')}${countryReadingNav('map')}</section><section class="section"><div class="map-card" style="min-height:650px"><svg id="mapSvg" style="min-height:650px"></svg><div class="legend"><div><span class="swatch read"></span>Read</div><div><span class="swatch"></span>Not yet read</div><small>Markers appear for tiny countries and UK subregions</small></div><div class="map-tools"><button onclick="mapZoom(1.45)">+</button><button onclick="mapZoom(.69)">−</button><button onclick="mapReset()">↺</button></div></div></section>`;shell(content,'Reading');renderMap()}
+let dialogueLevelState='All', dialogueSortState='Newest';
+let sentenceLevelState='All', sentenceSortState='Newest', translationSortState='Newest', screenSortState='Newest';
 function practiceCatalog(){return window.PRACTICE_CATALOG||{paths:[],dialogues:[],screenLines:[],sentencePractice:[]}}
 function practicePinyin(zh){return zh?esc(pinyinText(zh)):''}
 function practiceZhPair(zh,zhClass='practice-zh',pyClass='practice-pinyin'){
@@ -318,16 +382,23 @@ function dialogueCode(d){
  const index=same.findIndex(x=>x.id===d.id);
  return `${d.level}-${index>=0?index+1:'?'}`
 }
-function dialogueCard(d){return `<article class="dialogue-card" onclick="go('#dialogue=${d.id}')" role="button" tabindex="0"><div class="dialogue-card-top"><span class="level-pill ${d.level.toLowerCase()}">${dialogueCode(d)}</span><span>${esc(d.scene)}</span></div><h3>${esc(d.title)}</h3>${practiceZhPair(d.titleZh,'dialogue-title-zh','dialogue-title-pinyin')}<p>${esc(d.goal)}</p><div class="dialogue-card-meta"><span>${dialogueBlankCount(d)} practice points</span><span>${(d.turns||[]).length} lines</span></div><div class="dialogue-open">Start practice →</div></article>`}
-function dialogueLibrary(level=dialogueLevelState){
- dialogueLevelState=level;
- const all=practiceCatalog().dialogues||[];
- const base=level==='All'?all:all.filter(d=>d.level===level);
- const list=[...base].reverse();
- const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Daily Conversation</div><div class="eyebrow">Daily Conversation Practice</div><h1 class="page-title">Practice Everyday Conversation</h1><p>Choose a real-life situation, read the complete conversation, practice with natural replies, and finish with a quick check.</p></section>
- <section class="section dialogue-library"><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="dialogueLibrary('${l}')">${l}</button>`).join('')}</div><div class="dialogue-grid">${list.map(dialogueCard).join('')}</div></section>`;
- shell(content,'Practice')
+function dialogueCard(d){
+ const today=isTodayItem(d);
+ return `<article class="dialogue-card compact-practice-card ${today?'today-card':''}" onclick="go('#dialogue=${d.id}')" role="button" tabindex="0">
+  <div class="compact-top"><span class="level-pill ${d.level.toLowerCase()}">${dialogueCode(d)}</span><span>${esc(d.scene)}</span>${today?'<em>TODAY</em>':''}</div>
+  <h3>${esc(d.title)}</h3><div class="compact-zh">${esc(d.titleZh||'')}</div>
+ </article>`
 }
+function dialogueLibrary(level=dialogueLevelState,sort=dialogueSortState){
+ dialogueLevelState=level;dialogueSortState=sort;
+ const all=practiceCatalog().dialogues||[];
+ let list=level==='All'?[...all]:all.filter(d=>d.level===level);
+ if(sort==='Newest')list.reverse();
+ const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Conversation</div><h1 class="page-title">Daily Conversation</h1></section>
+ <section class="section compact-library"><div class="library-control-row"><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="dialogueLibrary('${l}','${sort}')">${l}</button>`).join('')}</div>${sortSelect(sort,"setDialogueSort")}</div><div class="dialogue-grid compact-grid">${list.map(dialogueCard).join('')}</div></section>`;
+ shell(content,'Conversation')
+}
+function setDialogueSort(v){dialogueSortState=v;dialogueLibrary(dialogueLevelState,v)}
 function fillDialogueBlank(text,value){
  const blankCount=(text.match(/_____/g)||[]).length;
  const parts=blankCount>1?String(value).split(/\s*[\/／]\s*/):[String(value)];
@@ -396,13 +467,21 @@ function screenLineCode(item){
  return `Scene ${String(i>=0?i+1:'?').padStart(2,'0')}`
 }
 function screenLineCard(item){
- return `<article class="screen-card" onclick="go('#screen-line=${item.id}')" role="button" tabindex="0"><div class="screen-card-top"><span>${screenLineCode(item)}</span><span>${esc(item.theme)}</span></div><h3>${esc(item.title)}</h3>${practiceZhPair(item.titleZh,'screen-title-zh','screen-title-pinyin')}<div class="screen-card-meta">${(item.lines||[]).length} lines · source title hidden</div><div class="dialogue-open">Start practice →</div></article>`
+ const today=isTodayItem(item);
+ return `<article class="screen-card compact-practice-card ${today?'today-card':''}" onclick="go('#screen-line=${item.id}')" role="button" tabindex="0">
+  <div class="compact-top"><span>${screenLineCode(item)}</span><span>${esc(item.theme)}</span>${today?'<em>TODAY</em>':''}</div>
+  <h3>${esc(item.title)}</h3><div class="compact-zh">${esc(item.titleZh||'')}</div>
+ </article>`
 }
-function screenLineLibrary(){
- const list=[...(practiceCatalog().screenLines||[])].reverse();
- const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Classic Film & TV Lines</div><div class="eyebrow">Classic Film & TV Lines</div><h1 class="page-title">Practice Dialogue Through Famous Screen Worlds</h1><p>Read the bilingual dialogue first, then reveal the film or TV title at the end. The practice dialogue is adapted for learning rather than copied from the original screenplay.</p></section><section class="section"><div class="screen-grid">${list.map(screenLineCard).join('')}</div></section>`;
- shell(content,'Practice')
+function screenLineLibrary(sort=screenSortState){
+ screenSortState=sort;
+ let list=[...(practiceCatalog().screenLines||[])];
+ if(sort==='Newest')list.reverse();
+ const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Film & TV</div><h1 class="page-title">Film & TV</h1></section>
+ <section class="section compact-library"><div class="library-control-row film-sort-row"><span></span>${sortSelect(sort,"setScreenSort")}</div><div class="screen-grid compact-grid">${list.map(screenLineCard).join('')}</div></section>`;
+ shell(content,'Film')
 }
+function setScreenSort(v){screenSortState=v;screenLineLibrary(v)}
 function screenLinePage(id){
  const all=practiceCatalog().screenLines||[];
  const item=all.find(x=>x.id===id);if(!item)return screenLineLibrary();
@@ -418,15 +497,33 @@ function sentenceCode(item){
  return `${item.level}-${i>=0?i+1:'?'}`
 }
 function sentenceCard(item){
- return `<article class="sentence-card"><div class="sentence-card-top"><span class="level-pill ${item.level.toLowerCase()}">${sentenceCode(item)}</span><span>${esc(item.title)}</span></div>${practiceZhPair(item.titleZh,'sentence-title-zh','sentence-title-pinyin')}<div class="sentence-pattern">${esc(item.pattern)}</div>${practiceZhPair(item.zh,'sentence-zh','sentence-pinyin')}<details class="sentence-options"><summary>Try different endings</summary><div class="sentence-hints">${(item.hints||[]).map(h=>`<div><b>${esc(h.en)}</b><span>${esc(h.zh)}</span><small>${practicePinyin(h.zh)}</small></div>`).join('')}</div></details><details class="sentence-example"><summary>Show example</summary><div><b>${esc(item.example?.en||'')}</b><span>${esc(item.example?.zh||'')}</span><small>${practicePinyin(item.example?.zh||'')}</small></div></details></article>`
+ const today=isTodayItem(item);
+ return `<article class="sentence-card compact-practice-card ${today?'today-card':''}" onclick="go('#sentence=${item.id}')" role="button" tabindex="0">
+  <div class="compact-top"><span class="level-pill ${item.level.toLowerCase()}">${sentenceCode(item)}</span><span>Sentence</span>${today?'<em>TODAY</em>':''}</div>
+  <h3>${esc(item.title)}</h3><div class="compact-zh">${esc(item.titleZh||'')}</div>
+ </article>`
 }
-function sentenceLibrary(level=sentenceLevelState){
- sentenceLevelState=level;
+function sentenceDetailBody(item){
+ return `<article class="sentence-card sentence-detail-card"><div class="sentence-card-top"><span class="level-pill ${item.level.toLowerCase()}">${sentenceCode(item)}</span><span>${esc(item.title)}</span></div>${practiceZhPair(item.titleZh,'sentence-title-zh','sentence-title-pinyin')}<div class="sentence-pattern">${esc(item.pattern)}</div>${practiceZhPair(item.zh,'sentence-zh','sentence-pinyin')}<details class="sentence-options"><summary>Try different endings</summary><div class="sentence-hints">${(item.hints||[]).map(h=>`<div><b>${esc(h.en)}</b><span>${esc(h.zh)}</span><small>${practicePinyin(h.zh)}</small></div>`).join('')}</div></details><details class="sentence-example"><summary>Show example</summary><div><b>${esc(item.example?.en||'')}</b><span>${esc(item.example?.zh||'')}</span><small>${practicePinyin(item.example?.zh||'')}</small></div></details></article>`
+}
+function sentencePage(id){
  const all=practiceCatalog().sentencePractice||[];
- const list=all.filter(x=>x.level===level).slice().reverse();
- const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Single Sentence Practice</div><div class="eyebrow">Single Sentence Practice</div><h1 class="page-title">Practice One Useful Sentence at a Time</h1><p>Choose a level, say the sentence with your own information, then open the options or example when you need ideas.</p></section><section class="section sentence-library"><div class="section-head"><div><h2>Choose a Level</h2><p>${list.length} sentence patterns</p></div></div><div class="dialogue-level-tabs">${['A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="sentenceLibrary('${l}')">${l}</button>`).join('')}</div><div class="sentence-grid">${list.map(sentenceCard).join('')}</div></section>`;
- shell(content,'Practice')
+ const item=all.find(x=>x.id===id);if(!item)return sentenceLibrary();
+ const same=all.filter(x=>x.level===item.level);
+ if(sentenceSortState==='Newest')same.reverse();
+ const i=same.findIndex(x=>x.id===id),prev=same[i-1],next=same[i+1];
+ const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#sentences">Single Sentence</a> / ${esc(item.title)}</div>${sentenceDetailBody(item)}<div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#sentence=${prev.id}')"`:`onclick="go('#sentences')"`}><small>← Previous</small><b>${prev?esc(prev.title):'Single Sentence'}</b></button><button class="pn" ${next?`onclick="go('#sentence=${next.id}')"`:`onclick="go('#sentences')"`}><small>Next →</small><b>${next?esc(next.title):'Back to library'}</b></button></div></section>`;
+ shell(content,'Sentence')
 }
+function sentenceLibrary(level=sentenceLevelState,sort=sentenceSortState){
+ sentenceLevelState=level;sentenceSortState=sort;
+ const all=practiceCatalog().sentencePractice||[];
+ let list=level==='All'?[...all]:all.filter(x=>x.level===level);
+ if(sort==='Newest')list.reverse();
+ const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Single Sentence</div><h1 class="page-title">Single Sentence Practice</h1></section><section class="section compact-library"><div class="library-control-row"><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="sentenceLibrary('${l}','${sort}')">${l}</button>`).join('')}</div>${sortSelect(sort,"setSentenceSort")}</div><div class="sentence-grid compact-grid">${list.map(sentenceCard).join('')}</div></section>`;
+ shell(content,'Sentence')
+}
+function setSentenceSort(v){sentenceSortState=v;sentenceLibrary(sentenceLevelState,v)}
 let translationLevelState='All';
 function translationItems(){return practiceCatalog().translations||[]}
 function translationCode(item){
@@ -435,25 +532,22 @@ function translationCode(item){
  return `${item.level}-${index>=0?index+1:'?'}`
 }
 function translationCard(item){
- return `<article class="translation-card" onclick="go('#translation=${item.id}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();go('#translation=${item.id}')}" aria-label="Open ${esc(item.title)}">
-  <div class="translation-card-top"><span class="level-pill ${item.level.toLowerCase()}">${translationCode(item)}</span><span>${esc(item.topic)}</span></div>
-  <h3>${esc(item.title)}</h3>
-  ${practiceZhPair(item.titleZh,'translation-title-zh','translation-title-pinyin')}
-  <p>${esc(item.goal)}</p>
-  <div class="translation-card-meta"><span>${(item.zhLines||[]).length} sentences</span><span>${(item.keyPhrases||[]).length} useful phrases</span></div>
-  <div class="translation-open">Start translating →</div>
+ const today=isTodayItem(item);
+ return `<article class="translation-card compact-practice-card ${today?'today-card':''}" onclick="go('#translation=${item.id}')" role="button" tabindex="0">
+  <div class="compact-top"><span class="level-pill ${item.level.toLowerCase()}">${translationCode(item)}</span><span>${esc(item.topic)}</span>${today?'<em>TODAY</em>':''}</div>
+  <h3>${esc(item.title)}</h3><div class="compact-zh">${esc(item.titleZh||'')}</div>
  </article>`
 }
-function translationLibrary(level=translationLevelState){
- translationLevelState=level;
+function translationLibrary(level=translationLevelState,sort=translationSortState){
+ translationLevelState=level;translationSortState=sort;
  const all=translationItems();
- const base=level==='All'?all:all.filter(x=>x.level===level);
- const list=[...base].reverse();
- const counts=Object.fromEntries(['A1','A2','B1'].map(l=>[l,all.filter(x=>x.level===l).length]));
- const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / Translation Practice</div><div class="eyebrow">Translation Practice</div><h1 class="page-title">Translate Real-Life Chinese into Natural English</h1><p>Read the Chinese first, translate the meaning on your own, then open the reference answer. Focus on natural English rather than translating word by word.</p></section>
- <section class="section translation-library"><div class="section-head"><div><h2>Choose a Practice Text</h2><p>${counts.A1} A1 · ${counts.A2} A2 · ${counts.B1} B1</p></div><span class="dialogue-count">${list.length} texts</span></div><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="translationLibrary('${l}')">${l}</button>`).join('')}</div><div class="translation-grid">${list.map(translationCard).join('')}</div></section>`;
- shell(content,'Practice')
+ let list=level==='All'?[...all]:all.filter(x=>x.level===level);
+ if(sort==='Newest')list.reverse();
+ const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Translation</div><h1 class="page-title">Translation Practice</h1></section>
+ <section class="section compact-library"><div class="library-control-row"><div class="dialogue-level-tabs">${['All','A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="translationLibrary('${l}','${sort}')">${l}</button>`).join('')}</div>${sortSelect(sort,"setTranslationSort")}</div><div class="translation-grid compact-grid">${list.map(translationCard).join('')}</div></section>`;
+ shell(content,'Translation')
 }
+function setTranslationSort(v){translationSortState=v;translationLibrary(translationLevelState,v)}
 function translationReferenceLine(en,index){return `<div class="translation-reference-line"><span class="translation-line-number">${index+1}</span><p>${esc(en)}</p></div>`}
 function translationSourceLine(zh,index){return `<div class="translation-source-line"><span class="translation-line-number">${index+1}</span><div><div class="translation-source-zh">${esc(zh)}</div><div class="translation-source-pinyin">${practicePinyin(zh)}</div></div></div>`}
 function translationAlternativeBlock(item){
@@ -480,7 +574,7 @@ function translationPage(id){
  </section>`;
  shell(content,'Practice')
 }
-function journey(){const list=[...COUNTRIES].sort((a,b)=>a.readOrder-b.readOrder);const content=`<section class="page-pad"><div class="eyebrow">Chronological reading path</div><h1 class="page-title">My Country Journey</h1><p style="color:var(--muted)">Only countries you have already read appear here. New countries can be appended later without changing the old order.</p></section><div class="journey-list">${list.map(c=>`<div class="journey-item" onclick="go('#country=${c.slug}&level=${preferredLevel(c)}')"><span class="n">#${c.readOrder}</span><b>${esc(c.name)}</b><small style="color:var(--muted)">${esc(c.region)}</small></div>`).join('')}</div>`;shell(content,'Journey')}
+function journey(){const list=[...COUNTRIES].sort((a,b)=>a.readOrder-b.readOrder);const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Reading</div><h1 class="page-title">Country & Culture</h1>${readingTopicNav('country')}${countryReadingNav('journey')}</section><div class="journey-list">${list.map(c=>`<div class="journey-item" onclick="go('#country=${c.slug}&level=${preferredLevel(c)}')"><span class="n">#${c.readOrder}</span><b>${esc(c.name)}</b><small style="color:var(--muted)">${esc(c.region)}</small></div>`).join('')}</div>`;shell(content,'Reading')}
 function render(){
  const h=location.hash||'#home';
  if(h.startsWith('#country=')){const p=new URLSearchParams(h.slice(1));return country(p.get('country'),p.get('level')||'B1')}
@@ -488,14 +582,17 @@ function render(){
  if(h.startsWith('#dialogue=')){const p=new URLSearchParams(h.slice(1));return dialoguePage(p.get('dialogue'))}
  if(h.startsWith('#screen-line=')){const p=new URLSearchParams(h.slice(1));return screenLinePage(p.get('screen-line'))}
  if(h.startsWith('#translation=')){const p=new URLSearchParams(h.slice(1));return translationPage(p.get('translation'))}
+ if(h.startsWith('#sentence=')){const p=new URLSearchParams(h.slice(1));return sentencePage(p.get('sentence'))}
+ if(h==='#reading-business')return readingPlaceholder('business');
+ if(h==='#reading-encyclopedia')return readingPlaceholder('encyclopedia');
+ if(h==='#reading'||h==='#library'||h==='#articles')return library();
  if(h==='#translations')return translationLibrary();
- if(h==='#practice')return practiceHub();
  if(h==='#dialogues')return dialogueLibrary();
  if(h==='#screen-lines')return screenLineLibrary();
  if(h==='#sentences')return sentenceLibrary();
- if(h==='#library'||h==='#articles')return library();
  if(h==='#map')return mapPage();
  if(h==='#journey')return journey();
+ if(h==='#practice')return home();
  return home()
 }
 window.addEventListener('hashchange',render);window.addEventListener('DOMContentLoaded',render);window.mapZoom=mapZoom;window.mapReset=mapReset;window.toggleTheme=toggleTheme;window.setWordHelp=setWordHelp;window.showWordPopup=showWordPopup;window.closeWordPopup=closeWordPopup;window.copyArticle=copyArticle;window.toggleExploreMenu=toggleExploreMenu;window.closeExploreMenu=closeExploreMenu;window.openCountryFromMenu=openCountryFromMenu;window.jumpRegion=jumpRegion;window.menuSearch=menuSearch;
