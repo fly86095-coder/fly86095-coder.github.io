@@ -261,7 +261,3 @@ html[data-theme="dark"] .translation-card,html[data-theme="dark"] .translation-s
 .translation-english-source{padding:0}.translation-chinese-answer{padding:16px;margin-top:0}.prevnext .pn:last-child{text-align:right}
 html[data-theme="dark"] .translation-mode{background:var(--paper)}
 @media(max-width:760px){.translation-mode-picker{grid-template-columns:1fr}}
-
-/* 0929_1 nested translation extras */
-.translation-mode-body>.translation-details{margin-top:18px}
-.translation-mode-body>.translation-phrases{margin-top:18px;box-shadow:none}
