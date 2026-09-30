@@ -2,19 +2,27 @@
 const app=document.getElementById('app');
 const bySlug=Object.fromEntries(COUNTRIES.map(c=>[c.slug,c]));
 const byMapIdGroups={};COUNTRIES.forEach(c=>{const id=String(Number(c.mapId));(byMapIdGroups[id]??=[]).push(c)});
-document.documentElement.dataset.theme='dark';
-localStorage.removeItem('ecra-theme');
+const savedTheme=localStorage.getItem('ecra-theme');
+const initialTheme=savedTheme||(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+document.documentElement.dataset.theme=initialTheme;
 const savedWordHelp=localStorage.getItem('ecra-word-help')==='on';
-const state={region:'All',query:'',page:1,perPage:12,display:'all',theme:'dark',wordHelp:savedWordHelp,menuOpen:false};
+const state={region:'All',query:'',page:1,perPage:12,display:'all',theme:initialTheme,wordHelp:savedWordHelp,menuOpen:false};
 const imgCache=new Map();
 const LEARNING_WORD_BANK=[{"word":"heritage","zh":"文化遗产","kk":"/ˈhɛrɪtɪdʒ/","level":3},{"word":"architecture","zh":"建筑","kk":"/ˈɑrkəˌtɛktʃɚ/","level":3},{"word":"infrastructure","zh":"基础设施","kk":"/ˈɪnfrəˌstrʌktʃɚ/","level":3},{"word":"multilingual","zh":"多语言的","kk":"/ˌmʌltɪˈlɪŋgwəl/","level":3},{"word":"bilingual","zh":"双语的","kk":"/baɪˈlɪŋgwəl/","level":2},{"word":"identity","zh":"认同","kk":"/aɪˈdɛntətɪ/","level":3},{"word":"regional","zh":"地区的","kk":"/ˈridʒənəl/","level":2},{"word":"settlement","zh":"聚落","kk":"/ˈsɛtəlmənt/","level":3},{"word":"agriculture","zh":"农业","kk":"/ˈægrɪˌkʌltʃɚ/","level":3},{"word":"manufacturing","zh":"制造业","kk":"/ˌmænjəˈfæktʃərɪŋ/","level":3},{"word":"industrial","zh":"工业的","kk":"/ɪnˈdʌstrɪəl/","level":2},{"word":"industry","zh":"产业","kk":"/ˈɪndəstrɪ/","level":2},{"word":"technology","zh":"科技","kk":"/tɛkˈnɑlədʒɪ/","level":2},{"word":"economy","zh":"经济","kk":"/ɪˈkɑnəmɪ/","level":3},{"word":"constitution","zh":"宪法","kk":"/ˌkɑnstəˈtuʃən/","level":3},{"word":"democracy","zh":"民主制度","kk":"/dɪˈmɑkrəsɪ/","level":3},{"word":"neutrality","zh":"中立","kk":"/nuˈtrælətɪ/","level":3},{"word":"federal","zh":"联邦的","kk":"/ˈfɛdərəl/","level":3},{"word":"government","zh":"政府","kk":"/ˈgʌvɚnmənt/","level":2},{"word":"republic","zh":"共和国","kk":"/rɪˈpʌblɪk/","level":2},{"word":"revolution","zh":"革命","kk":"/ˌrɛvəˈluʃən/","level":3},{"word":"empire","zh":"帝国","kk":"/ˈɛmpaɪr/","level":2},{"word":"kingdom","zh":"王国","kk":"/ˈkɪŋdəm/","level":2},{"word":"royal","zh":"王室的","kk":"/ˈrɔɪəl/","level":2},{"word":"migration","zh":"迁移","kk":"/maɪˈgreʃən/","level":3},{"word":"immigration","zh":"移民","kk":"/ˌɪməˈgreʃən/","level":3},{"word":"environment","zh":"环境","kk":"/ɪnˈvaɪrənmənt/","level":2},{"word":"resource","zh":"资源","kk":"/ˈrisɔrs/","level":2},{"word":"precision","zh":"精密","kk":"/prɪˈsɪʒən/","level":3},{"word":"engineering","zh":"工程","kk":"/ˌɛndʒəˈnɪrɪŋ/","level":3},{"word":"tradition","zh":"传统","kk":"/trəˈdɪʃən/","level":2},{"word":"traditional","zh":"传统的","kk":"/trəˈdɪʃənəl/","level":2},{"word":"culture","zh":"文化","kk":"/ˈkʌltʃɚ/","level":2},{"word":"festival","zh":"节庆","kk":"/ˈfɛstəvəl/","level":2},{"word":"celebration","zh":"庆典","kk":"/ˌsɛləˈbreɪʃən/","level":2},{"word":"ceremony","zh":"仪式","kk":"/ˈsɛrəˌmonɪ/","level":3},{"word":"community","zh":"社区","kk":"/kəˈmjunətɪ/","level":2},{"word":"hospitality","zh":"待客文化","kk":"/ˌhɑspəˈtælətɪ/","level":3},{"word":"custom","zh":"习俗","kk":"/ˈkʌstəm/","level":2},{"word":"ritual","zh":"仪式","kk":"/ˈrɪtʃuəl/","level":3},{"word":"seasonal","zh":"季节性的","kk":"/ˈsizənəl/","level":2},{"word":"symbol","zh":"象征","kk":"/ˈsɪmbəl/","level":2},{"word":"distinctive","zh":"有特色的","kk":"/dɪˈstɪŋktɪv/","level":3},{"word":"influence","zh":"影响","kk":"/ˈɪnfluəns/","level":2},{"word":"preserve","zh":"保存","kk":"/prɪˈzɝv/","level":3},{"word":"protect","zh":"保护","kk":"/prəˈtɛkt/","level":2},{"word":"connect","zh":"连接","kk":"/kəˈnɛkt/","level":1},{"word":"develop","zh":"发展","kk":"/dɪˈvɛləp/","level":2},{"word":"support","zh":"支持","kk":"/səˈpɔrt/","level":1},{"word":"gather","zh":"聚集","kk":"/ˈgæðɚ/","level":2},{"word":"celebrate","zh":"庆祝","kk":"/ˈsɛləˌbret/","level":1},{"word":"decorate","zh":"装饰","kk":"/ˈdɛkəˌret/","level":2},{"word":"share","zh":"分享","kk":"/ʃɛr/","level":1},{"word":"ancient","zh":"古代的","kk":"/ˈenʃənt/","level":2},{"word":"medieval","zh":"中世纪的","kk":"/ˌmɪdɪˈivəl/","level":3},{"word":"historic","zh":"历史悠久的","kk":"/hɪˈstɔrɪk/","level":2},{"word":"history","zh":"历史","kk":"/ˈhɪstərɪ/","level":1},{"word":"modern","zh":"现代的","kk":"/ˈmɑdɚn/","level":1},{"word":"urban","zh":"城市的","kk":"/ˈɝbən/","level":2},{"word":"rural","zh":"乡村的","kk":"/ˈrʊrəl/","level":2},{"word":"public","zh":"公共的","kk":"/ˈpʌblɪk/","level":1},{"word":"social","zh":"社会的","kk":"/ˈsoʃəl/","level":2},{"word":"political","zh":"政治的","kk":"/pəˈlɪtɪkəl/","level":2},{"word":"religious","zh":"宗教的","kk":"/rɪˈlɪdʒəs/","level":2},{"word":"religion","zh":"宗教","kk":"/rɪˈlɪdʒən/","level":2},{"word":"language","zh":"语言","kk":"/ˈlæŋgwɪdʒ/","level":1},{"word":"literature","zh":"文学","kk":"/ˈlɪtərətʃɚ/","level":3},{"word":"poetry","zh":"诗歌","kk":"/ˈpoətrɪ/","level":2},{"word":"performance","zh":"表演","kk":"/pɚˈfɔrməns/","level":2},{"word":"geography","zh":"地理","kk":"/dʒiˈɑgrəfɪ/","level":2},{"word":"landscape","zh":"地景","kk":"/ˈlændskeɪp/","level":2},{"word":"mountain","zh":"山","kk":"/ˈmaʊntən/","level":1},{"word":"valley","zh":"山谷","kk":"/ˈvælɪ/","level":1},{"word":"river","zh":"河流","kk":"/ˈrɪvɚ/","level":1},{"word":"coast","zh":"海岸","kk":"/kost/","level":1},{"word":"coastal","zh":"沿海的","kk":"/ˈkostəl/","level":2},{"word":"island","zh":"岛屿","kk":"/ˈaɪlənd/","level":1},{"word":"forest","zh":"森林","kk":"/ˈfɔrɪst/","level":1},{"word":"desert","zh":"沙漠","kk":"/ˈdɛzɚt/","level":1},{"word":"climate","zh":"气候","kk":"/ˈklaɪmɪt/","level":2},{"word":"plain","zh":"平原","kk":"/plen/","level":2},{"word":"plateau","zh":"高原","kk":"/plæˈto/","level":2},{"word":"wetland","zh":"湿地","kk":"/ˈwɛtlænd/","level":2},{"word":"border","zh":"边境","kk":"/ˈbɔrdɚ/","level":1},{"word":"capital","zh":"首都","kk":"/ˈkæpətəl/","level":1},{"word":"population","zh":"人口","kk":"/ˌpɑpjəˈleʃən/","level":2},{"word":"route","zh":"路线","kk":"/rut/","level":1},{"word":"water","zh":"水","kk":"/ˈwɔtɚ/","level":1},{"word":"canal","zh":"运河","kk":"/kəˈnæl/","level":1},{"word":"dike","zh":"堤坝","kk":"/daɪk/","level":2},{"word":"tunnel","zh":"隧道","kk":"/ˈtʌnəl/","level":1},{"word":"bridge","zh":"桥","kk":"/brɪdʒ/","level":1},{"word":"road","zh":"道路","kk":"/rod/","level":1},{"word":"street","zh":"街道","kk":"/strit/","level":1},{"word":"square","zh":"广场","kk":"/skwɛr/","level":1},{"word":"fortress","zh":"堡垒","kk":"/ˈfɔrtrəs/","level":2},{"word":"castle","zh":"城堡","kk":"/ˈkæsəl/","level":1},{"word":"palace","zh":"宫殿","kk":"/ˈpæləs/","level":2},{"word":"monastery","zh":"修道院","kk":"/ˈmɑnəˌstɛrɪ/","level":3},{"word":"church","zh":"教堂","kk":"/tʃɝtʃ/","level":1},{"word":"temple","zh":"寺庙","kk":"/ˈtɛmpəl/","level":1},{"word":"mosque","zh":"清真寺","kk":"/mɑsk/","level":2},{"word":"building","zh":"建筑物","kk":"/ˈbɪldɪŋ/","level":1},{"word":"stone","zh":"石材","kk":"/ston/","level":1},{"word":"wooden","zh":"木制的","kk":"/ˈwʊdən/","level":1},{"word":"market","zh":"市场","kk":"/ˈmɑrkɪt/","level":1},{"word":"trade","zh":"贸易","kk":"/tred/","level":2},{"word":"craft","zh":"手工艺","kk":"/kræft/","level":2},{"word":"carpet","zh":"地毯","kk":"/ˈkɑrpɪt/","level":1},{"word":"embroidery","zh":"刺绣","kk":"/ɛmˈbrɔɪdərɪ/","level":3},{"word":"weaving","zh":"编织","kk":"/ˈwivɪŋ/","level":2},{"word":"design","zh":"设计","kk":"/dɪˈzaɪn/","level":2},{"word":"pattern","zh":"图案","kk":"/ˈpætɚn/","level":2},{"word":"music","zh":"音乐","kk":"/ˈmjuzɪk/","level":1},{"word":"dance","zh":"舞蹈","kk":"/dæns/","level":1},{"word":"film","zh":"电影","kk":"/fɪlm/","level":1},{"word":"family","zh":"家庭","kk":"/ˈfæməlɪ/","level":1},{"word":"transport","zh":"交通","kk":"/ˈtrænspɔrt/","level":2},{"word":"railway","zh":"铁路","kk":"/ˈrelˌwe/","level":2},{"word":"cycling","zh":"骑自行车","kk":"/ˈsaɪklɪŋ/","level":1},{"word":"farm","zh":"农场","kk":"/fɑrm/","level":1},{"word":"farming","zh":"农业活动","kk":"/ˈfɑrmɪŋ/","level":1},{"word":"harvest","zh":"收成","kk":"/ˈhɑrvɪst/","level":2},{"word":"food","zh":"食物","kk":"/fud/","level":1},{"word":"bread","zh":"面包","kk":"/brɛd/","level":1},{"word":"cheese","zh":"奶酪","kk":"/tʃiz/","level":1},{"word":"coffee","zh":"咖啡","kk":"/ˈkɔfɪ/","level":1},{"word":"tea","zh":"茶","kk":"/ti/","level":1},{"word":"wine","zh":"葡萄酒","kk":"/waɪn/","level":1},{"word":"chocolate","zh":"巧克力","kk":"/ˈtʃɔklɪt/","level":1},{"word":"beer","zh":"啤酒","kk":"/bɪr/","level":1},{"word":"spring","zh":"春天","kk":"/sprɪŋ/","level":1},{"word":"winter","zh":"冬天","kk":"/ˈwɪntɚ/","level":1},{"word":"season","zh":"季节","kk":"/ˈsizən/","level":1},{"word":"official","zh":"官方的","kk":"/əˈfɪʃəl/","level":2},{"word":"visitor","zh":"游客","kk":"/ˈvɪzətɚ/","level":1},{"word":"handmade","zh":"手工制作的","kk":"/ˌhændˈmed/","level":2},{"word":"waffle","zh":"华夫饼","kk":"/ˈwɑfəl/","level":1},{"word":"comic","zh":"漫画","kk":"/ˈkɑmɪk/","level":1},{"word":"football","zh":"足球","kk":"/ˈfʊtˌbɔl/","level":1},{"word":"team","zh":"队伍","kk":"/tim/","level":1},{"word":"favorite","zh":"最喜欢的","kk":"/ˈfevərɪt/","level":1},{"word":"fried","zh":"油炸的","kk":"/fraɪd/","level":1},{"word":"kilt","zh":"苏格兰裙","kk":"/kɪlt/","level":2},{"word":"tartan","zh":"格纹呢料","kk":"/ˈtɑrtən/","level":2},{"word":"bagpipe","zh":"风笛","kk":"/ˈbægˌpaɪp/","level":2},{"word":"whisky","zh":"威士忌","kk":"/ˈwɪskɪ/","level":1},{"word":"rugby","zh":"橄榄球","kk":"/ˈrʌgbɪ/","level":1},{"word":"singing","zh":"歌唱","kk":"/ˈsɪŋɪŋ/","level":1},{"word":"shipbuilding","zh":"造船业","kk":"/ˈʃɪpˌbɪldɪŋ/","level":2},{"word":"breakfast","zh":"早餐","kk":"/ˈbrɛkfəst/","level":1},{"word":"pub","zh":"酒馆","kk":"/pʌb/","level":1},{"word":"hill","zh":"丘陵","kk":"/hɪl/","level":1},{"word":"lake","zh":"湖泊","kk":"/lek/","level":1},{"word":"field","zh":"田野","kk":"/fild/","level":1},{"word":"sign","zh":"标志","kk":"/saɪn/","level":1}];
 
 function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function flag(c){return `https://flagcdn.com/w160/${c.flag}.png`}
 function go(h){location.hash=h;scrollTo({top:0,behavior:'smooth'})}
-function themeLabel(){return 'Dark'}
-function themeIcon(){return '☾'}
-function toggleTheme(){document.documentElement.dataset.theme='dark'}
+function themeLabel(){return state.theme==='dark'?'Light':'Dark'}
+function themeIcon(){return state.theme==='dark'?'☀':'☾'}
+function toggleTheme(){
+ state.theme=state.theme==='dark'?'light':'dark';
+ document.documentElement.dataset.theme=state.theme;
+ localStorage.setItem('ecra-theme',state.theme);
+ document.querySelectorAll('.theme-icon').forEach(x=>x.textContent=themeIcon());
+ document.querySelectorAll('.theme-label').forEach(x=>x.textContent=themeLabel());
+ document.querySelectorAll('.theme-btn').forEach(x=>x.setAttribute('aria-label',`${themeLabel()} mode`));
+}
 const MAP_NAME_ALIASES={kosovo:['Kosovo']};
 const byMapNameGroups={};
 COUNTRIES.forEach(c=>{(MAP_NAME_ALIASES[c.slug]||[]).forEach(name=>{(byMapNameGroups[name.toLowerCase()]??=[]).push(c)})});
@@ -45,22 +53,22 @@ function jumpRegion(region){state.region=region;state.page=1;closeExploreMenu();
 function menuSearch(q){state.query=(q||'').trim();state.region='All';state.page=1;closeExploreMenu();if(location.hash==='#library')library();else go('#library')}
 function header(active='Home'){
  const navItems=[
-  {label:'Home',zh:'首页',hash:'home',key:'Home'},
-  {label:'Reading',zh:'阅读练习',hash:'reading',key:'Reading'},
-  {label:'Conversation',zh:'生活对话',hash:'dialogues',key:'Conversation'},
-  {label:'Translation',zh:'翻译练习',hash:'translations',key:'Translation'},
-  {label:'Film & TV',zh:'影视台词',hash:'screen-lines',key:'Film'},
-  {label:'Single Sentence',zh:'单句练习',hash:'sentences',key:'Sentence'}
+  {label:'Home',hash:'home',key:'Home'},
+  {label:'Reading',hash:'reading',key:'Reading'},
+  {label:'Conversation',hash:'dialogues',key:'Conversation'},
+  {label:'Translation',hash:'translations',key:'Translation'},
+  {label:'Film & TV',hash:'screen-lines',key:'Film'},
+  {label:'Single Sentence',hash:'sentences',key:'Sentence'}
  ];
- const desktopLinks=navItems.map(x=>`<a class="${active===x.key?'active':''}" href="#${x.hash}" onclick="closeExploreMenu()">${x.label}</a>`).join('');
- const mobileLinks=navItems.map(x=>`<a class="drawer-link ${active===x.key?'active':''}" href="#${x.hash}" onclick="closeExploreMenu()"><span class="mobile-nav-en">${x.label}</span><small class="mobile-nav-zh">${x.zh}</small></a>`).join('');
+ const links=navItems.map(x=>`<a class="${active===x.key?'active':''}" href="#${x.hash}" onclick="closeExploreMenu()">${x.label}</a>`).join('');
  return `<header class="topbar"><nav class="nav clean-nav">
-  <button class="brand-toggle mobile-menu-btn" type="button" onclick="toggleExploreMenu()" aria-expanded="false" aria-label="打开选单">☰</button>
+  <button class="brand-toggle mobile-menu-btn" type="button" onclick="toggleExploreMenu()" aria-expanded="false" aria-label="Open menu">☰</button>
   <div class="brand" onclick="go('#home')" role="button" tabindex="0" aria-label="Back to home"><span class="brandmark">${brandmarkSvg()}</span><strong>${SITE.name}</strong></div>
-  <div class="links desktop-main-links">${desktopLinks}</div>
+  <div class="links desktop-main-links">${links}</div>
+  <div class="nav-actions"><button class="theme-btn" type="button" onclick="toggleTheme()" aria-label="${themeLabel()} mode"><span class="theme-icon">${themeIcon()}</span><span class="theme-label">${themeLabel()}</span></button></div>
  </nav>
  <div class="explore-backdrop" hidden onclick="closeExploreMenu()"></div>
- <aside class="explore-menu mobile-drawer"><div class="drawer-head"><div><strong>${SITE.name}</strong><small>学习选单</small></div><button onclick="closeExploreMenu()" aria-label="关闭选单">×</button></div><div class="drawer-links">${mobileLinks}</div></aside>
+ <aside class="explore-menu mobile-drawer"><div class="drawer-head"><strong>${SITE.name}</strong><button onclick="closeExploreMenu()" aria-label="Close menu">×</button></div><div class="drawer-links">${links}</div></aside>
  </header>`
 }
 function articleCount(){return COUNTRIES.reduce((n,c)=>n+Object.keys(c.versions||{}).length,0)}
@@ -377,7 +385,7 @@ function dialogueCode(d){
 function dialogueCard(d){
  const today=isTodayItem(d);
  return `<article class="dialogue-card compact-practice-card ${today?'today-card':''}" onclick="go('#dialogue=${d.id}')" role="button" tabindex="0">
-  <div class="compact-top"><span class="level-pill ${d.level.toLowerCase()}">${dialogueCode(d)}</span><span>${esc((d.scene||'').toLowerCase())}</span>${today?'<em>TODAY</em>':''}</div>
+  <div class="compact-top"><span class="level-pill ${d.level.toLowerCase()}">${dialogueCode(d)}</span><span>${esc(d.scene)}</span>${today?'<em>TODAY</em>':''}</div>
   <h3>${esc(d.title)}</h3><div class="compact-zh">${esc(d.titleZh||'')}</div>
  </article>`
 }
@@ -446,7 +454,7 @@ function dialoguePage(id){
  const same=all.filter(x=>x.level===d.level),i=same.findIndex(x=>x.id===id),prev=same[i-1],next=same[i+1];
  const turns=(d.turns||[]).map((t,idx)=>`<div class="dialogue-turn" data-en="${esc(t.en)}" data-zh="${esc(t.zh)}"><div class="speaker speaker-${t.speaker.toLowerCase()}">${esc(t.speaker)}</div><div class="turn-body"><div class="turn-en">${esc(t.en)}</div><div class="turn-zh">${esc(t.zh)}</div><div class="turn-pinyin">${practicePinyin(t.zh)}</div>${hintDetails(t)}<div class="choice-result" hidden></div></div></div>`).join('');
  const example=(d.example||[]).map(t=>`<div class="example-line"><b>${esc(t.speaker)}:</b><div><span>${esc(t.en)}</span><small class="example-zh">${esc(t.zh)}</small><small class="example-pinyin">${practicePinyin(t.zh)}</small></div></div>`).join('');
- const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#dialogues">Daily Conversation</a> / ${esc(d.title)}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc((d.scene||"").toLowerCase())}</div><div class="detail-title-line"><span class="level-pill ${d.level.toLowerCase()}">${dialogueCode(d)}</span><h1>${esc(d.title)}</h1></div>${practiceZhPair(d.titleZh,'detail-title-zh','detail-title-pinyin')}<p>${esc(d.goal)}</p></div><aside class="practice-rule"><b>Three-part practice</b><ol><li>Read the complete example.</li><li>Choose replies or use the random reply button.</li><li>Finish the quick check without looking back.</li></ol></aside></div>
+ const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#dialogues">Daily Conversation</a> / ${esc(d.title)}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc(d.scene)}</div><div class="detail-title-line"><span class="level-pill ${d.level.toLowerCase()}">${dialogueCode(d)}</span><h1>${esc(d.title)}</h1></div>${practiceZhPair(d.titleZh,'detail-title-zh','detail-title-pinyin')}<p>${esc(d.goal)}</p></div><aside class="practice-rule"><b>Three-part practice</b><ol><li>Read the complete example.</li><li>Choose replies or use the random reply button.</li><li>Finish the quick check without looking back.</li></ol></aside></div>
  <section class="dialogue-stage example-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 1 · Complete Example</div><h2>Read the whole conversation first</h2></div><span>${(d.example||[]).length} lines</span></div><div class="complete-example-body">${example}</div></section>
  <section class="dialogue-stage practice-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 2 · Practice</div><h2>Choose a reply and say the full line</h2></div><button class="random-reply-btn" type="button" onclick="randomDialogueReply()">Random reply</button></div>${turns}</section>
  <section class="dialogue-stage quiz-stage"><div class="dialogue-card-heading"><div><div class="eyebrow">Part 3 · Quick Check</div><h2>Choose the most natural next reply</h2></div><span>3 questions</span></div>${dialogueQuiz(d)}</section>
@@ -491,7 +499,7 @@ function sentenceCode(item){
 function sentenceCard(item){
  const today=isTodayItem(item);
  return `<article class="sentence-card compact-practice-card ${today?'today-card':''}" onclick="go('#sentence=${item.id}')" role="button" tabindex="0">
-  <div class="compact-top"><span class="level-pill ${item.level.toLowerCase()}">${sentenceCode(item)}</span><span>${esc((item.scene||"sentence").toLowerCase())}</span>${today?'<em>TODAY</em>':''}</div>
+  <div class="compact-top"><span class="level-pill ${item.level.toLowerCase()}">${sentenceCode(item)}</span><span>Sentence</span>${today?'<em>TODAY</em>':''}</div>
   <h3>${esc(item.title)}</h3><div class="compact-zh">${esc(item.titleZh||'')}</div>
  </article>`
 }
@@ -525,7 +533,7 @@ function translationCode(item){
 function translationCard(item){
  const today=isTodayItem(item);
  return `<article class="translation-card compact-practice-card ${today?'today-card':''}" onclick="go('#translation=${item.id}')" role="button" tabindex="0">
-  <div class="compact-top"><span class="level-pill ${item.level.toLowerCase()}">${translationCode(item)}</span><span>${esc((item.topic||'').toLowerCase())}</span>${today?'<em>TODAY</em>':''}</div>
+  <div class="compact-top"><span class="level-pill ${item.level.toLowerCase()}">${translationCode(item)}</span><span>${esc(item.topic)}</span>${today?'<em>TODAY</em>':''}</div>
   <h3>${esc(item.title)}</h3><div class="compact-zh">${esc(item.titleZh||'')}</div>
  </article>`
 }
@@ -556,7 +564,7 @@ function translationPage(id){
  const source=(item.zhLines||[]).map(translationSourceLine).join('');
  const reference=(item.enLines||[]).map(translationReferenceLine).join('');
  const content=`<section class="translation-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#translations">Translation Practice</a> / ${esc(item.title)}</div>
- <div class="translation-detail-head"><div><div class="eyebrow">${esc((item.topic||"").toLowerCase())}</div><div class="detail-title-line"><span class="level-pill ${item.level.toLowerCase()}">${translationCode(item)}</span><h1>${esc(item.title)}</h1></div>${practiceZhPair(item.titleZh,'detail-title-zh','detail-title-pinyin')}<p>${esc(item.goal)}</p></div><aside class="translation-rule"><b>Choose a direction</b><ol><li>Open Chinese → English or English → Chinese.</li><li>Translate the whole meaning before revealing the reference.</li><li>Try the opposite direction later for active recall.</li></ol></aside></div>
+ <div class="translation-detail-head"><div><div class="eyebrow">${esc(item.topic)}</div><div class="detail-title-line"><span class="level-pill ${item.level.toLowerCase()}">${translationCode(item)}</span><h1>${esc(item.title)}</h1></div>${practiceZhPair(item.titleZh,'detail-title-zh','detail-title-pinyin')}<p>${esc(item.goal)}</p></div><aside class="translation-rule"><b>Choose a direction</b><ol><li>Open Chinese → English or English → Chinese.</li><li>Translate the whole meaning before revealing the reference.</li><li>Try the opposite direction later for active recall.</li></ol></aside></div>
  <div class="translation-mode-picker">
   <details class="translation-mode"><summary><span><small>Direction 1</small><b>中翻英 · Chinese → English</b></span><em>Open</em></summary><div class="translation-mode-body"><div class="dialogue-card-heading"><div><div class="eyebrow">Source · Chinese</div><h2>Translate this into natural English</h2></div><span>${(item.zhLines||[]).length} sentences</span></div><div class="translation-source-list">${source}</div><details class="translation-details translation-answer"><summary>Show English reference</summary><div class="translation-reference-list">${reference}</div></details>${translationAlternativeBlock(item)}${translationPhraseBlock(item)}</div></details>
   <details class="translation-mode"><summary><span><small>Direction 2</small><b>英翻中 · English → Chinese</b></span><em>Open</em></summary><div class="translation-mode-body"><div class="dialogue-card-heading"><div><div class="eyebrow">Source · English</div><h2>Translate this into natural Chinese</h2></div><span>${(item.enLines||[]).length} sentences</span></div><div class="translation-reference-list translation-english-source">${reference}</div><details class="translation-details translation-answer"><summary>Show Chinese reference</summary><div class="translation-source-list translation-chinese-answer">${source}</div></details></div></details>
