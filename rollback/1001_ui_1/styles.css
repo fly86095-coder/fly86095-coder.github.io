@@ -307,28 +307,3 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
  .mobile-nav-zh{font-size:12px;font-weight:500;line-height:1.25;color:var(--muted)}
  .drawer-links a.drawer-link.active .mobile-nav-zh{color:#b7c7d5}
 }
-
-
-/* 1001_ui_1 */
-.quick-code-index{display:grid;gap:8px;margin-top:18px}
-.quick-code-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.quick-code-btn,.quick-code-empty{min-height:50px;border-radius:12px}
-.quick-code-btn{border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit;font-weight:800;cursor:pointer;transition:.16s}
-.quick-code-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-1px)}
-.quick-code-empty{border:1px dashed color-mix(in srgb,var(--line) 65%,transparent);opacity:.22}
-.party-slot[hidden]{display:none!important}
-.party-banner{margin:28px 0 14px;border:1px solid color-mix(in srgb,var(--gold) 45%,var(--line));border-radius:22px;background:linear-gradient(135deg,color-mix(in srgb,var(--gold) 7%,var(--paper)),var(--paper));padding:22px 24px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.party-copy{display:grid;gap:4px}.party-copy small{color:var(--gold);font-size:11px;font-weight:850;letter-spacing:.09em;text-transform:uppercase}.party-copy b{font-family:Georgia,serif;color:var(--navy);font-size:25px;font-weight:600}.party-copy span{color:var(--muted);font-size:13px}
-.party-time{display:flex;align-items:center;gap:16px;text-align:right}.party-start{display:grid;gap:2px}.party-start small{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}.party-start b{font-size:17px;color:var(--ink)}
-.party-countdown{font-variant-numeric:tabular-nums;font-size:27px;font-weight:850;letter-spacing:.06em;color:var(--gold);min-width:148px}
-.dialogue-reference-grid{display:grid;gap:12px;margin-top:8px}.dialogue-reference-group{border:1px solid var(--line);border-radius:13px;background:var(--soft);padding:13px 14px}.dialogue-reference-group>small{display:block;color:var(--gold);font-weight:850;margin-bottom:8px}.dialogue-reference-chips{display:flex;flex-wrap:wrap;gap:7px}.dialogue-ref-chip{display:grid;gap:2px;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 10px}.dialogue-ref-chip b{font-size:13px;color:var(--ink)}.dialogue-ref-chip span{font-size:11px;color:var(--muted)}
-.structure-hints{margin-top:18px}.structure-hint-list{display:grid;gap:10px;margin-top:12px}.structure-hint-row{display:grid;grid-template-columns:34px 1fr;gap:10px;border:1px solid var(--line);border-radius:12px;background:var(--soft);padding:11px}.structure-hint-num{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);font-size:11px;color:var(--gold);font-weight:850}.structure-hint-patterns{display:grid;gap:6px}.structure-hint-pattern{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;color:var(--ink);line-height:1.5}.structure-source{font-size:10px;color:var(--muted)}
-.copy-link-bar{margin-top:10px;width:100%}.copy-link-btn{width:100%;min-height:52px;border:1px solid var(--line);border-radius:13px;background:var(--paper);color:var(--ink);font:inherit;font-weight:800;cursor:pointer}.copy-link-btn:hover{border-color:var(--gold);color:var(--gold)}.copy-link-btn.copied{border-color:var(--green);color:var(--green)}
-.footer{display:grid;gap:3px}.footer-feedback{font-size:9.5px;color:var(--muted)}.footer-feedback a{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}
-.home-practice-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
-@media(max-width:760px){
- .party-banner{align-items:flex-start;flex-direction:column;padding:18px}.party-time{width:100%;justify-content:space-between;text-align:left}.party-countdown{font-size:24px;text-align:right}
- .quick-code-row{gap:6px}.quick-code-btn,.quick-code-empty{min-height:46px}.quick-code-btn{font-size:13px}
- .structure-hint-row{grid-template-columns:30px 1fr}
-}
-@media(max-width:560px){.home-practice-grid{grid-template-columns:1fr 1fr}.home-practice-card:last-child{grid-column:1/-1}}
