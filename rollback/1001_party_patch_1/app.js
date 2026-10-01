@@ -357,7 +357,7 @@ async function hydratePartySlot(){
  const target=new Date(`${cfg.date}T${hh}:${mm}:00+08:00`);
  if(!Number.isFinite(target.getTime())||Date.now()>=target.getTime()){slot.hidden=true;return}
  slot.hidden=false;
- slot.innerHTML=`<div class="party-banner"><div class="party-copy"><small>TONIGHT</small><b>PARTY Start Time</b><span>Language Party · Taiwan Time</span></div><div class="party-time"><div class="party-start"><small>Starts at</small><b>${hh}:${mm}</b></div><div class="party-countdown-wrap"><small>Countdown</small><div class="party-countdown" id="partyCountdown">--:--:--</div></div></div></div>`;
+ slot.innerHTML=`<div class="party-banner"><div class="party-copy"><small>Today</small><b>Today's Language Party</b><span>今日语言派对</span></div><div class="party-time"><div class="party-start"><small>Starts at</small><b>${hh}:${mm}</b></div><div class="party-countdown" id="partyCountdown">--:--:--</div></div></div>`;
  const tick=()=>{const diff=target.getTime()-Date.now();if(diff<=0){slot.hidden=true;clearInterval(partyTimer);partyTimer=null;return}const total=Math.floor(diff/1000),h=Math.floor(total/3600),min=Math.floor((total%3600)/60),sec=total%60;const el=document.getElementById('partyCountdown');if(el)el.textContent=`${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`};
  tick();partyTimer=setInterval(tick,1000)
 }
