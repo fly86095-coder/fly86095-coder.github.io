@@ -176,6 +176,7 @@ html[data-theme="dark"] .quiz-feedback.success{color:#9fd1ae}html[data-theme="da
 .screen-card{border:1px solid var(--line);border-radius:18px;background:var(--paper);padding:20px;box-shadow:var(--shadow);cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
 .screen-card:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(18,39,61,.12)}
 .screen-card-top,.sentence-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.sentence-card-top{text-transform:none}
 .screen-card h3{margin:12px 0 5px;color:var(--navy);font-family:Georgia,serif;font-size:25px}
 .screen-title-zh,.sentence-title-zh{margin-top:4px;color:var(--ink);font-size:14px;font-weight:750}
 .screen-title-pinyin,.sentence-title-pinyin{margin-top:2px;color:var(--muted);font-size:12px;line-height:1.5}
