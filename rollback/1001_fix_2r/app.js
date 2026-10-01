@@ -278,21 +278,16 @@ function dialogueReferenceBank(d){
  if(!groups.length)return `<p class="source-note">No reference words are available for this older practice set.</p>`;
  return `<div class="dialogue-reference-grid">${groups.map(g=>`<div class="dialogue-reference-group"><small>${esc(g.label||'Reference')}</small><div class="dialogue-reference-chips">${(g.items||[]).map(x=>`<div class="dialogue-ref-chip"><b>${esc(x.en||x)}</b>${x.zh?`<span>${esc(x.zh)}</span>`:''}</div>`).join('')}</div></div>`).join('')}</div>`
 }
-function translationLineHintRow(item,index,direction){
- const row=(Array.isArray(item?.lineHints)?item.lineHints:[]).find(x=>x.line===index+1);
- if(!row)return '';
- const hint=direction==='toEnglish'?row.toEnglishHint:row.toChineseHint;
- if(!hint)return '';
- const label=direction==='toEnglish'?'Structure hint · 句型提示':'Structure hint';
- return `<details class="translation-line-hint"><summary>${label}</summary><div class="translation-line-hint-body"><div class="translation-structure-hint-text">${esc(hint)}</div></div></details>`
-}
-function translationHasLineHints(item,direction){
- const key=direction==='toEnglish'?'toEnglishHint':'toChineseHint';
- return (Array.isArray(item?.lineHints)?item.lineHints:[]).some(x=>!!x[key])
+function translationInlineHint(item,index,direction){
+ const row=(item.structureHints||[])[index]||{};
+ const text=direction==='toEnglish'?row.toEnglish:row.toChinese;
+ if(!text)return '';
+ return `<details class="translation-line-hint"><summary>Structure hint · 句型提示</summary><div class="translation-line-hint-body"><div class="translation-structure-hint-text">${esc(text)}</div>${row.source?`<small>Related pattern: ${esc(row.source)}</small>`:''}</div></details>`
 }
 function translationHintToggleButton(item,direction){
- if(!translationHasLineHints(item,direction))return '';
- return `<button class="translation-hints-toggle" type="button" aria-pressed="false" onclick="toggleTranslationHints(this)">Hints: Off</button>`
+ const key=direction==='toEnglish'?'toEnglish':'toChinese';
+ const has=(item.structureHints||[]).some(x=>x&&x[key]);
+ return has?`<button class="translation-hints-toggle" type="button" aria-pressed="false" onclick="toggleTranslationHints(this)">Hints: Off</button>`:''
 }
 function toggleTranslationHints(button){
  const body=button?.closest('.translation-mode-body');if(!body)return;
@@ -300,26 +295,6 @@ function toggleTranslationHints(button){
  body.classList.toggle('translation-hints-off',!on);
  button.textContent=on?'Hints: On':'Hints: Off';
  button.setAttribute('aria-pressed',on?'true':'false')
-}
-function translationPatternLinks(item){
- return (Array.isArray(item?.patternLinks)?item.patternLinks:[]).filter(link=>{
-  const sentence=(practiceCatalog().sentencePractice||[]).find(x=>x.id===link.sentenceId);
-  return sentence&&Number.isInteger(link.line)&&link.line>0
- })
-}
-function translationLinkedSentence(link){
- return (practiceCatalog().sentencePractice||[]).find(x=>x.id===link?.sentenceId)||null
-}
-function translationPatternApplication(item,direction){
- const links=translationPatternLinks(item);
- if(!links.length)return '';
- const isToEnglish=direction==='toEnglish';
- const rows=links.map(link=>{
-  const sentence=translationLinkedSentence(link);if(!sentence)return '';
-  return `<div class="translation-linked-pattern-row"><div><span>${esc(sentenceCode(sentence))}</span><b>${esc(sentence.pattern)}</b><small>${isToEnglish?'This sentence uses an existing Single Sentence pattern.':'This English sentence uses an existing Single Sentence pattern.'}</small></div><button type="button" onclick="go('#sentence=${sentence.id}')">Open ${esc(sentenceCode(sentence))} →</button></div>`
- }).join('');
- const label=isToEnglish?'Sentence Pattern Application · 句型应用':'Sentence Pattern Application';
- return rows?`<details class="translation-details translation-linked-patterns"><summary>${label}</summary><div class="translation-linked-pattern-list">${rows}</div></details>`:''
 }
 function taipeiDateString(){
  const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
@@ -593,23 +568,22 @@ function sentenceCode(item){
  const i=same.findIndex(x=>x.id===item.id);
  return `${item.level}-${i>=0?i+1:'?'}`
 }
-function sentenceDisplayTitle(item){return String(item?.title||'').toLowerCase()}
 function sentenceCard(item){
  const today=isTodayItem(item);
  return `<article class="sentence-card compact-practice-card ${today?'today-card':''}" onclick="go('#sentence=${item.id}')" role="button" tabindex="0">
   <div class="compact-top"><span class="level-pill ${item.level.toLowerCase()}">${sentenceCode(item)}</span><span>${esc((item.scene||"sentence").toLowerCase())}</span>${today?'<em>TODAY</em>':''}</div>
-  <h3>${esc(sentenceDisplayTitle(item))}</h3><div class="compact-zh">${esc(item.titleZh||'')}</div>
+  <h3>${esc(item.title)}</h3><div class="compact-zh">${esc(item.titleZh||'')}</div>
  </article>`
 }
 function sentenceDetailBody(item){
- return `<article class="sentence-card sentence-detail-card"><div class="sentence-card-top"><span class="level-pill ${item.level.toLowerCase()}">${sentenceCode(item)}</span><span>${esc(sentenceDisplayTitle(item))}</span></div><div class="sentence-title-zh">${esc(item.titleZh||'')}</div><div class="sentence-pattern">${esc(item.pattern)}</div>${practiceZhPair(item.zh,'sentence-zh','sentence-pinyin')}<details class="sentence-options"><summary>Try different endings</summary><div class="sentence-hints">${(item.hints||[]).map(h=>`<div><b>${esc(h.en)}</b><span>${esc(h.zh)}</span><small>${practicePinyin(h.zh)}</small></div>`).join('')}</div></details><details class="sentence-example"><summary>Show example</summary><div><b>${esc(item.example?.en||'')}</b><span>${esc(item.example?.zh||'')}</span><small>${practicePinyin(item.example?.zh||'')}</small></div></details></article>`
+ return `<article class="sentence-card sentence-detail-card"><div class="sentence-card-top"><span class="level-pill ${item.level.toLowerCase()}">${sentenceCode(item)}</span><span>${esc(item.title)}</span></div>${practiceZhPair(item.titleZh,'sentence-title-zh','sentence-title-pinyin')}<div class="sentence-pattern">${esc(item.pattern)}</div>${practiceZhPair(item.zh,'sentence-zh','sentence-pinyin')}<details class="sentence-options"><summary>Try different endings</summary><div class="sentence-hints">${(item.hints||[]).map(h=>`<div><b>${esc(h.en)}</b><span>${esc(h.zh)}</span><small>${practicePinyin(h.zh)}</small></div>`).join('')}</div></details><details class="sentence-example"><summary>Show example</summary><div><b>${esc(item.example?.en||'')}</b><span>${esc(item.example?.zh||'')}</span><small>${practicePinyin(item.example?.zh||'')}</small></div></details></article>`
 }
 function sentencePage(id){
  const all=practiceCatalog().sentencePractice||[];
  const item=all.find(x=>x.id===id);if(!item)return sentenceLibrary();
  const same=all.filter(x=>x.level===item.level);
  const i=same.findIndex(x=>x.id===id),prev=same[i-1],next=same[i+1];
- const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#sentences">Single Sentence</a> / ${esc(sentenceDisplayTitle(item))}</div>${sentenceDetailBody(item)}<div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#sentence=${prev.id}')"`:`onclick="go('#sentences')"`}><small>← ${prev?'Previous':'All sentences'}</small><b>${prev?`${sentenceCode(prev)} · ${esc(sentenceDisplayTitle(prev))}`:'Single Sentence'}</b></button><button class="pn" ${next?`onclick="go('#sentence=${next.id}')"`:`onclick="go('#sentences')"`}><small>${next?'Next':'Back to library'} →</small><b>${next?`${sentenceCode(next)} · ${esc(sentenceDisplayTitle(next))}`:'Choose another sentence'}</b></button></div>${copyLinkBar()}</section>`;
+ const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#sentences">Single Sentence</a> / ${esc(item.title)}</div>${sentenceDetailBody(item)}<div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#sentence=${prev.id}')"`:`onclick="go('#sentences')"`}><small>← ${prev?'Previous':'All sentences'}</small><b>${prev?`${sentenceCode(prev)} · ${esc(prev.title)}`:'Single Sentence'}</b></button><button class="pn" ${next?`onclick="go('#sentence=${next.id}')"`:`onclick="go('#sentences')"`}><small>${next?'Next':'Back to library'} →</small><b>${next?`${sentenceCode(next)} · ${esc(next.title)}`:'Choose another sentence'}</b></button></div>${copyLinkBar()}</section>`;
  shell(content,'Sentence')
 }
 function sentenceLibrary(level=sentenceLevelState,sort=sentenceSortState){
@@ -649,8 +623,8 @@ function translationLibrary(level=translationLevelState,sort=translationSortStat
 function setTranslationSort(v){translationSortState=v;translationLibrary(translationLevelState,v)}
 function translationReferenceLine(en,index){return `<div class="translation-reference-line"><span class="translation-line-number">${index+1}</span><p>${esc(en)}</p></div>`}
 function translationSourceLine(zh,index){return `<div class="translation-source-line"><span class="translation-line-number">${index+1}</span><div><div class="translation-source-zh">${esc(zh)}</div><div class="translation-source-pinyin">${practicePinyin(zh)}</div></div></div>`}
-function translationPracticeChineseLine(zh,index,item){return `<div class="translation-source-line translation-practice-line"><span class="translation-line-number">${index+1}</span><div><div class="translation-source-zh">${esc(zh)}</div><div class="translation-source-pinyin">${practicePinyin(zh)}</div>${translationLineHintRow(item,index,'toEnglish')}</div></div>`}
-function translationPracticeEnglishLine(en,index,item){return `<div class="translation-reference-line translation-practice-line"><span class="translation-line-number">${index+1}</span><div class="translation-english-line-body"><p>${esc(en)}</p>${translationLineHintRow(item,index,'toChinese')}</div></div>`}
+function translationPracticeChineseLine(zh,index,item){return `<div class="translation-source-line translation-practice-line"><span class="translation-line-number">${index+1}</span><div><div class="translation-source-zh">${esc(zh)}</div><div class="translation-source-pinyin">${practicePinyin(zh)}</div>${translationInlineHint(item,index,'toEnglish')}</div></div>`}
+function translationPracticeEnglishLine(en,index,item){return `<div class="translation-reference-line translation-practice-line"><span class="translation-line-number">${index+1}</span><div class="translation-english-line-body"><p>${esc(en)}</p>${translationInlineHint(item,index,'toChinese')}</div></div>`}
 function translationAlternativeBlock(item){
  const rows=(item.alternatives||[]).map(a=>`<div class="translation-alt-row"><div>${practiceZhPair(a.zh,'translation-alt-zh','translation-alt-pinyin')}</div><ul>${(a.en||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('');
  return rows?`<details class="translation-details"><summary>Show natural alternatives</summary><div class="translation-alternatives">${rows}</div></details>`:''
@@ -671,8 +645,8 @@ function translationPage(id){
  const content=`<section class="translation-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#translations">Translation Practice</a> / ${esc(item.title)}</div>
  <div class="translation-detail-head"><div><div class="eyebrow">${esc((item.topic||"").toLowerCase())}</div><div class="detail-title-line"><span class="level-pill ${item.level.toLowerCase()}">${translationCode(item)}</span><h1>${esc(item.title)}</h1></div><div class="detail-title-zh">${esc(item.titleZh||'')}</div><p>${esc(item.goal)}</p>${goalZh}</div></div>
  <div class="translation-mode-picker">
-  <details class="translation-mode"><summary><span><small>Direction 1</small><b>中翻英 · Chinese → English</b></span><em>Open</em></summary><div class="translation-mode-body translation-hints-off"><div class="dialogue-card-heading simplified-stage-heading"><div class="eyebrow">Source · Chinese</div><div class="translation-count-actions"><span>${(item.zhLines||[]).length} sentences</span>${translationHintToggleButton(item,'toEnglish')}</div></div><div class="translation-source-list">${sourcePractice}</div>${translationPatternApplication(item,'toEnglish')}<details class="translation-details translation-answer"><summary>Show English reference</summary><div class="translation-reference-list">${englishAnswer}</div></details>${translationAlternativeBlock(item)}${translationPhraseBlock(item)}</div></details>
-  <details class="translation-mode"><summary><span><small>Direction 2</small><b>英翻中 · English → Chinese</b></span><em>Open</em></summary><div class="translation-mode-body translation-hints-off"><div class="dialogue-card-heading simplified-stage-heading"><div class="eyebrow">Source · English</div><div class="translation-count-actions"><span>${(item.enLines||[]).length} sentences</span>${translationHintToggleButton(item,'toChinese')}</div></div><div class="translation-reference-list translation-english-source">${englishPractice}</div>${translationPatternApplication(item,'toChinese')}<details class="translation-details translation-answer"><summary>Show Chinese reference</summary><div class="translation-source-list translation-chinese-answer">${sourceAnswer}</div></details></div></details>
+  <details class="translation-mode"><summary><span><small>Direction 1</small><b>中翻英 · Chinese → English</b></span><em>Open</em></summary><div class="translation-mode-body translation-hints-off"><div class="dialogue-card-heading simplified-stage-heading"><div class="eyebrow">Source · Chinese</div><div class="translation-count-actions"><span>${(item.zhLines||[]).length} sentences</span>${translationHintToggleButton(item,'toEnglish')}</div></div><div class="translation-source-list">${sourcePractice}</div><details class="translation-details translation-answer"><summary>Show English reference</summary><div class="translation-reference-list">${englishAnswer}</div></details>${translationAlternativeBlock(item)}${translationPhraseBlock(item)}</div></details>
+  <details class="translation-mode"><summary><span><small>Direction 2</small><b>英翻中 · English → Chinese</b></span><em>Open</em></summary><div class="translation-mode-body translation-hints-off"><div class="dialogue-card-heading simplified-stage-heading"><div class="eyebrow">Source · English</div><div class="translation-count-actions"><span>${(item.enLines||[]).length} sentences</span>${translationHintToggleButton(item,'toChinese')}</div></div><div class="translation-reference-list translation-english-source">${englishPractice}</div><details class="translation-details translation-answer"><summary>Show Chinese reference</summary><div class="translation-source-list translation-chinese-answer">${sourceAnswer}</div></details></div></details>
  </div>
  <div class="prevnext translation-prevnext"><button class="pn" ${prev?`onclick="go('#translation=${prev.id}')"`:`onclick="go('#translations')"`}><small>← ${prev?'Previous':'All translations'}</small><b>${prev?`${translationCode(prev)} · ${esc(prev.title)}`:'Translation Practice'}</b></button><button class="pn" ${next?`onclick="go('#translation=${next.id}')"`:`onclick="go('#translations')"`}><small>${next?'Next':'Back to library'} →</small><b>${next?`${translationCode(next)} · ${esc(next.title)}`:'Choose another text'}</b></button></div>${copyLinkBar()}
  </section>`;

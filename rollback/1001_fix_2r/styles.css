@@ -361,29 +361,3 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
  .dialogue-inline-hint-item{flex:1 1 calc(50% - 6px);min-width:120px}
  .simplified-stage-heading{align-items:flex-start}.simplified-stage-heading>span{margin-top:1px}
 }
-
-
-/* 1001_fix_2r — per-line hints + separate Single Sentence application */
-.sentence-title-zh{margin:5px 0 10px;color:var(--muted);font-size:14px;line-height:1.55}
-.translation-line-hint{display:none;margin-top:7px}
-.translation-hints-on .translation-line-hint{display:block}
-.translation-line-hint>summary{display:inline-flex;align-items:center;min-height:28px;padding:4px 8px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--muted);font-size:10px;font-weight:800;cursor:pointer;list-style:none}
-.translation-line-hint>summary::-webkit-details-marker{display:none}
-.translation-line-hint>summary::after{content:'＋';margin-left:6px;color:var(--gold)}
-.translation-line-hint[open]>summary::after{content:'−'}
-.translation-line-hint-body{padding:8px 2px 1px}
-.translation-structure-hint-text{font-size:11px;line-height:1.55;color:var(--ink)}
-.translation-linked-patterns{margin:12px 0!important}
-.translation-linked-patterns>summary{min-height:34px;padding:7px 10px!important;font-size:11px!important}
-.translation-linked-pattern-list{display:grid;gap:8px;padding-top:9px}
-.translation-linked-pattern-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--soft)}
-.translation-linked-pattern-row>div{display:grid;gap:4px;min-width:0}
-.translation-linked-pattern-row span{font-size:9.5px;color:var(--gold);font-weight:850}
-.translation-linked-pattern-row b{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1.45;color:var(--ink)}
-.translation-linked-pattern-row small{font-size:10.5px;line-height:1.5;color:var(--muted)}
-.translation-linked-pattern-row button{flex:0 0 auto;min-height:30px;padding:5px 9px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);font:inherit;font-size:10px;font-weight:850;cursor:pointer}
-.translation-linked-pattern-row button:hover{border-color:var(--gold);color:var(--gold)}
-@media(max-width:640px){
- .translation-linked-pattern-row{align-items:flex-start;flex-direction:column}
- .translation-linked-pattern-row button{width:100%}
-}
