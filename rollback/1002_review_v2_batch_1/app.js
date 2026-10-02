@@ -48,8 +48,8 @@ function header(active='Home'){
   {label:'Single Sentence',zh:'单句练习',hash:'sentences',key:'Sentence'},
   {label:'Conversation',zh:'生活对话',hash:'dialogues',key:'Conversation'},
   {label:'Translation',zh:'翻译练习',hash:'translations',key:'Translation'},
-  {label:'Review',zh:'复习练习',hash:'review-practice',key:'Review'},
-  {label:'Reading',zh:'阅读练习',hash:'reading',key:'Reading'},
+  {label:'Review Practice',zh:'复习练习',hash:'review-practice',key:'Review'},
+  {label:'Reading Practice',zh:'阅读练习',hash:'reading',key:'Reading'},
   {label:'Film & TV',zh:'影视经典名句',hash:'screen-lines',key:'Film'}
  ];
  const desktopLinks=navItems.map(x=>`<a class="${active===x.key?'active':''}" href="#${x.hash}" onclick="closeExploreMenu()">${x.label}</a>`).join('');
@@ -141,8 +141,8 @@ function home(){
   ['Single Sentence','单句练习','#sentences','S'],
   ['Conversation','生活对话','#dialogues','C'],
   ['Translation','翻译练习','#translations','T'],
-  ['Review','复习练习','#review-practice','V'],
-  ['Reading','阅读练习','#reading','R'],
+  ['Review Practice','复习练习','#review-practice','V'],
+  ['Reading Practice','阅读练习','#reading','R'],
   ['Film & TV','影视经典名句','#screen-lines','F']
  ];
  const content=`<section id="partySlot" class="party-slot" hidden></section>
@@ -719,12 +719,12 @@ function reviewV2Home(){
  const themeCards=(cat.themes||[]).map(t=>{
   const count=reviewV2CoursesByTheme(t.id).length;
   return `<button class="review-v2-theme-card ${count?'has-courses':'preview-empty'}" type="button" onclick="go('#review-theme=${t.id}')">
-   <div><span class="review-v2-theme-mark">${String(count).padStart(2,'0')}</span><small>${count===1?'course':'courses'}</small></div>
+   <div><span class="review-v2-theme-mark">${count?String(count).padStart(2,'0'):'—'}</span><small>${count?'preview courses':'preview pending'}</small></div>
    <h2>${esc(t.en)}</h2><p>${esc(t.zh)}</p><span class="review-v2-theme-desc">${esc(t.desc||'')}</span>
   </button>`
  }).join('');
  const h=cat.history||{};
- const content=`<section class="page-pad practice-page-head review-v2-head"><div class="eyebrow">Review</div><h1 class="page-title">Review PRACTICE</h1><div class="detail-title-zh">复习练习</div></section>
+ const content=`<section class="page-pad practice-page-head review-v2-head"><div class="eyebrow">Review Practice · V2 Preview</div><h1 class="page-title">Review by Topic</h1><p>The text is the core. Sentence patterns are pulled from the text only when they are actually used.</p></section>
  <section class="section review-v2-library">
   <div class="review-v2-theme-grid">${themeCards}</div>
   <button class="review-v2-history-card" type="button" onclick="go('#history=sentence&level=A1')">
