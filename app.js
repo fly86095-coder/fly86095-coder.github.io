@@ -794,13 +794,15 @@ function reviewV2LineHint(course,line,direction){
 function reviewV2SourceLines(course,direction){
  return (course.lines||[]).map((line,index)=>{
   const source=direction==='toEnglish'?line.zh:line.en;
-  return `<div class="review-v2-source-line"><span class="review-v2-line-no">${index+1}</span><div><p>${esc(source||'')}</p>${reviewV2LineHint(course,line,direction)}</div></div>`
+  const pinyin=direction==='toEnglish'?`<small class="review-v2-line-pinyin">${practicePinyin(source||'')}</small>`:'';
+  return `<div class="review-v2-source-line"><span class="review-v2-line-no">${index+1}</span><div><p>${esc(source||'')}</p>${pinyin}${reviewV2LineHint(course,line,direction)}</div></div>`
  }).join('')
 }
 function reviewV2AnswerLines(course,direction){
  return (course.lines||[]).map((line,index)=>{
   const answer=direction==='toEnglish'?line.en:line.zh;
-  return `<div class="review-v2-answer-line"><span>${index+1}</span><p>${esc(answer||'')}</p></div>`
+  const pinyin=direction==='toChinese'?`<small class="review-v2-line-pinyin">${practicePinyin(answer||'')}</small>`:'';
+  return `<div class="review-v2-answer-line"><span>${index+1}</span><div><p>${esc(answer||'')}</p>${pinyin}</div></div>`
  }).join('')
 }
 function reviewV2Direction(course,direction){
