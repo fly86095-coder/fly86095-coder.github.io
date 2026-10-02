@@ -496,27 +496,3 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
 .history-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.history-card{border:1px solid var(--line);background:var(--card);border-radius:15px;padding:14px;min-height:132px;cursor:pointer}.history-card:hover{border-color:var(--gold)}.history-card-top{display:flex;align-items:center;gap:8px}.history-card-top small{font-size:8px;color:var(--muted)}.history-card h3{font-size:15px;line-height:1.3;margin:18px 0 4px}
 @media(max-width:900px){.review-v2-theme-grid,.history-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.review-v2-history-card{grid-template-columns:1fr auto}.review-v2-history-card>span{grid-column:1/-1;grid-row:2}.review-v2-hero{align-items:flex-start;flex-direction:column}}
 @media(max-width:600px){.review-v2-theme-grid,.review-v2-course-grid,.review-v2-pattern-grid,.history-grid{grid-template-columns:1fr}.review-v2-theme-card{min-height:170px}.review-v2-history-card{grid-template-columns:1fr}.review-v2-history-card>span{grid-column:auto;grid-row:auto}.review-v2-history-card>b{margin-top:4px}.review-v2-stage{padding:15px}.review-v2-hero h1{font-size:27px}.history-type-tabs{grid-template-columns:1fr}.history-level-row{align-items:flex-start;flex-direction:column;gap:9px}.review-v2-hint-row{align-items:flex-start;flex-direction:column}.review-v2-hint-row button{padding:3px 0}.review-v2-flow{gap:5px}}
-
-
-/* 1002_today_1 — home alignment + 10/02 translation hints */
-.home-title-block{margin-bottom:18px}
-.home-title-block h1{color:var(--gold);margin:0 0 7px}
-.home-practice-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;grid-auto-rows:1fr}
-.home-practice-card{min-height:122px;padding:18px;justify-content:center;align-items:flex-start}
-.home-practice-card b{font-size:20px;line-height:1.18}
-.home-practice-card small{font-size:12px;line-height:1.25}
-.home-mark{display:none!important}
-.minimal-home>.party-slot{margin:0 auto 22px;padding:0;width:100%;max-width:none}
-@media(max-width:700px){
- .home-practice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
- .home-practice-card:last-child{grid-column:auto}
- .home-practice-card{min-height:104px;padding:13px 12px}
- .home-practice-card b{font-size:15px;line-height:1.16;white-space:nowrap}
- .home-practice-card small{font-size:11px;line-height:1.2;white-space:nowrap}
- .home-title-block{margin-bottom:16px}
- .minimal-home>.party-slot{margin-bottom:18px}
-}
-@media(max-width:360px){
- .home-practice-card b{font-size:14px}
- .home-practice-card small{font-size:10px}
-}

@@ -138,17 +138,17 @@ function monthlyLibraryBody(all,level,sort,codeFn,routeKey,cardFn,gridClass){
 }
 function home(){
  const cards=[
-  ['Single Sentence','单句练习','#sentences'],
-  ['Conversation','生活对话','#dialogues'],
-  ['Translation','翻译练习','#translations'],
-  ['Review','复习练习','#review-practice'],
-  ['Reading','阅读练习','#reading'],
-  ['Film & TV','影视经典名句','#screen-lines']
+  ['Single Sentence','单句练习','#sentences','S'],
+  ['Conversation','生活对话','#dialogues','C'],
+  ['Translation','翻译练习','#translations','T'],
+  ['Review','复习练习','#review-practice','V'],
+  ['Reading','阅读练习','#reading','R'],
+  ['Film & TV','影视经典名句','#screen-lines','F']
  ];
- const content=`<section class="minimal-home">
-  <div class="home-title-block"><h1>English / 中文 Practice</h1><p>双语英语练习</p></div>
-  <section id="partySlot" class="party-slot" hidden></section>
-  <div class="home-practice-grid">${cards.map(([en,zh,route])=>`<button class="home-practice-card" onclick="go('${route}')"><b>${en}</b><small>${zh}</small></button>`).join('')}</div>
+ const content=`<section id="partySlot" class="party-slot" hidden></section>
+ <section class="minimal-home">
+  <div class="home-title-block"><div class="eyebrow">${esc(SITE.name)}</div><h1>English / 中文 Practice</h1><p>双语英语练习</p></div>
+  <div class="home-practice-grid">${cards.map(([en,zh,route,mark])=>`<button class="home-practice-card" onclick="go('${route}')"><span class="home-mark">${mark}</span><b>${en}</b><small>${zh}</small></button>`).join('')}</div>
  </section>`;
  shell(content,'Home');hydratePartySlot()
 }
@@ -314,8 +314,7 @@ function translationLineHintRow(item,index,direction){
  if(!row)return '';
  const hint=direction==='toEnglish'?row.toEnglishHint:row.toChineseHint;
  if(!hint)return '';
- const isVocabulary=item?.hintType==='vocabulary';
- const label=isVocabulary?'Vocabulary hint · 生字提示':(direction==='toEnglish'?'Structure hint · 句型提示':'Structure hint');
+ const label=direction==='toEnglish'?'Structure hint · 句型提示':'Structure hint';
  return `<details class="translation-line-hint"><summary>${label}</summary><div class="translation-line-hint-body"><div class="translation-structure-hint-text">${esc(hint)}</div></div></details>`
 }
 function translationHasLineHints(item,direction){
@@ -324,16 +323,13 @@ function translationHasLineHints(item,direction){
 }
 function translationHintToggleButton(item,direction){
  if(!translationHasLineHints(item,direction))return '';
- const isVocabulary=item?.hintType==='vocabulary';
- const off=isVocabulary?'Vocabulary: Off':'Hints: Off';
- const on=isVocabulary?'Vocabulary: On':'Hints: On';
- return `<button class="translation-hints-toggle" type="button" aria-pressed="false" data-off-label="${off}" data-on-label="${on}" onclick="toggleTranslationHints(this)">${off}</button>`
+ return `<button class="translation-hints-toggle" type="button" aria-pressed="false" onclick="toggleTranslationHints(this)">Hints: Off</button>`
 }
 function toggleTranslationHints(button){
  const body=button?.closest('.translation-mode-body');if(!body)return;
  const on=body.classList.toggle('translation-hints-on');
  body.classList.toggle('translation-hints-off',!on);
- button.textContent=on?(button.dataset.onLabel||'Hints: On'):(button.dataset.offLabel||'Hints: Off');
+ button.textContent=on?'Hints: On':'Hints: Off';
  button.setAttribute('aria-pressed',on?'true':'false')
 }
 function translationPatternLinks(item){
@@ -345,25 +341,15 @@ function translationPatternLinks(item){
 function translationLinkedSentence(link){
  return (practiceCatalog().sentencePractice||[]).find(x=>x.id===link?.sentenceId)||null
 }
-function translationPatternRoute(sentence){
- const month=String(sentence?.publishedOn||'').slice(0,7);
- return month===currentMonthString()?`#sentence=${sentence.id}`:`#history-sentence=${sentence.id}`
-}
-function translationPatternCode(sentence){
- const month=String(sentence?.publishedOn||'').slice(0,7);
- return month===currentMonthString()?sentenceCode(sentence):historyCode(sentence,'sentence')
-}
 function translationPatternApplication(item,direction){
  const links=translationPatternLinks(item);
  if(!links.length)return '';
  const isToEnglish=direction==='toEnglish';
  const rows=links.map(link=>{
   const sentence=translationLinkedSentence(link);if(!sentence)return '';
-  const code=translationPatternCode(sentence);
-  const route=translationPatternRoute(sentence);
-  return `<div class="translation-linked-pattern-row"><div><span>${esc(code)} · Line ${link.line}</span><b>${esc(sentence.pattern)}</b><small>${isToEnglish?'This sentence uses an existing Single Sentence pattern.':'This English sentence uses an existing Single Sentence pattern.'}</small></div><button type="button" onclick="go('${route}')">Open ${esc(code)} →</button></div>`
+  return `<div class="translation-linked-pattern-row"><div><span>${esc(sentenceCode(sentence))}</span><b>${esc(sentence.pattern)}</b><small>${isToEnglish?'This sentence uses an existing Single Sentence pattern.':'This English sentence uses an existing Single Sentence pattern.'}</small></div><button type="button" onclick="go('#sentence=${sentence.id}')">Open ${esc(sentenceCode(sentence))} →</button></div>`
  }).join('');
- const label='Sentence Pattern Application · 句型应用';
+ const label=isToEnglish?'Sentence Pattern Application · 句型应用':'Sentence Pattern Application';
  return rows?`<details class="translation-details translation-linked-patterns"><summary>${label}</summary><div class="translation-linked-pattern-list">${rows}</div></details>`:''
 }
 function taipeiDateString(){
