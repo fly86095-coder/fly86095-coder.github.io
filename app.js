@@ -119,17 +119,22 @@ function currentMonthCode(item,items){
  const i=same.findIndex(x=>x.id===item.id);
  return `${item.level}-${i>=0?i+1:'?'}`
 }
+function catchUpTodayItems(items){
+ const levels=['A1','A2','B1'];
+ return levels.flatMap(level=>(items||[]).filter(x=>x.level===level).slice(8,11))
+}
 function practiceLibraryTabs(current,handler,sort){
  const tabs=['Today','All','A1','A2','B1'];
  return `<div class="library-control-row"><div class="dialogue-level-tabs monthly-practice-tabs">${tabs.map(l=>`<button class="tab ${current===l?'active':''}" onclick="${handler}('${l}','${sort}')">${l==='Today'?'TODAY':l==='All'?'ALL':l}</button>`).join('')}</div>${sortSelect(sort,handler.replace('Library','Sort'))}</div>`
 }
 function monthlyLibraryBody(all,level,sort,codeFn,routeKey,cardFn,gridClass){
+ const catchUp=catchUpTodayItems(all);
+ const catchUpIds=new Set(catchUp.map(x=>x.id));
  if(level==='Today'){
-  const today=all.filter(isTodayItem);
-  return today.length?quickPracticeIndex(today,codeFn,routeKey,sort):`<div class="monthly-empty"><b>No new practice yet today.</b><span>今天的新教材加入后，会自动显示在这里。</span></div>`
+  return catchUp.length?quickPracticeIndex(catchUp,codeFn,routeKey,sort,true):`<div class="monthly-empty"><b>No new practice yet today.</b><span>今天的新教材加入后，会自动显示在这里。</span></div>`
  }
  if(level==='All'){
-  const older=all.filter(x=>!isTodayItem(x));
+  const older=all.filter(x=>!catchUpIds.has(x.id));
   return older.length?quickPracticeIndex(older,codeFn,routeKey,sort):`<div class="monthly-empty"><b>No earlier lessons this month yet.</b></div>`
  }
  let list=all.filter(x=>x.level===level);
@@ -292,14 +297,14 @@ function copyCurrentLink(button){
  if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text,done));else fallbackCopy(text,done)
 }
 function copyLinkBar(){return `<div class="copy-link-bar"><button class="copy-link-btn" type="button" onclick="copyCurrentLink(this)">Copy link · 复制链接</button></div>`}
-function quickPracticeIndex(items,codeFn,routeKey,sort='Newest'){
+function quickPracticeIndex(items,codeFn,routeKey,sort='Newest',highlightAll=false){
  const levels=['A1','A2','B1'];
  const groups=Object.fromEntries(levels.map(level=>[level,items.filter(x=>x.level===level)]));
  const max=Math.max(0,...levels.map(level=>groups[level].length));
  const order=Array.from({length:max},(_,i)=>sort==='Newest'?max-i:i+1);
  const rows=order.map(n=>`<div class="quick-code-row">${levels.map(level=>{
   const item=groups[level][n-1];
-  return item?`<button class="quick-code-btn ${isTodayItem(item)?'today-code-btn':''}" type="button" onclick="go('#${routeKey}=${item.id}')">${esc(codeFn(item))}</button>`:`<span class="quick-code-empty" aria-hidden="true"></span>`
+  return item?`<button class="quick-code-btn ${highlightAll||isTodayItem(item)?'today-code-btn':''}" type="button" onclick="go('#${routeKey}=${item.id}')">${esc(codeFn(item))}</button>`:`<span class="quick-code-empty" aria-hidden="true"></span>`
  }).join('')}</div>`).join('');
  return `<div class="quick-code-index">${rows}</div>`
 }
