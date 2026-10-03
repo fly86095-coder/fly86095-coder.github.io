@@ -120,10 +120,8 @@ function currentMonthCode(item,items){
  return `${item.level}-${i>=0?i+1:'?'}`
 }
 function catchUpTodayItems(items){
- const source=items||[];
- if(todayString()!=='2026-10-03')return source.filter(isTodayItem);
  const levels=['A1','A2','B1'];
- return levels.flatMap(level=>source.filter(x=>x.level===level).slice(8,12))
+ return levels.flatMap(level=>(items||[]).filter(x=>x.level===level).slice(8,11))
 }
 function practiceLibraryTabs(current,handler,sort){
  const tabs=['Today','All','A1','A2','B1'];
