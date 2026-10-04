@@ -521,13 +521,3 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
  .home-practice-card b{font-size:14px}
  .home-practice-card small{font-size:10px}
 }
-
-
-/* 1004 translation hint polish */
-.translation-vocab-hint-list{display:grid;gap:7px}
-.translation-vocab-hint-item{display:grid;grid-template-columns:minmax(110px,1fr) minmax(90px,.85fr);column-gap:10px;row-gap:2px;align-items:baseline;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
-.translation-vocab-hint-item b{font-size:11.5px;color:var(--ink)}
-.translation-vocab-hint-item span{font-size:11.5px;color:var(--ink)}
-.translation-vocab-hint-item small{grid-column:2;color:var(--muted);font-size:9.5px;line-height:1.45}
-.translation-linked-pattern-zh{font-style:normal;font-size:11px;line-height:1.5;color:var(--muted)}
-@media(max-width:640px){.translation-vocab-hint-item{grid-template-columns:1fr}.translation-vocab-hint-item small{grid-column:1}}

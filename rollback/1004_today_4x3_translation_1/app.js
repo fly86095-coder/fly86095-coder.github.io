@@ -104,20 +104,12 @@ function readingPlaceholder(kind){
 }
 function todayString(){return taipeiDateString()}
 function currentMonthString(){return todayString().slice(0,7)}
-function latestPracticeBatchDate(){
- const p=practiceCatalog();
- return [...(p.sentencePractice||[]),...(p.dialogues||[]),...(p.translations||[])]
-  .map(x=>String(x?.publishedOn||'').trim()).filter(Boolean).sort().slice(-1)[0]||''
-}
-function isTodayItem(item){const latest=latestPracticeBatchDate();return !!latest&&item?.publishedOn===latest}
+function isTodayItem(item){return !!item?.publishedOn && item.publishedOn===todayString()}
 function reviewCatalog(){return window.REVIEW_CATALOG||{version:'',themes:[],courses:[],excludeFromCurrentMonth:[]}}
 function reviewExcludedIds(){return new Set(reviewCatalog().excludeFromCurrentMonth||[])}
 function currentMonthItems(items){
- const month=currentMonthString(),latest=latestPracticeBatchDate(),excluded=reviewExcludedIds();
- return (items||[]).filter(x=>{
-  const date=String(x?.publishedOn||'');
-  return !!date&&(date.slice(0,7)===month||date===latest)&&!excluded.has(x.id)
- })
+ const month=currentMonthString(),excluded=reviewExcludedIds();
+ return (items||[]).filter(x=>!!x?.publishedOn&&x.publishedOn.slice(0,7)===month&&!excluded.has(x.id))
 }
 function currentMonthSentenceItems(){return currentMonthItems(practiceCatalog().sentencePractice||[])}
 function currentMonthDialogueItems(){return currentMonthItems(practiceCatalog().dialogues||[])}
@@ -128,8 +120,10 @@ function currentMonthCode(item,items){
  return `${item.level}-${i>=0?i+1:'?'}`
 }
 function catchUpTodayItems(items){
- const latest=latestPracticeBatchDate();
- return latest?(items||[]).filter(x=>x?.publishedOn===latest):[]
+ const source=items||[];
+ if(todayString()!=='2026-10-03')return source.filter(isTodayItem);
+ const levels=['A1','A2','B1'];
+ return levels.flatMap(level=>source.filter(x=>x.level===level).slice(8,12))
 }
 function practiceLibraryTabs(current,handler,sort){
  const tabs=['Today','All','A1','A2','B1'];
@@ -322,27 +316,12 @@ function dialogueReferenceBank(d){
  if(!groups.length)return `<p class="source-note">No reference words are available for this older practice set.</p>`;
  return `<div class="dialogue-reference-grid">${groups.map(g=>`<div class="dialogue-reference-group"><small>${esc(g.label||'Reference')}</small><div class="dialogue-reference-chips">${(g.items||[]).map(x=>`<div class="dialogue-ref-chip"><b>${esc(x.en||x)}</b>${x.zh?`<span>${esc(x.zh)}</span>`:''}</div>`).join('')}</div></div>`).join('')}</div>`
 }
-function translationVocabularyPairs(row){
- const explicit=Array.isArray(row?.toChineseVocab)?row.toChineseVocab.filter(x=>x?.en&&x?.zh):[];
- if(explicit.length)return explicit;
- return String(row?.toEnglishHint||'').split('·').map(x=>x.trim()).map(part=>{
-  const m=part.match(/^(.+?[\u3400-\u9fff][^A-Za-z]*?)\s+([A-Za-z].*)$/);
-  return m?{zh:m[1].trim(),en:m[2].trim()}:null
- }).filter(Boolean)
-}
 function translationLineHintRow(item,index,direction){
  const row=(Array.isArray(item?.lineHints)?item.lineHints:[]).find(x=>x.line===index+1);
  if(!row)return '';
  const hint=direction==='toEnglish'?row.toEnglishHint:row.toChineseHint;
- const isVocabulary=item?.hintType==='vocabulary';
- if(isVocabulary&&direction==='toChinese'){
-  const pairs=translationVocabularyPairs(row);
-  if(pairs.length){
-   const content=pairs.map(x=>`<div class="translation-vocab-hint-item"><b>${esc(x.en)}</b><span>${esc(x.zh)}</span><small>${esc(pinyinText(x.zh))}</small></div>`).join('');
-   return `<details class="translation-line-hint"><summary>Vocabulary hint · 生字提示</summary><div class="translation-line-hint-body"><div class="translation-vocab-hint-list">${content}</div></div></details>`
-  }
- }
  if(!hint)return '';
+ const isVocabulary=item?.hintType==='vocabulary';
  const label=isVocabulary?'Vocabulary hint · 生字提示':(direction==='toEnglish'?'Structure hint · 句型提示':'Structure hint');
  return `<details class="translation-line-hint"><summary>${label}</summary><div class="translation-line-hint-body"><div class="translation-structure-hint-text">${esc(hint)}</div></div></details>`
 }
@@ -389,7 +368,7 @@ function translationPatternApplication(item,direction){
   const sentence=translationLinkedSentence(link);if(!sentence)return '';
   const code=translationPatternCode(sentence);
   const route=translationPatternRoute(sentence);
-  return `<div class="translation-linked-pattern-row"><div><span>${esc(code)} · Line ${link.line}</span><b>${esc(sentence.pattern)}</b><em class="translation-linked-pattern-zh">${esc(sentence.zh||'')}</em><small>${isToEnglish?'This sentence uses an existing Single Sentence pattern.':'This English sentence uses an existing Single Sentence pattern.'}</small></div><button type="button" onclick="go('${route}')">Open ${esc(code)} →</button></div>`
+  return `<div class="translation-linked-pattern-row"><div><span>${esc(code)} · Line ${link.line}</span><b>${esc(sentence.pattern)}</b><small>${isToEnglish?'This sentence uses an existing Single Sentence pattern.':'This English sentence uses an existing Single Sentence pattern.'}</small></div><button type="button" onclick="go('${route}')">Open ${esc(code)} →</button></div>`
  }).join('');
  const label='Sentence Pattern Application · 句型应用';
  return rows?`<details class="translation-details translation-linked-patterns"><summary>${label}</summary><div class="translation-linked-pattern-list">${rows}</div></details>`:''

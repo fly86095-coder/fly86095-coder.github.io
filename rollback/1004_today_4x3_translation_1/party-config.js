@@ -1,5 +1,5 @@
 window.PARTY_CONFIG = {
   sheetCsvUrl: "",
-  date: "2026-10-04",
-  startTime: "23:00"
+  date: "2026-10-03",
+  startTime: "23:20"
 };
