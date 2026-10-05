@@ -320,7 +320,7 @@ function dialogueReferenceBank(d){
  const explicit=Array.isArray(d.referenceBank)?d.referenceBank:[];
  const groups=explicit.length?explicit:(d.turns||[]).map((t,index)=>t?.hints?.length?{label:`Line ${index+1}`,items:t.hints}:null).filter(Boolean);
  if(!groups.length)return `<p class="source-note">No reference words are available for this older practice set.</p>`;
- return `<div class="dialogue-reference-grid">${groups.map(g=>`<div class="dialogue-reference-group"><small>${esc(g.label||'Reference')}</small><div class="dialogue-reference-chips">${(g.items||[]).map(x=>`<div class="dialogue-ref-chip"><b>${esc(x.en||x)}</b>${x.zh?`<span>${esc(x.zh)}</span>`:''}</div>`).join('')}</div></div>`).join('')}</div>`
+ return `<div class="dialogue-reference-grid">${groups.map(g=>`<div class="dialogue-reference-group"><small>${esc(g.label||'Reference')}</small><div class="dialogue-reference-chips">${(g.items||[]).map(x=>`<div class="dialogue-ref-chip"><b>${esc(x.en||x)}</b>${x.zh?`<span>${esc(x.zh)}</span><small class="dialogue-ref-pinyin">${esc(pinyinText(x.zh))}</small>`:''}</div>`).join('')}</div></div>`).join('')}</div>`
 }
 function translationVocabularyPairs(row){
  const explicit=Array.isArray(row?.toChineseVocab)?row.toChineseVocab.filter(x=>x?.en&&x?.zh):[];
@@ -603,7 +603,7 @@ function answerDialogueQuiz(button){
 function dialogueInlineHint(group){
  const items=group?.items||[];
  if(!items.length)return '';
- return `<details class="dialogue-inline-hint"><summary>Hint · 提示</summary><div class="dialogue-inline-hint-body"><small>${esc(group.label||'Reference')}</small><div class="dialogue-inline-hint-list">${items.map(x=>`<div class="dialogue-inline-hint-item"><b>${esc(x.en||'')}</b><span>${esc(x.zh||'')}</span></div>`).join('')}</div></div></details>`
+ return `<details class="dialogue-inline-hint"><summary>Hint · 提示</summary><div class="dialogue-inline-hint-body"><small>${esc(group.label||'Reference')}</small><div class="dialogue-inline-hint-list">${items.map(x=>`<div class="dialogue-inline-hint-item"><b>${esc(x.en||'')}</b><span>${esc(x.zh||'')}</span>${x.zh?`<small class="dialogue-ref-pinyin">${esc(pinyinText(x.zh))}</small>`:''}</div>`).join('')}</div></div></details>`
 }
 function dialoguePage(id){
  const all=currentMonthDialogueItems();
