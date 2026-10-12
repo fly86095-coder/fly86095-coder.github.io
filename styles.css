@@ -541,3 +541,68 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
 .dialogue-inline-hint-item b{grid-row:1}
 .dialogue-inline-hint-item span{grid-row:2}
 .dialogue-ref-pinyin{grid-row:3;color:var(--muted);font-size:9px;line-height:1.35;font-weight:600}
+
+/* 1012_structure_1 — eight areas, shared brand, and reserved sections */
+.clean-nav .brand{flex-shrink:0;text-decoration:none;color:inherit}
+.brandmark{padding:0;border:0;background:transparent;flex:0 0 34px}
+.brandmark img{display:block;width:100%;height:100%}
+.desktop-main-links{gap:13px}
+.desktop-main-links>a{display:flex;flex-direction:column;gap:3px;text-align:center;white-space:nowrap;font-size:12px;line-height:1.25}
+.desktop-main-links>a>small{font-size:9px;color:var(--muted);font-weight:400}
+.desktop-main-links>a.active>small{color:var(--gold)}
+.home-eight{max-width:1180px;margin:0 auto;padding:42px 24px 38px}
+.home-eight .home-title-block{margin-bottom:28px}
+.home-eight .home-title-block h1{font-size:clamp(32px,4.6vw,56px)}
+.home-eight .home-practice-grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:1fr;gap:14px}
+.home-eight .home-practice-card{grid-column:auto;min-width:0;min-height:132px;padding:22px 18px;text-decoration:none;justify-content:center;align-items:flex-start}
+.home-eight .home-practice-card b{font-size:20px;line-height:1.3;white-space:normal;overflow-wrap:break-word}
+.home-eight .home-practice-card small{font-size:12px;white-space:normal}
+.home-guide{margin-top:28px;padding:22px 24px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+.home-guide-heading h2{margin:0;font-size:21px;color:var(--ink)}
+.home-guide-heading p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.home-guide-body{min-height:64px}
+.word-zone{max-width:1000px;margin:0 auto}
+.word-zone-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.zone-action{display:flex;flex-direction:column;justify-content:center;gap:8px;min-width:0;min-height:136px;padding:24px;text-align:left;text-decoration:none;font:inherit;border:1px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink)}
+.zone-action b{font-size:22px;line-height:1.3}
+.zone-action small{font-size:13px;color:var(--muted)}
+.zone-action[href]:hover{border-color:var(--gold)}
+.zone-action:disabled{opacity:.58;cursor:default}
+.pending-section{max-width:1000px;margin:0 auto}
+.empty-zone{min-height:140px;border:1px solid var(--line);border-radius:18px;background:var(--card)}
+.home-practice-card:focus-visible,.zone-action:focus-visible,.brand:focus-visible,.drawer-link:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+@media(min-width:901px){.clean-nav{padding-inline:24px;gap:20px}.clean-nav .brand strong{font-size:18px}}
+@media(min-width:901px) and (max-width:1200px){.clean-nav{gap:14px;padding-inline:16px}.clean-nav .brand{gap:7px}.clean-nav .brand strong{font-size:14px}.desktop-main-links{gap:8px}.desktop-main-links>a{font-size:10px}.desktop-main-links>a>small{font-size:8px}.brandmark{width:30px;height:30px;flex-basis:30px}}
+@media(max-width:900px){
+ .home-eight{padding:28px 18px 32px}
+ .home-eight .home-practice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .home-eight .home-practice-card{min-height:120px}
+ .mobile-drawer{overflow-y:auto;overscroll-behavior:contain}
+ .drawer-links a{display:grid;gap:4px;padding:11px 12px}
+ .drawer-links .mobile-nav-en{font-size:15px;font-weight:700}
+ .drawer-links .mobile-nav-zh{font-size:11px}
+}
+@media(max-width:600px){
+ .home-eight{padding:24px 14px 28px}
+ .home-eight .home-title-block{margin-bottom:22px}
+ .home-eight .home-title-block h1{font-size:31px;line-height:1.2}
+ .home-eight .home-title-block p{font-size:14px}
+ .home-eight .home-practice-grid{gap:10px}
+ .home-eight .home-practice-card{min-height:112px;padding:16px 13px;border-radius:16px}
+ .home-eight .home-practice-card b{font-size:16px;line-height:1.3}
+ .home-eight .home-practice-card small{font-size:11px;line-height:1.4}
+ .home-guide{margin-top:20px;padding:18px;border-radius:16px}
+ .home-guide-heading h2{font-size:18px}
+ .word-zone-actions{gap:10px}
+ .zone-action{min-height:136px;padding:16px 13px;border-radius:16px}
+ .zone-action b{font-size:17px;overflow-wrap:break-word}
+ .zone-action small{font-size:11px;line-height:1.5}
+}
+@media(prefers-reduced-motion:reduce){.home-practice-card{transition:none}.home-practice-card:hover{transform:none}}
+
+/* Keep the mobile navigation independent from the retired atlas menu rules. */
+@media(max-width:900px){
+ .explore-menu.mobile-drawer{position:fixed;top:0;right:auto;bottom:0;left:0;display:block!important;width:min(84vw,310px);min-height:100dvh;padding:16px;background:#0f1b26;opacity:1;pointer-events:auto;transform:translateX(-105%);transition:transform .2s ease;z-index:1001;overflow-y:auto;overscroll-behavior:contain;box-shadow:22px 0 60px rgba(0,0,0,.32)}
+ .explore-menu.mobile-drawer.open{transform:translateX(0)}
+ .explore-backdrop:not([hidden]){display:block!important}
+}

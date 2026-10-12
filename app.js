@@ -27,13 +27,23 @@ const SMALL_COUNTRY_MARKERS=[
  {slug:'malta',mapPoint:[14.3754,35.9375],mapLabelSide:'right'},
  {slug:'san-marino',mapPoint:[12.4578,43.9424],mapLabelSide:'right'}
 ];
-function brandmarkSvg(){return `<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><defs><linearGradient id="ecra-g" x1="0" x2="1"><stop offset="0" stop-color="#b99143"/><stop offset="1" stop-color="#d6b46c"/></linearGradient></defs><circle cx="32" cy="32" r="28" fill="none" stroke="url(#ecra-g)" stroke-width="2.4"/><path d="M16 24c5-3.4 10.4-5 16-5s11 1.6 16 5v18c-5-3.2-10.4-4.8-16-4.8S21 38.8 16 42V24Z" fill="rgba(185,145,67,.13)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M32 19v18" stroke="currentColor" stroke-width="2"/><path d="M21 15c4 2 7 5.8 8.6 11.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".88"/><path d="M43 15c-4 2-7 5.8-8.6 11.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity=".88"/></svg>`}
+const SITE_SECTIONS = [
+ {label:'Single Sentence',navLabel:'Single Sentence',zh:'單句練習',hash:'sentences',key:'Sentence'},
+ {label:'Conversation Practice',navLabel:'Conversation',zh:'生活對話練習',hash:'dialogues',key:'Conversation'},
+ {label:'Translation Practice',navLabel:'Translation',zh:'翻譯練習',hash:'translations',key:'Translation'},
+ {label:'Review Practice',navLabel:'Review',zh:'複習練習',hash:'review-practice',key:'Review'},
+ {label:'Reading Practice',navLabel:'Reading',zh:'閱讀練習',hash:'reading',key:'Reading'},
+ {label:'Historical Materials',navLabel:'History',zh:'歷史教材',hash:'history',key:'History'},
+ {label:'Word Zone',navLabel:'Word Zone',zh:'單字專區',hash:'words',key:'Words'},
+ {label:'Idioms & Slang',navLabel:'Idioms & Slang',zh:'俚語專區',hash:'idioms',key:'Idioms'}
+];
+function brandmarkSvg(){return '<img src="favicon.svg" width="34" height="34" alt="" decoding="async">'}
 function syncBodyLock(){document.body.classList.toggle('explore-open',!!state.menuOpen)}
 function applyExploreState(){
  const menu=document.querySelector('.explore-menu');
  const backdrop=document.querySelector('.explore-backdrop');
  const trigger=document.querySelector('.brand-toggle');
- if(menu)menu.classList.toggle('open',!!state.menuOpen);
+ if(menu){menu.classList.toggle('open',!!state.menuOpen);menu.inert=!state.menuOpen}
  if(backdrop)backdrop.hidden=!state.menuOpen;
  if(trigger){trigger.classList.toggle('open',!!state.menuOpen);trigger.setAttribute('aria-expanded',state.menuOpen?'true':'false')}
  syncBodyLock();
@@ -44,23 +54,15 @@ function openCountryFromMenu(slug){const c=bySlug[slug];if(!c)return;closeExplor
 function jumpRegion(region){state.region=region;state.page=1;closeExploreMenu();if(location.hash==='#library')library();else go('#library')}
 function menuSearch(q){state.query=(q||'').trim();state.region='All';state.page=1;closeExploreMenu();if(location.hash==='#library')library();else go('#library')}
 function header(active='Home'){
- const navItems=[
-  {label:'Single Sentence',zh:'单句练习',hash:'sentences',key:'Sentence'},
-  {label:'Conversation',zh:'生活对话',hash:'dialogues',key:'Conversation'},
-  {label:'Translation',zh:'翻译练习',hash:'translations',key:'Translation'},
-  {label:'Review',zh:'复习练习',hash:'review-practice',key:'Review'},
-  {label:'Reading',zh:'阅读练习',hash:'reading',key:'Reading'},
-  {label:'Film & TV',zh:'影视经典名句',hash:'screen-lines',key:'Film'}
- ];
- const desktopLinks=navItems.map(x=>`<a class="${active===x.key?'active':''}" href="#${x.hash}" onclick="closeExploreMenu()">${x.label}</a>`).join('');
- const mobileLinks=navItems.map(x=>`<a class="drawer-link ${active===x.key?'active':''}" href="#${x.hash}" onclick="closeExploreMenu()"><span class="mobile-nav-en">${x.label}</span><small class="mobile-nav-zh">${x.zh}</small></a>`).join('');
+ const desktopLinks=SITE_SECTIONS.map(x=>`<a class="${active===x.key?'active':''}" href="#${x.hash}" ${active===x.key?'aria-current="page"':''} onclick="closeExploreMenu()"><span>${x.navLabel}</span><small>${x.zh}</small></a>`).join('');
+ const mobileLinks=[{label:'Home',zh:'首頁',hash:'home',key:'Home'},...SITE_SECTIONS].map(x=>`<a class="drawer-link ${active===x.key?'active':''}" href="#${x.hash}" ${active===x.key?'aria-current="page"':''} onclick="closeExploreMenu()"><span class="mobile-nav-en">${x.label}</span><small class="mobile-nav-zh">${x.zh}</small></a>`).join('');
  return `<header class="topbar"><nav class="nav clean-nav">
-  <button class="brand-toggle mobile-menu-btn" type="button" onclick="toggleExploreMenu()" aria-expanded="false" aria-label="打开选单">☰</button>
-  <div class="brand" onclick="go('#home')" role="button" tabindex="0" aria-label="Back to home"><span class="brandmark">${brandmarkSvg()}</span><strong>${SITE.name}</strong></div>
+  <button class="brand-toggle mobile-menu-btn" type="button" onclick="toggleExploreMenu()" aria-expanded="false" aria-label="Open menu" aria-controls="siteMenu">☰</button>
+  <a class="brand" href="#home" onclick="closeExploreMenu()" aria-label="Back to home"><span class="brandmark">${brandmarkSvg()}</span><strong>${SITE.name}</strong></a>
   <div class="links desktop-main-links">${desktopLinks}</div>
  </nav>
  <div class="explore-backdrop" hidden onclick="closeExploreMenu()"></div>
- <aside class="explore-menu mobile-drawer"><div class="drawer-head"><div><strong>${SITE.name}</strong><small>学习选单</small></div><button onclick="closeExploreMenu()" aria-label="关闭选单">×</button></div><div class="drawer-links">${mobileLinks}</div></aside>
+ <aside id="siteMenu" class="explore-menu mobile-drawer" inert><div class="drawer-head"><div><strong>${SITE.name}</strong><small>學習選單</small></div><button onclick="closeExploreMenu()" aria-label="Close menu">×</button></div><div class="drawer-links">${mobileLinks}</div></aside>
  </header>`
 }
 function articleCount(){return COUNTRIES.reduce((n,c)=>n+Object.keys(c.versions||{}).length,0)}
@@ -150,20 +152,25 @@ function monthlyLibraryBody(all,level,sort,codeFn,routeKey,cardFn,gridClass){
  return `<div class="${gridClass} compact-grid">${list.map(cardFn).join('')}</div>`
 }
 function home(){
- const cards=[
-  ['Single Sentence','单句练习','#sentences'],
-  ['Conversation','生活对话','#dialogues'],
-  ['Translation','翻译练习','#translations'],
-  ['Review','复习练习','#review-practice'],
-  ['Reading','阅读练习','#reading'],
-  ['Film & TV','影视经典名句','#screen-lines']
- ];
- const content=`<section class="minimal-home">
-  <div class="home-title-block"><h1>English / 中文 Practice</h1><p>双语英语练习</p></div>
+ const content=`<section class="minimal-home home-eight">
   <section id="partySlot" class="party-slot" hidden></section>
-  <div class="home-practice-grid">${cards.map(([en,zh,route])=>`<button class="home-practice-card" onclick="go('${route}')"><b>${en}</b><small>${zh}</small></button>`).join('')}</div>
+  <div class="home-practice-grid">${SITE_SECTIONS.map(x=>`<a class="home-practice-card" href="#${x.hash}"><b>${x.label}</b><small>${x.zh}</small></a>`).join('')}</div>
+  <section class="home-guide" aria-labelledby="homeGuideTitle"><div class="home-guide-heading"><h2 id="homeGuideTitle">Getting Started</h2><p>使用指南</p></div><div class="home-guide-body"></div></section>
  </section>`;
  shell(content,'Home');hydratePartySlot()
+}
+function wordZone(){
+ const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Vocabulary</div><h1 class="page-title">Word Zone</h1><div class="detail-title-zh">單字專區</div></section>
+ <section class="section word-zone"><div class="word-zone-actions"><a class="zone-action" href="#word-list"><b>Word List</b><small>單字表</small></a><button class="zone-action" type="button" disabled><b>Pronunciation &amp; Review</b><small>發音與複習系統</small></button></div></section>`;
+ shell(content,'Words')
+}
+function wordList(){
+ const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Word List</div><h1 class="page-title">Word List</h1><div class="detail-title-zh">單字表</div></section><section class="section pending-section"><div class="empty-zone" aria-label="Word list content"></div></section>`;
+ shell(content,'Words')
+}
+function idiomsZone(){
+ const content=`<section class="page-pad practice-page-head"><h1 class="page-title">Idioms &amp; Slang</h1><div class="detail-title-zh">俚語專區</div></section><section class="section pending-section"><div class="empty-zone" aria-label="Idioms and slang content"></div></section>`;
+ shell(content,'Idioms')
 }
 function filtered(){let a=[...COUNTRIES];if(state.region!=='All')a=a.filter(c=>c.region===state.region);const q=state.query.trim().toLowerCase();if(q)a=a.filter(c=>JSON.stringify(c).toLowerCase().includes(q));return a}
 function library(level=readingLevelState,sort=readingSortState){
@@ -512,8 +519,8 @@ function renderMap(){
 function mapZoom(f){if(!mapState.svg)return;mapState.svg.transition().duration(250).call(mapState.zoom.scaleBy,f)}function mapReset(){if(!mapState.svg)return;mapState.svg.transition().duration(350).call(mapState.zoom.transform,d3.zoomIdentity)}
 function mapPage(){const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Reading</div><h1 class="page-title">Country & Culture</h1>${readingTopicNav('country')}${countryReadingNav('map')}</section><section class="section"><div class="map-card" style="min-height:650px"><svg id="mapSvg" style="min-height:650px"></svg><div class="legend"><div><span class="swatch read"></span>Read</div><div><span class="swatch"></span>Not yet read</div><small>Markers appear for tiny countries and UK subregions</small></div><div class="map-tools"><button onclick="mapZoom(1.45)">+</button><button onclick="mapZoom(.69)">−</button><button onclick="mapReset()">↺</button></div></div></section>`;shell(content,'Reading');renderMap()}
 let dialogueLevelState='Today', dialogueSortState='Newest';
-let sentenceLevelState='Today', sentenceSortState='Newest', translationSortState='Newest', screenSortState='Newest';
-function practiceCatalog(){return window.PRACTICE_CATALOG||{paths:[],dialogues:[],screenLines:[],sentencePractice:[]}}
+let sentenceLevelState='Today', sentenceSortState='Newest', translationSortState='Newest';
+function practiceCatalog(){return window.PRACTICE_CATALOG||{paths:[],dialogues:[],sentencePractice:[]}}
 function practicePinyin(zh){return zh?esc(pinyinText(zh)):''}
 function practiceZhPair(zh,zhClass='practice-zh',pyClass='practice-pinyin'){
  if(!zh)return '';
@@ -626,36 +633,6 @@ function dialoguePage(id){
  <div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#dialogue=${prev.id}')"`:`onclick="go('#dialogues')"`}><small>← ${prev?'Previous':'All conversations'}</small><b>${prev?`${dialogueCode(prev)} · ${esc(prev.title)}`:'Daily Conversation'}</b></button><button class="pn" ${next?`onclick="go('#dialogue=${next.id}')"`:`onclick="go('#dialogues')"`}><small>${next?'Next':'Back to library'} →</small><b>${next?`${dialogueCode(next)} · ${esc(next.title)}`:'Choose another set'}</b></button></div>${copyLinkBar()}</section>`;
  shell(content,'Conversation')
 }
-function screenLineCode(item){
- const all=practiceCatalog().screenLines||[];
- const i=all.findIndex(x=>x.id===item.id);
- return `Scene ${String(i>=0?i+1:'?').padStart(2,'0')}`
-}
-function screenLineCard(item){
- const today=isTodayItem(item);
- return `<article class="screen-card compact-practice-card ${today?'today-card':''}" onclick="go('#screen-line=${item.id}')" role="button" tabindex="0">
-  <div class="compact-top"><span>${screenLineCode(item)}</span><span>${esc(item.theme)}</span>${today?'<em>TODAY</em>':''}</div>
-  <h3>${esc(item.title)}</h3><div class="compact-zh">${esc(item.titleZh||'')}</div>
- </article>`
-}
-function screenLineLibrary(sort=screenSortState){
- screenSortState=sort;
- let list=[...(practiceCatalog().screenLines||[])];
- if(sort==='Newest')list.reverse();
- const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Film & TV</div><h1 class="page-title">Film & TV</h1></section>
- <section class="section compact-library"><div class="library-control-row film-sort-row"><span></span>${sortSelect(sort,"setScreenSort")}</div><div class="screen-grid compact-grid">${list.map(screenLineCard).join('')}</div></section>`;
- shell(content,'Film')
-}
-function setScreenSort(v){screenSortState=v;screenLineLibrary(v)}
-function screenLinePage(id){
- const all=practiceCatalog().screenLines||[];
- const item=all.find(x=>x.id===id);if(!item)return screenLineLibrary();
- const i=all.findIndex(x=>x.id===id),prev=all[i-1],next=all[i+1];
- const lines=(item.lines||[]).map(t=>`<div class="screen-line"><div class="speaker speaker-${t.speaker.toLowerCase()}">${esc(t.speaker)}</div><div><div class="screen-en">${esc(t.en)}</div><div class="screen-zh">${esc(t.zh)}</div><div class="screen-pinyin">${practicePinyin(t.zh)}</div></div></div>`).join('');
- const sourceZh=item.sourceTitleZh?practiceZhPair(item.sourceTitleZh,'screen-source-zh','screen-source-pinyin'):'';
- const content=`<section class="dialogue-detail screen-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="#practice">Practice</a> / <a href="#screen-lines">Classic Film & TV Lines</a> / ${esc(item.title)}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc(item.theme)}</div><h1>${esc(item.title)}</h1>${practiceZhPair(item.titleZh,'detail-title-zh','detail-title-pinyin')}</div></div><section class="screen-dialogue">${lines}</section><details class="screen-source"><summary>Show film / TV title</summary><div><b>${esc(item.sourceTitle)}</b>${sourceZh}<span>${esc(item.sourceType)} · ${esc(item.year)}</span><small>Adapted learning dialogue; not original screenplay text.</small></div></details><div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#screen-line=${prev.id}')"`:`onclick="go('#screen-lines')"`}><small>← ${prev?'Previous':'All scenes'}</small><b>${prev?`${screenLineCode(prev)} · ${esc(prev.title)}`:'Classic Film & TV Lines'}</b></button><button class="pn" ${next?`onclick="go('#screen-line=${next.id}')"`:`onclick="go('#screen-lines')"`}><small>${next?'Next':'Back to library'} →</small><b>${next?`${screenLineCode(next)} · ${esc(next.title)}`:'Choose another scene'}</b></button></div>${copyLinkBar()}</section>`;
- shell(content,'Film')
-}
 function sentenceCode(item){return currentMonthCode(item,currentMonthSentenceItems())}
 function sentenceDisplayTitle(item){return String(item?.title||'').toLowerCase()}
 function sentenceCard(item){
@@ -765,14 +742,9 @@ function reviewV2Home(){
    <h2>${esc(t.en)}</h2><p>${esc(t.zh)}</p><span class="review-v2-theme-desc">${esc(t.desc||'')}</span>
   </button>`
  }).join('');
- const h=cat.history||{};
  const content=`<section class="page-pad practice-page-head review-v2-head"><div class="eyebrow">Review</div><h1 class="page-title">Review PRACTICE</h1><div class="detail-title-zh">复习练习</div></section>
  <section class="section review-v2-library">
   <div class="review-v2-theme-grid">${themeCards}</div>
-  <button class="review-v2-history-card" type="button" onclick="go('#history=sentence&level=A1')">
-   <div><small>ARCHIVE</small><h2>${esc(h.label||'Historical Materials')}</h2><p>${esc(h.labelZh||'历史教材')}</p></div>
-   <span>${esc(h.description||'')}</span><b>Open archive →</b>
-  </button>
  </section>`;
  shell(content,'Review')
 }
@@ -887,20 +859,20 @@ function historyLibrary(type='sentence',level='A1'){
  if(!['sentence','dialogue','translation'].includes(type))type='sentence';
  if(!['A1','A2','B1'].includes(level))level='A1';
  const list=historyItems(type).filter(x=>x.level===level);
- const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#review-practice">Review Practice</a> / Historical Materials</div><div class="eyebrow">Archive</div><h1 class="page-title">Historical Materials</h1><p>Original practice materials from previous months. Nothing has been deleted.</p></section>
+ const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#home">Home</a> / Historical Materials</div><div class="eyebrow">Archive</div><h1 class="page-title">Historical Materials</h1><div class="detail-title-zh">歷史教材</div></section>
  <section class="section history-library"><div class="history-type-tabs">${[
   ['sentence','Single Sentence','单句练习'],['dialogue','Daily Conversation','生活对话'],['translation','Translation Practice','翻译练习']
  ].map(([key,en,zh])=>`<button class="${type===key?'active':''}" onclick="go('${historyRoute(key,level)}')"><b>${en}</b><small>${zh}</small></button>`).join('')}</div>
  <div class="history-level-row"><div class="dialogue-level-tabs">${['A1','A2','B1'].map(l=>`<button class="tab ${level===l?'active':''}" onclick="go('${historyRoute(type,l)}')">${l}</button>`).join('')}</div><span>${list.length} original lessons</span></div>
  <div class="history-grid">${list.map(x=>historyCard(x,type)).join('')}</div></section>`;
- shell(content,'Review')
+ shell(content,'History')
 }
 function historySentencePage(id){
  const all=historyItems('sentence'),item=all.find(x=>x.id===id);if(!item)return historyLibrary('sentence','A1');
  const same=all.filter(x=>x.level===item.level),i=same.findIndex(x=>x.id===id),prev=same[i-1],next=same[i+1];
  const body=`<article class="sentence-card sentence-detail-card"><div class="sentence-card-top"><span class="level-pill ${item.level.toLowerCase()}">${historyCode(item,'sentence')}</span><span>${esc(String(item.title||'').toLowerCase())}</span></div><div class="sentence-title-zh">${esc(item.titleZh||'')}</div><div class="sentence-pattern">${esc(item.pattern)}</div>${practiceZhPair(item.zh,'sentence-zh','sentence-pinyin')}<details class="sentence-options"><summary>Try different endings</summary><div class="sentence-hints">${(item.hints||[]).map(h=>`<div><b>${esc(h.en)}</b><span>${esc(h.zh)}</span><small>${practicePinyin(h.zh)}</small></div>`).join('')}</div></details><details class="sentence-example"><summary>Show example</summary><div><b>${esc(item.example?.en||'')}</b><span>${esc(item.example?.zh||'')}</span><small>${practicePinyin(item.example?.zh||'')}</small></div></details></article>`;
- const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#review-practice">Review Practice</a> / <a href="${historyRoute('sentence',item.level)}">Historical Materials</a> / ${historyCode(item,'sentence')}</div>${body}<div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#history-sentence=${prev.id}')"`:`onclick="go('${historyRoute('sentence',item.level)}')"`}><small>← ${prev?'Previous':'Archive'}</small><b>${prev?`${historyCode(prev,'sentence')} · ${esc(String(prev.title||'').toLowerCase())}`:'Historical Single Sentence'}</b></button><button class="pn" ${next?`onclick="go('#history-sentence=${next.id}')"`:`onclick="go('${historyRoute('sentence',item.level)}')"`}><small>${next?'Next':'Back to archive'} →</small><b>${next?`${historyCode(next,'sentence')} · ${esc(String(next.title||'').toLowerCase())}`:'Historical Single Sentence'}</b></button></div>${copyLinkBar()}</section>`;
- shell(content,'Review')
+ const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="${historyRoute('sentence',item.level)}">Historical Materials</a> / ${historyCode(item,'sentence')}</div>${body}<div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#history-sentence=${prev.id}')"`:`onclick="go('${historyRoute('sentence',item.level)}')"`}><small>← ${prev?'Previous':'Archive'}</small><b>${prev?`${historyCode(prev,'sentence')} · ${esc(String(prev.title||'').toLowerCase())}`:'Historical Single Sentence'}</b></button><button class="pn" ${next?`onclick="go('#history-sentence=${next.id}')"`:`onclick="go('${historyRoute('sentence',item.level)}')"`}><small>${next?'Next':'Back to archive'} →</small><b>${next?`${historyCode(next,'sentence')} · ${esc(String(next.title||'').toLowerCase())}`:'Historical Single Sentence'}</b></button></div>${copyLinkBar()}</section>`;
+ shell(content,'History')
 }
 function historyDialoguePage(id){
  const all=historyItems('dialogue'),d=all.find(x=>x.id===id);if(!d)return historyLibrary('dialogue','A1');
@@ -908,12 +880,12 @@ function historyDialoguePage(id){
  const refGroups=d.referenceBank||[];let blankCursor=0;
  const turns=(d.turns||[]).map(t=>{const isBlank=!!t.blankType;const group=isBlank?(refGroups[blankCursor++]||null):null;const zh=isBlank?(t.practiceZh||t.zh):t.zh;return `<div class="dialogue-turn"><div class="speaker speaker-${String(t.speaker||'a').toLowerCase()}">${esc(t.speaker||'')}</div><div class="turn-body"><div class="turn-en">${esc(t.en||'')}</div><div class="turn-zh">${esc(zh||'')}</div><div class="turn-pinyin">${practicePinyin(zh||'')}</div>${dialogueInlineHint(group)}</div></div>`}).join('');
  const example=(d.example||[]).map(t=>`<div class="example-line"><b>${esc(t.speaker||'')}:</b><div><span>${esc(t.en||'')}</span><small class="example-zh">${esc(t.zh||'')}</small><small class="example-pinyin">${practicePinyin(t.zh||'')}</small></div></div>`).join('');
- const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#review-practice">Review Practice</a> / <a href="${historyRoute('dialogue',d.level)}">Historical Materials</a> / ${historyCode(d,'dialogue')}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc((d.scene||'').toLowerCase())}</div><div class="detail-title-line"><span class="level-pill ${d.level.toLowerCase()}">${historyCode(d,'dialogue')}</span><h1>${esc(d.title)}</h1></div><div class="detail-title-zh">${esc(d.titleZh||'')}</div><p>${esc(d.goal||'')}</p></div></div>
+ const content=`<section class="dialogue-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="${historyRoute('dialogue',d.level)}">Historical Materials</a> / ${historyCode(d,'dialogue')}</div><div class="dialogue-detail-head"><div><div class="eyebrow">${esc((d.scene||'').toLowerCase())}</div><div class="detail-title-line"><span class="level-pill ${d.level.toLowerCase()}">${historyCode(d,'dialogue')}</span><h1>${esc(d.title)}</h1></div><div class="detail-title-zh">${esc(d.titleZh||'')}</div><p>${esc(d.goal||'')}</p></div></div>
  <section class="dialogue-stage example-stage"><div class="dialogue-card-heading simplified-stage-heading"><div class="eyebrow">Part 1 · Complete Example</div><span>${(d.example||[]).length} lines</span></div><div class="complete-example-body">${example}</div></section>
  <section class="dialogue-stage practice-stage"><div class="dialogue-card-heading simplified-stage-heading"><div class="eyebrow">Part 2 · Practice</div><span>${dialogueBlankCount(d)} blanks</span></div>${turns}</section>
  <section class="dialogue-stage reference-stage"><div class="dialogue-card-heading simplified-stage-heading"><div class="eyebrow">Part 3 · Reference</div></div>${dialogueReferenceBank(d)}</section>
  <div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#history-dialogue=${prev.id}')"`:`onclick="go('${historyRoute('dialogue',d.level)}')"`}><small>← ${prev?'Previous':'Archive'}</small><b>${prev?`${historyCode(prev,'dialogue')} · ${esc(prev.title)}`:'Historical Conversation'}</b></button><button class="pn" ${next?`onclick="go('#history-dialogue=${next.id}')"`:`onclick="go('${historyRoute('dialogue',d.level)}')"`}><small>${next?'Next':'Back to archive'} →</small><b>${next?`${historyCode(next,'dialogue')} · ${esc(next.title)}`:'Historical Conversation'}</b></button></div>${copyLinkBar()}</section>`;
- shell(content,'Review')
+ shell(content,'History')
 }
 function historyTranslationPage(id){
  const all=historyItems('translation'),item=all.find(x=>x.id===id);if(!item)return historyLibrary('translation','A1');
@@ -922,11 +894,11 @@ function historyTranslationPage(id){
  const englishPractice=(item.enLines||[]).map((en,index)=>translationPracticeEnglishLine(en,index,item)).join('');
  const sourceAnswer=(item.zhLines||[]).map(translationSourceLine).join('');
  const englishAnswer=(item.enLines||[]).map(translationReferenceLine).join('');
- const content=`<section class="translation-detail"><div class="breadcrumbs"><a href="#review-practice">Review Practice</a> / <a href="${historyRoute('translation',item.level)}">Historical Materials</a> / ${historyCode(item,'translation')}</div><div class="translation-detail-head"><div><div class="eyebrow">${esc((item.topic||'').toLowerCase())}</div><div class="detail-title-line"><span class="level-pill ${item.level.toLowerCase()}">${historyCode(item,'translation')}</span><h1>${esc(item.title)}</h1></div><div class="detail-title-zh">${esc(item.titleZh||'')}</div><p>${esc(item.goal||'')}</p></div></div>
+ const content=`<section class="translation-detail"><div class="breadcrumbs"><a href="#home">Home</a> / <a href="${historyRoute('translation',item.level)}">Historical Materials</a> / ${historyCode(item,'translation')}</div><div class="translation-detail-head"><div><div class="eyebrow">${esc((item.topic||'').toLowerCase())}</div><div class="detail-title-line"><span class="level-pill ${item.level.toLowerCase()}">${historyCode(item,'translation')}</span><h1>${esc(item.title)}</h1></div><div class="detail-title-zh">${esc(item.titleZh||'')}</div><p>${esc(item.goal||'')}</p></div></div>
  <div class="translation-mode-picker"><details class="translation-mode"><summary><span><small>Direction 1</small><b>中翻英 · Chinese → English</b></span><em>Open</em></summary><div class="translation-mode-body translation-hints-off"><div class="dialogue-card-heading simplified-stage-heading"><div class="eyebrow">Source · Chinese</div><div class="translation-count-actions"><span>${(item.zhLines||[]).length} sentences</span>${translationHintToggleButton(item,'toEnglish')}</div></div><div class="translation-source-list">${sourcePractice}</div><details class="translation-details translation-answer"><summary>Show English reference</summary><div class="translation-reference-list">${englishAnswer}</div></details></div></details>
  <details class="translation-mode"><summary><span><small>Direction 2</small><b>英翻中 · English → Chinese</b></span><em>Open</em></summary><div class="translation-mode-body translation-hints-off"><div class="dialogue-card-heading simplified-stage-heading"><div class="eyebrow">Source · English</div><div class="translation-count-actions"><span>${(item.enLines||[]).length} sentences</span>${translationHintToggleButton(item,'toChinese')}</div></div><div class="translation-reference-list translation-english-source">${englishPractice}</div><details class="translation-details translation-answer"><summary>Show Chinese reference</summary><div class="translation-source-list translation-chinese-answer">${sourceAnswer}</div></details></div></details></div>
  <div class="prevnext translation-prevnext"><button class="pn" ${prev?`onclick="go('#history-translation=${prev.id}')"`:`onclick="go('${historyRoute('translation',item.level)}')"`}><small>← ${prev?'Previous':'Archive'}</small><b>${prev?`${historyCode(prev,'translation')} · ${esc(prev.title)}`:'Historical Translation'}</b></button><button class="pn" ${next?`onclick="go('#history-translation=${next.id}')"`:`onclick="go('${historyRoute('translation',item.level)}')"`}><small>${next?'Next':'Back to archive'} →</small><b>${next?`${historyCode(next,'translation')} · ${esc(next.title)}`:'Historical Translation'}</b></button></div>${copyLinkBar()}</section>`;
- shell(content,'Review')
+ shell(content,'History')
 }
 function journey(){const list=[...COUNTRIES].sort((a,b)=>a.readOrder-b.readOrder);const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Reading</div><h1 class="page-title">Country & Culture</h1>${readingTopicNav('country')}${countryReadingNav('journey')}</section><div class="journey-list">${list.map(c=>`<div class="journey-item" onclick="go('#country=${c.slug}&level=${preferredLevel(c)}')"><span class="n">#${c.readOrder}</span><b>${esc(c.name)}</b><small style="color:var(--muted)">${esc(c.region)}</small></div>`).join('')}</div>`;shell(content,'Reading')}
 function render(){
@@ -934,7 +906,6 @@ function render(){
  if(h.startsWith('#country=')){const p=new URLSearchParams(h.slice(1));return country(p.get('country'),p.get('level')||'B1')}
  if(h.startsWith('#article=')){const slug=h.split('=')[1];return country(slug,'B1')}
  if(h.startsWith('#dialogue=')){const p=new URLSearchParams(h.slice(1));return dialoguePage(p.get('dialogue'))}
- if(h.startsWith('#screen-line=')){const p=new URLSearchParams(h.slice(1));return screenLinePage(p.get('screen-line'))}
  if(h.startsWith('#translation=')){const p=new URLSearchParams(h.slice(1));return translationPage(p.get('translation'))}
  if(h.startsWith('#sentence=')){const p=new URLSearchParams(h.slice(1));return sentencePage(p.get('sentence'))}
  if(h.startsWith('#review-theme=')){const p=new URLSearchParams(h.slice(1));return reviewV2ThemePage(p.get('review-theme'))}
@@ -949,7 +920,11 @@ function render(){
  if(h==='#reading'||h==='#library'||h==='#articles')return library();
  if(h==='#translations')return translationLibrary();
  if(h==='#dialogues')return dialogueLibrary();
- if(h==='#screen-lines')return screenLineLibrary();
+ if(h==='#screen-lines'||h.startsWith('#screen-line='))return idiomsZone();
+ if(h==='#idioms')return idiomsZone();
+ if(h==='#words')return wordZone();
+ if(h==='#word-list')return wordList();
+ if(h==='#history')return historyLibrary('sentence','A1');
  if(h==='#sentences')return sentenceLibrary();
  if(h==='#map')return mapPage();
  if(h==='#journey')return journey();
@@ -957,3 +932,5 @@ function render(){
  return home()
 }
 window.addEventListener('hashchange',render);window.addEventListener('DOMContentLoaded',render);window.mapZoom=mapZoom;window.mapReset=mapReset;window.toggleTheme=toggleTheme;window.setWordHelp=setWordHelp;window.showWordPopup=showWordPopup;window.closeWordPopup=closeWordPopup;window.copyArticle=copyArticle;window.toggleExploreMenu=toggleExploreMenu;window.closeExploreMenu=closeExploreMenu;window.openCountryFromMenu=openCountryFromMenu;window.jumpRegion=jumpRegion;window.menuSearch=menuSearch;
+
+window.addEventListener('keydown',event=>{if(event.key==='Escape'&&state.menuOpen){closeExploreMenu();document.querySelector('.brand-toggle')?.focus()}});
