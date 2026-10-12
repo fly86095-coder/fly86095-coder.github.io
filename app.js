@@ -226,8 +226,23 @@ async function wordList(requestedPage=1){
  const content=`${head}<section class="section word-list-section"><div class="word-list-meta"><span><b>${words.length}</b> words <small>單字</small></span><span>${start+1}–${start+visible.length} / ${words.length}</span></div><div class="word-table-wrap"><table class="word-table"><caption class="word-table-caption">Vocabulary · 單字表</caption><colgroup><col class="word-col-name"><col class="word-col-kk"><col class="word-col-meaning"><col class="word-col-detail"></colgroup><thead><tr><th scope="col">Word<small>單字</small></th><th scope="col" class="word-kk-cell">KK<small>KK 音標</small></th><th scope="col" class="word-meaning-cell">Meaning<small>中文意思</small></th><th scope="col">Usage &amp; Example<small class="word-desktop-heading">用法與例句</small><small class="word-mobile-heading">意思與用法</small></th></tr></thead><tbody>${visible.map(wordTableRow).join('')}</tbody></table></div><div class="word-list-bottom"><span>Page ${page} of ${totalPages} · 第 ${page} / ${totalPages} 頁</span>${wordListPagination(page,totalPages)}</div></section>`;
  shell(content,'Words')
 }
+const IDIOM_BATCH_1=[
+ {number:1,phrase:'A piece of cake',meaning:'小菜一碟、輕而易舉',example:'The test was a piece of cake.',exampleZh:'考試簡單得不得了。'},
+ {number:2,phrase:'Break the ice',meaning:'打破尷尬、活絡氣氛',example:'I asked a funny question to break the ice.',exampleZh:'我問了一個有趣的問題來打破尷尬。',usage:'適合初次見面、語言交換或聚會。'},
+ {number:3,phrase:'Hit the road',meaning:'出發、上路',example:"It's getting late. Let's hit the road.",exampleZh:'時間不早了，我們出發吧。',usage:'常用於準備離開某地或開始旅程。'},
+ {number:4,phrase:'Give me a hand',meaning:'幫我一下、搭把手',example:'Could you give me a hand with this?',exampleZh:'你可以幫我處理這個嗎？',usage:'give someone a hand，表示幫助某人；也可能表示鼓掌，需依上下文判斷。'},
+ {number:5,phrase:'Under the weather',meaning:'身體不太舒服、精神不佳',example:"I'm feeling a little under the weather today.",exampleZh:'我今天感覺有點不舒服。',usage:'通常表示輕微身體不適，不特指某種疾病。'},
+ {number:6,phrase:'Call it a day',meaning:'今天就到這裡、收工',example:"We've done enough. Let's call it a day.",exampleZh:'我們做得夠多了，今天就先到這裡吧。',usage:'工作、學習、練習結束時都適用。'},
+ {number:7,phrase:'Out of the blue',meaning:'突然地、出乎意料地',example:'She texted me out of the blue.',exampleZh:'她突然傳訊息給我。',usage:'強調事情發生前沒有預兆。'},
+ {number:8,phrase:'Spill the beans',meaning:'洩漏秘密、說溜嘴',example:'Come on, spill the beans! What happened?',exampleZh:'快說啦！到底發生什麼事？',usage:'朋友之間打聽秘密或內幕，語氣較口語。'},
+ {number:9,phrase:'On the same page',meaning:'有共識、理解一致',example:"I just want to make sure we're on the same page.",exampleZh:'我只是想確認我們的理解一致。',usage:'工作討論、合作、朋友溝通都很實用。'},
+ {number:10,phrase:'Hang in there',meaning:'撐住、再堅持一下',example:'I know things are tough right now. Hang in there.',exampleZh:'我知道現在很辛苦，再堅持一下。',usage:'鼓勵正在面對困難的人。'}
+];
+function idiomCard(item){
+ return `<article class="idiom-card"><header class="idiom-card-head"><span class="idiom-number">${String(item.number).padStart(2,'0')}</span><div><h2>${esc(item.phrase)}</h2></div></header><div class="idiom-meaning"><span>中文</span><p>${esc(item.meaning)}</p></div><blockquote class="idiom-example"><span>Example · 例句</span><p class="idiom-example-en">${esc(item.example)}</p><p class="idiom-example-zh">${esc(item.exampleZh)}</p></blockquote>${item.usage?`<div class="idiom-usage"><span>Usage · 用法</span><p>${esc(item.usage)}</p></div>`:''}</article>`
+}
 function idiomsZone(){
- const content=`<section class="page-pad practice-page-head"><h1 class="page-title">Idioms &amp; Slang</h1><div class="detail-title-zh">俚語專區</div></section><section class="section pending-section"><div class="empty-zone" aria-label="Idioms and slang content"></div></section>`;
+ const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Everyday English</div><h1 class="page-title">Idioms &amp; Slang</h1><div class="detail-title-zh">俚語專區</div></section><section class="section idiom-library"><div class="idiom-batch-head"><div><span>Batch 01</span><h2>10 Practical English Idioms</h2><p>第一批 · 10 個實用英文俚語與慣用語</p></div><strong>${IDIOM_BATCH_1.length}</strong></div><div class="idiom-grid">${IDIOM_BATCH_1.map(idiomCard).join('')}</div></section>`;
  shell(content,'Idioms')
 }
 function filtered(){let a=[...COUNTRIES];if(state.region!=='All')a=a.filter(c=>c.region===state.region);const q=state.query.trim().toLowerCase();if(q)a=a.filter(c=>JSON.stringify(c).toLowerCase().includes(q));return a}
