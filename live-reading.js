@@ -4,17 +4,26 @@
  let stopState=null,stopPulses=null;
  const pulseBursts=new Map();
 
+ function usesWholeWordInteraction(segment){
+  return segment?.type==='word'&&!/[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/u.test(segment.text)
+ }
+
  function articleMarkup(article){
   if(!article)return '';
   return article.segments.map((segment,segmentIndex)=>{
    if(segment.type==='break')return segment.text.replace(/\n/g,'<br>');
    if(segment.type==='space')return esc(segment.text);
    if(segment.type==='punctuation')return `<span class="lr-punctuation">${esc(segment.text)}</span>`;
+   if(usesWholeWordInteraction(segment))return `<span class="lr-token" data-token-type="${segment.type}"><button class="lr-character lr-whole-word" type="button" data-pulse-key="${segmentIndex}-0" onclick="liveReadingVote(${segmentIndex},0)" aria-label="Mark ${esc(segment.text)} for pronunciation feedback">${esc(segment.text)}</button></span>`;
    return `<span class="lr-token" data-token-type="${segment.type}">${Array.from(segment.text).map((character,charIndex)=>`<button class="lr-character" type="button" data-pulse-key="${segmentIndex}-${charIndex}" onclick="liveReadingVote(${segmentIndex},${charIndex})" aria-label="Mark ${esc(character)} for pronunciation feedback">${esc(character)}</button>`).join('')}</span>`
   }).join('')
  }
  function collectionMarkup(){
   return LiveReadingCore.collection().map(entry=>{
+   if(entry.wholeWord){
+    const count=entry.counts['0']||0;
+    return `<div class="lr-collected-word lr-collected-whole-word" data-collection-word="${esc(entry.word)}"><span class="lr-collected-hit">${esc(entry.word)}<sup>${count}</sup></span></div>`
+   }
    const word=Array.from(entry.word).map((character,index)=>{
     const count=entry.counts[String(index)]||0;
     return count?`<span class="lr-collected-hit">${esc(character)}<sup>${count}</sup></span>`:`<span>${esc(character)}</span>`

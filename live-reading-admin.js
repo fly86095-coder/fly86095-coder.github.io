@@ -17,6 +17,10 @@
   const entries=LiveReadingCore.collection();
   if(!entries.length)return '<p class="lr-admin-empty">No collected words</p>';
   return entries.map(entry=>{
+   if(entry.wholeWord){
+    const count=entry.counts['0']||0;
+    return `<div class="lr-admin-collected-row"><div><span class="lr-collected-hit">${escapeHtml(entry.word)}<sup>${count}</sup></span></div><button type="button" data-remove-word="${escapeHtml(entry.word)}">Remove</button></div>`
+   }
    const word=Array.from(entry.word).map((character,index)=>{const count=entry.counts[String(index)]||0;return count?`<span class="lr-collected-hit">${escapeHtml(character)}<sup>${count}</sup></span>`:`<span>${escapeHtml(character)}</span>`}).join('');
    return `<div class="lr-admin-collected-row"><div>${word}</div><button type="button" data-remove-word="${escapeHtml(entry.word)}">Remove</button></div>`
   }).join('')

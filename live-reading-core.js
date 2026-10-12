@@ -15,6 +15,9 @@
 
  function clone(value){return JSON.parse(JSON.stringify(value))}
  function now(){return Date.now()}
+ function usesWholeWordInteraction(segment){
+  return segment?.type==='word'&&!/[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/u.test(segment.text)
+ }
  function defaultState(){
   return {
    version:1,pageEnabled:false,readerName:'',article:null,votes:{},comments:[],updatedAt:0,
@@ -129,11 +132,12 @@
   await requireFirebase();
   const article=state.article,segment=article?.segments?.[segmentIndex];
   if(!state.pageEnabled||!segment||!['word','character'].includes(segment.type))return false;
-  if(Array.from(segment.text)[charIndex]===undefined)return false;
+  const targetIndex=usesWholeWordInteraction(segment)?0:charIndex;
+  if(Array.from(segment.text)[targetIndex]===undefined)return false;
   const at=now(),uid=currentUser.uid;
   await Promise.all([
-   firebase.database.set(firebase.database.ref(database,`${livePath}/votes/${article.id}/${segmentIndex}/${charIndex}/${uid}`),at),
-   firebase.database.set(firebase.database.ref(database,`${livePath}/pulses/${uid}`),{articleId:article.id,segmentIndex,charIndex,at})
+   firebase.database.set(firebase.database.ref(database,`${livePath}/votes/${article.id}/${segmentIndex}/${targetIndex}/${uid}`),at),
+   firebase.database.set(firebase.database.ref(database,`${livePath}/pulses/${uid}`),{articleId:article.id,segmentIndex,charIndex:targetIndex,at})
   ]);
   return true
  }
@@ -143,14 +147,16 @@
   Object.entries(articleVotes).forEach(([segmentIndex,characterVotes])=>{
    const segment=article.segments[Number(segmentIndex)];
    if(!segment||!['word','character'].includes(segment.type))return;
+   const wholeWord=usesWholeWordInteraction(segment);
    let entry=byWord.get(segment.text);
-   if(!entry){entry={word:segment.text,type:segment.type,firstAt:Infinity,voters:{}};byWord.set(segment.text,entry)}
+   if(!entry){entry={word:segment.text,type:segment.type,wholeWord,firstAt:Infinity,voters:{}};byWord.set(segment.text,entry)}
    Object.entries(characterVotes||{}).forEach(([charIndex,voters])=>{
-    entry.voters[charIndex]??=new Set();
-    Object.entries(voters||{}).forEach(([uid,timestamp])=>{entry.voters[charIndex].add(uid);entry.firstAt=Math.min(entry.firstAt,Number(timestamp)||Infinity)})
+    const voteIndex=wholeWord?'0':charIndex;
+    entry.voters[voteIndex]??=new Set();
+    Object.entries(voters||{}).forEach(([uid,timestamp])=>{entry.voters[voteIndex].add(uid);entry.firstAt=Math.min(entry.firstAt,Number(timestamp)||Infinity)})
    })
   });
-  return Array.from(byWord.values()).map(entry=>({word:entry.word,type:entry.type,firstAt:Number.isFinite(entry.firstAt)?entry.firstAt:0,counts:Object.fromEntries(Object.entries(entry.voters).map(([index,voters])=>[index,voters.size]))})).filter(entry=>Object.values(entry.counts).some(Boolean)).sort((a,b)=>a.firstAt-b.firstAt)
+  return Array.from(byWord.values()).map(entry=>({word:entry.word,type:entry.type,wholeWord:entry.wholeWord,firstAt:Number.isFinite(entry.firstAt)?entry.firstAt:0,counts:Object.fromEntries(Object.entries(entry.voters).map(([index,voters])=>[index,voters.size]))})).filter(entry=>Object.values(entry.counts).some(Boolean)).sort((a,b)=>a.firstAt-b.firstAt)
  }
  async function addComment(displayName,message){
   const name=String(displayName||'').trim(),text=String(message||'').trim();if(!text)return false;
