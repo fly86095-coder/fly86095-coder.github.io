@@ -192,8 +192,38 @@ function wordZone(){
  <dialog id="pronunciationGate" class="access-dialog" aria-labelledby="pronunciationGateTitle"><div class="access-dialog-head"><div><h2 id="pronunciationGateTitle">Pronunciation &amp; Review</h2><p>發音與複習系統</p></div><button class="access-dialog-close" type="button" onclick="closePronunciationGate()" aria-label="Close password window">×</button></div><form class="access-dialog-form" onsubmit="return submitPronunciationGate(event)"><label for="pronunciationPassword"><b>Enter password</b><span>請輸入密碼</span></label><input id="pronunciationPassword" class="access-dialog-input" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-describedby="pronunciationPasswordError"><p id="pronunciationPasswordError" class="access-dialog-error" role="alert" aria-live="polite"></p><button class="access-dialog-submit" type="submit">Open system <span>開啟系統</span></button></form></dialog>`;
  shell(content,'Words')
 }
-function wordList(){
- const content=`<section class="page-pad practice-page-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Word List</div><h1 class="page-title">Word List</h1><div class="detail-title-zh">單字表</div></section><section class="section pending-section"><div class="empty-zone" aria-label="Word list content"></div></section>`;
+let wordListDataPromise=null;
+function loadWordListData(){
+ if(window.WORD_LIST_DATA)return Promise.resolve(window.WORD_LIST_DATA);
+ if(wordListDataPromise)return wordListDataPromise;
+ wordListDataPromise=new Promise((resolve,reject)=>{
+  const script=document.createElement('script');script.src='word-list-data.js';
+  script.onload=()=>{if(window.WORD_LIST_DATA)resolve(window.WORD_LIST_DATA);else{script.remove();wordListDataPromise=null;reject(new Error('Word list unavailable'))}};
+  script.onerror=()=>{script.remove();wordListDataPromise=null;reject(new Error('Word list unavailable'))};
+  document.head.appendChild(script)
+ });
+ return wordListDataPromise
+}
+function wordListPageLink(page,label,current=false){return `<a href="#word-list&page=${page}" ${current?'aria-current="page"':''}>${label}</a>`}
+function wordListPagination(page,totalPages){
+ const nearby=new Set([1,totalPages]);for(let n=page-2;n<=page+2;n++)if(n>=1&&n<=totalPages)nearby.add(n);
+ let previous=0;const links=[...nearby].sort((a,b)=>a-b).map(n=>{const gap=previous&&n>previous+1?'<span class="word-page-gap" aria-hidden="true">…</span>':'';previous=n;return gap+wordListPageLink(n,n,n===page)}).join('');
+ return `<nav class="word-pagination" aria-label="Word list pages">${page>1?wordListPageLink(page-1,'← Previous'):'<span class="word-page-disabled">← Previous</span>'}<div class="word-page-numbers">${links}</div>${page<totalPages?wordListPageLink(page+1,'Next →'):'<span class="word-page-disabled">Next →</span>'}</nav>`
+}
+function wordTableRow(word){
+ const detail=(label,zh,text,className)=>text?`<div class="word-detail-line ${className}"><span class="word-field-label">${label}<small>${zh}</small></span><p>${esc(text)}</p></div>`:'';
+ return `<tr id="word-${esc(word.id)}"><th scope="row" class="word-name-cell"><span class="word-record-number">${word.number}</span><strong>${esc(word.word)}</strong><span class="word-mobile-kk">${esc(word.kk)}</span><span class="word-part-of-speech">${esc(word.pos)}</span><span class="word-topic">${esc(word.topic)}</span></th><td class="word-kk-cell">${esc(word.kk)}</td><td class="word-meaning-cell">${esc(word.meaning)}</td><td class="word-detail-cell"><p class="word-mobile-meaning">${esc(word.meaning)}</p>${detail('Usage','用法',word.usage,'word-usage')}${detail('Example','例句',word.example,'word-example')}${detail('Forms','其他變化',word.forms,'word-forms')}${detail('Note','註解',word.note,'word-note')}</td></tr>`
+}
+async function wordList(requestedPage=1){
+ const head=`<section class="page-pad practice-page-head word-list-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Word List</div><h1 class="page-title">Word List</h1><div class="detail-title-zh">單字表</div></section>`;
+ if(!window.WORD_LIST_DATA){
+  const route=location.hash;shell(`${head}<section class="section word-list-section"><p role="status">Loading word list…</p></section>`,'Words');
+  try{await loadWordListData()}catch(error){if(location.hash===route)shell(`${head}<section class="section word-list-section"><p role="status">Unable to load the word list. · 單字表暫時無法載入。</p><button type="button" class="word-retry" onclick="wordList(${Math.max(1,Number(requestedPage)||1)})">Retry · 重試</button></section>`,'Words');return}
+  if(location.hash!==route)return
+ }
+ const words=window.WORD_LIST_DATA.words||[],perPage=30,totalPages=Math.max(1,Math.ceil(words.length/perPage));
+ const page=Math.max(1,Math.min(totalPages,Math.floor(Number(requestedPage)||1))),start=(page-1)*perPage,visible=words.slice(start,start+perPage);
+ const content=`${head}<section class="section word-list-section"><div class="word-list-meta"><span><b>${words.length}</b> words <small>單字</small></span><span>${start+1}–${start+visible.length} / ${words.length}</span></div><div class="word-table-wrap"><table class="word-table"><caption class="word-table-caption">Vocabulary · 單字表</caption><colgroup><col class="word-col-name"><col class="word-col-kk"><col class="word-col-meaning"><col class="word-col-detail"></colgroup><thead><tr><th scope="col">Word<small>單字</small></th><th scope="col" class="word-kk-cell">KK<small>KK 音標</small></th><th scope="col" class="word-meaning-cell">Meaning<small>中文意思</small></th><th scope="col">Usage &amp; Example<small class="word-desktop-heading">用法與例句</small><small class="word-mobile-heading">意思與用法</small></th></tr></thead><tbody>${visible.map(wordTableRow).join('')}</tbody></table></div><div class="word-list-bottom"><span>Page ${page} of ${totalPages} · 第 ${page} / ${totalPages} 頁</span>${wordListPagination(page,totalPages)}</div></section>`;
  shell(content,'Words')
 }
 function idiomsZone(){
@@ -951,7 +981,7 @@ function render(){
  if(h==='#screen-lines'||h.startsWith('#screen-line='))return idiomsZone();
  if(h==='#idioms')return idiomsZone();
  if(h==='#words')return wordZone();
- if(h==='#word-list')return wordList();
+ if(h==='#word-list'||h.startsWith('#word-list&')){const p=new URLSearchParams(h.slice(1));return wordList(p.get('page')||1)}
  if(h==='#history')return historyLibrary('sentence','A1');
  if(h==='#sentences')return sentenceLibrary();
  if(h==='#map')return mapPage();

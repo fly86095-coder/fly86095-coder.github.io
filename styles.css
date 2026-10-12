@@ -627,3 +627,54 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
  .explore-menu.mobile-drawer.open{transform:translateX(0)}
  .explore-backdrop:not([hidden]){display:block!important}
 }
+
+/* Word List — static records 1–500, four columns / mobile two columns */
+.word-list-head,.word-list-section{max-width:1180px;margin-inline:auto}
+.word-list-section{padding-top:8px}
+.word-list-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;font-size:13px;color:var(--muted)}
+.word-list-meta b{font-size:20px;color:var(--gold);margin-right:4px}
+.word-list-meta small{margin-left:5px}
+.word-table-wrap{border:1px solid var(--line);border-radius:16px;background:var(--card)}
+.word-table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;color:var(--ink)}
+.word-table-caption{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.word-col-name{width:16%}.word-col-kk{width:18%}.word-col-meaning{width:22%}.word-col-detail{width:44%}
+.word-table thead th{position:sticky;top:74px;z-index:2;padding:16px;text-align:left;background:#192a39;border-bottom:1px solid var(--line);font-size:14px;line-height:1.35;font-weight:750}
+.word-table thead th:first-child{border-top-left-radius:15px}.word-table thead th:last-child{border-top-right-radius:15px}
+.word-table thead small{display:block;margin-top:4px;font-size:11px;font-weight:400;color:var(--muted)}
+.word-table tbody th,.word-table tbody td{padding:20px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);line-height:1.65;font-size:14px;overflow-wrap:anywhere}
+.word-table tbody tr:nth-child(even){background:rgba(196,216,237,.025)}
+.word-table tbody tr:last-child>*{border-bottom:0}
+.word-table tbody tr:last-child>th{border-bottom-left-radius:15px}.word-table tbody tr:last-child>td:last-child{border-bottom-right-radius:15px}
+.word-name-cell{font-weight:400}.word-name-cell strong{display:block;font-size:20px;font-weight:750;line-height:1.4;margin:3px 0 7px}
+.word-record-number{display:block;color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.word-part-of-speech{display:block;font-size:12px;color:var(--muted)}
+.word-topic{display:inline-block;margin-top:9px;padding:1px 7px;border:1px solid var(--line);border-radius:6px;color:var(--muted);font-size:10px}
+.word-table .word-kk-cell{overflow-wrap:normal;word-break:normal;font-family:Arial,"Segoe UI",sans-serif}
+.word-detail-line+ .word-detail-line{margin-top:12px}
+.word-field-label{display:block;font-size:10px;line-height:1.4;font-weight:700;color:var(--gold);letter-spacing:.015em}
+.word-field-label small{margin-left:6px;color:var(--muted);font-size:10px;font-weight:400}
+.word-detail-line p{margin:4px 0 0;white-space:pre-line}
+.word-example p{color:#d6e3ee}.word-forms p,.word-note p{color:var(--muted);font-size:12px}
+.word-mobile-kk,.word-mobile-meaning,.word-table thead .word-mobile-heading{display:none}
+.word-list-bottom{display:grid;gap:14px;margin-top:20px}.word-list-bottom>span{text-align:center;font-size:12px;color:var(--muted)}
+.word-pagination{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.word-pagination a,.word-page-disabled{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:8px 12px;border:1px solid var(--line);border-radius:9px;text-decoration:none;font-size:12px;color:var(--ink);background:var(--card)}
+.word-pagination a[aria-current=page]{border-color:var(--gold);color:var(--gold);background:rgba(185,145,67,.1)}
+.word-pagination a:hover{border-color:var(--gold)}
+.word-page-disabled{opacity:.4}.word-page-numbers{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}.word-page-gap{padding:0 3px;color:var(--muted)}
+.word-pagination a:focus-visible,.word-retry:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.word-retry{border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);padding:10px 16px;cursor:pointer}
+@media(max-width:900px){.word-table thead th{top:64px}}
+@media(max-width:760px){
+ .word-col-name{width:33%}.word-col-detail{width:67%}
+ .word-col-kk,.word-col-meaning,.word-table .word-kk-cell,.word-table .word-meaning-cell{display:none}
+ .word-mobile-kk{display:block;margin:6px 0;font-size:12px;line-height:1.65;font-family:Arial,"Segoe UI",sans-serif;overflow-wrap:anywhere}
+ .word-mobile-meaning{display:block;font-size:15px;line-height:1.65;font-weight:650;margin:0 0 14px}
+ .word-table thead .word-mobile-heading{display:block}.word-table thead .word-desktop-heading{display:none}
+ .word-table thead th{top:0;padding:13px 11px;font-size:13px}
+ .word-table tbody th,.word-table tbody td{padding:17px 11px;font-size:13px}
+ .word-name-cell strong{font-size:17px}.word-part-of-speech{font-size:11px}
+ .word-list-meta{font-size:11px}.word-list-meta b{font-size:18px}
+ .word-pagination{gap:10px}.word-page-numbers{order:3;flex-basis:100%}
+ .word-pagination a,.word-page-disabled{min-width:40px;min-height:44px;padding:8px 10px}
+}
