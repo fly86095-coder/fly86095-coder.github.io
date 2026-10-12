@@ -568,7 +568,27 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
 .zone-action b{font-size:22px;line-height:1.3}
 .zone-action small{font-size:13px;color:var(--muted)}
 .zone-action[href]:hover{border-color:var(--gold)}
+.zone-action[type="button"]:not(:disabled){cursor:pointer}
+.zone-action[type="button"]:not(:disabled):hover{border-color:var(--gold)}
 .zone-action:disabled{opacity:.58;cursor:default}
+.access-dialog{width:min(430px,calc(100vw - 32px));margin:auto;padding:0;border:1px solid color-mix(in srgb,var(--gold) 42%,var(--line));border-radius:18px;background:#132330;color:var(--ink);box-shadow:0 24px 80px rgba(0,0,0,.48)}
+.access-dialog::backdrop{background:rgba(2,9,15,.72);backdrop-filter:blur(4px)}
+.access-dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:22px 22px 16px;border-bottom:1px solid var(--line)}
+.access-dialog-head h2{margin:0;color:#e3d6bc;font-size:22px;line-height:1.3}
+.access-dialog-head p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.access-dialog-close{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;padding:0;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font-size:23px;line-height:1;cursor:pointer}
+.access-dialog-form{display:grid;gap:12px;padding:20px 22px 24px}
+.access-dialog-form label{display:grid;gap:3px}
+.access-dialog-form label b{font-size:14px;color:var(--ink)}
+.access-dialog-form label span{font-size:11px;color:var(--muted)}
+.access-dialog-input{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:11px;background:#0e1b26;color:var(--ink);font:inherit;letter-spacing:.18em;outline:none}
+.access-dialog-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 18%,transparent)}
+.access-dialog-input[aria-invalid="true"]{border-color:#d77b7b}
+.access-dialog-error{min-height:18px;margin:0;color:#efa0a0;font-size:12px;opacity:0}
+.access-dialog-error.show{opacity:1}
+.access-dialog-submit{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:2px;padding:12px 16px;border:1px solid color-mix(in srgb,var(--gold) 68%,var(--line));border-radius:11px;background:color-mix(in srgb,var(--gold) 15%,var(--card));color:#ead8af;font:inherit;font-weight:800;cursor:pointer}
+.access-dialog-submit span{font-size:11px;color:#b9c5cc;font-weight:600}
+.access-dialog-submit:hover{background:color-mix(in srgb,var(--gold) 22%,var(--card))}
 .pending-section{max-width:1000px;margin:0 auto}
 .empty-zone{min-height:140px;border:1px solid var(--line);border-radius:18px;background:var(--card)}
 .home-practice-card:focus-visible,.zone-action:focus-visible,.brand:focus-visible,.drawer-link:focus-visible{outline:2px solid var(--gold);outline-offset:4px}

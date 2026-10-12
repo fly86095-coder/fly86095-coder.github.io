@@ -159,9 +159,37 @@ function home(){
  </section>`;
  shell(content,'Home');hydratePartySlot()
 }
+const PRONUNCIATION_REVIEW_URL='https://script.google.com/macros/s/AKfycbzGC2SvGeAqysemBAFtiPH6euf0kic1EHqkpOw-hSVFQA_UoHW-2xqsWy7BwceOU2Vt/exec';
+function openPronunciationGate(){
+ const dialog=document.getElementById('pronunciationGate');
+ const input=document.getElementById('pronunciationPassword');
+ const error=document.getElementById('pronunciationPasswordError');
+ if(!dialog||!input||!error)return;
+ input.value='';input.removeAttribute('aria-invalid');error.textContent='';error.classList.remove('show');
+ if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
+ requestAnimationFrame(()=>input.focus());
+}
+function closePronunciationGate(){
+ const dialog=document.getElementById('pronunciationGate');
+ if(!dialog)return;
+ if(typeof dialog.close==='function'&&dialog.open)dialog.close();else dialog.removeAttribute('open');
+}
+function submitPronunciationGate(event){
+ event.preventDefault();
+ const input=document.getElementById('pronunciationPassword');
+ const error=document.getElementById('pronunciationPasswordError');
+ if(!input||!error)return false;
+ if(input.value!=='1010'){
+  input.setAttribute('aria-invalid','true');error.textContent='Password incorrect · 密碼錯誤';error.classList.add('show');input.select();return false;
+ }
+ window.open(PRONUNCIATION_REVIEW_URL,'_blank','noopener,noreferrer');
+ closePronunciationGate();
+ return false;
+}
 function wordZone(){
  const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Vocabulary</div><h1 class="page-title">Word Zone</h1><div class="detail-title-zh">單字專區</div></section>
- <section class="section word-zone"><div class="word-zone-actions"><a class="zone-action" href="#word-list"><b>Word List</b><small>單字表</small></a><button class="zone-action" type="button" disabled><b>Pronunciation &amp; Review</b><small>發音與複習系統</small></button></div></section>`;
+ <section class="section word-zone"><div class="word-zone-actions"><a class="zone-action" href="#word-list"><b>Word List</b><small>單字表</small></a><button class="zone-action" type="button" onclick="openPronunciationGate()" aria-haspopup="dialog" aria-controls="pronunciationGate"><b>Pronunciation &amp; Review</b><small>發音與複習系統</small></button></div></section>
+ <dialog id="pronunciationGate" class="access-dialog" aria-labelledby="pronunciationGateTitle"><div class="access-dialog-head"><div><h2 id="pronunciationGateTitle">Pronunciation &amp; Review</h2><p>發音與複習系統</p></div><button class="access-dialog-close" type="button" onclick="closePronunciationGate()" aria-label="Close password window">×</button></div><form class="access-dialog-form" onsubmit="return submitPronunciationGate(event)"><label for="pronunciationPassword"><b>Enter password</b><span>請輸入密碼</span></label><input id="pronunciationPassword" class="access-dialog-input" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-describedby="pronunciationPasswordError"><p id="pronunciationPasswordError" class="access-dialog-error" role="alert" aria-live="polite"></p><button class="access-dialog-submit" type="submit">Open system <span>開啟系統</span></button></form></dialog>`;
  shell(content,'Words')
 }
 function wordList(){
