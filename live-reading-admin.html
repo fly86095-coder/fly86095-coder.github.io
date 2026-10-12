@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0d1620"><meta name="robots" content="noindex,nofollow">
+<title>Live Reading Feedback · Control Panel</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="live-reading.css">
+</head>
+<body class="lr-admin-body">
+<header class="lr-admin-topbar"><div class="lr-admin-topbar-inner"><a class="lr-admin-brand" href="index.html#home"><img src="favicon.svg" alt=""><span><b>Live Reading Feedback</b><small>即時反饋朗讀控制台</small></span></a><span id="connectionBadge" class="lr-preview-mode">Connecting</span></div></header>
+<main class="lr-admin-main">
+ <section class="lr-admin-intro"><div><div class="eyebrow">Administrator interface</div><h1>Reading control panel</h1><p>登入管理員帳號後，可即時控制所有參與者看到的文章、朗讀者與蒐集內容。</p></div><a class="lr-admin-open" href="index.html#live-reading" target="_blank" rel="noopener">Open public page ↗</a></section>
+ <section class="lr-admin-card lr-admin-auth-card">
+  <div class="lr-admin-card-head"><h2>Administrator access</h2><span>管理員身分</span></div>
+  <div class="lr-admin-card-body lr-admin-auth-body"><div><b id="adminIdentity">尚未登入</b><small id="adminUid">請使用管理員 Google 帳號登入。</small></div><div class="lr-admin-actions"><button id="adminSignIn" class="lr-admin-button" type="button">Sign in with Google</button><button id="copyAdminUid" class="lr-admin-button secondary" type="button" hidden>Copy UID</button><button id="adminSignOut" class="lr-admin-button secondary" type="button" hidden>Sign out</button></div></div>
+ </section>
+ <p id="adminGlobalStatus" class="lr-admin-status" role="status" aria-live="polite"></p>
+ <div id="adminControls" class="lr-admin-grid is-locked" aria-disabled="true">
+  <div class="lr-admin-column">
+   <section class="lr-admin-card">
+    <div class="lr-admin-card-head"><h2>Article package</h2><span>文章資料</span></div>
+    <div class="lr-admin-card-body">
+     <label class="lr-admin-field"><span>Paste live-reading-article-v1 JSON</span><textarea id="articlePackage" spellcheck="false" placeholder='{"schema":"live-reading-article-v1", ...}'></textarea></label>
+     <div class="lr-admin-actions"><button id="validateArticle" class="lr-admin-button secondary" type="button">Validate & preview</button><button id="publishArticle" class="lr-admin-button" type="button" disabled>Publish article</button><button id="clearArticle" class="lr-admin-button danger" type="button">Clear article</button></div>
+     <p id="articleStatus" class="lr-admin-status" role="status" aria-live="polite"></p>
+     <div id="articlePreview" class="lr-article-preview"><p></p></div>
+    </div>
+   </section>
+  </div>
+  <div class="lr-admin-column">
+   <section class="lr-admin-card">
+    <div class="lr-admin-card-head"><h2>Module status</h2><span>頁面控制</span></div>
+    <div class="lr-admin-card-body"><div class="lr-admin-switch-row"><div class="lr-admin-switch-copy"><b>Live Reading Feedback</b><small>關閉後，已開啟公開頁面的使用者也會立即看到關閉狀態。</small></div><label class="lr-switch"><input id="pageEnabled" type="checkbox"><span></span></label></div></div>
+   </section>
+   <section class="lr-admin-card">
+    <div class="lr-admin-card-head"><h2>Reader</h2><span>朗讀者</span></div>
+    <div class="lr-admin-card-body"><label class="lr-admin-field"><span>English display name</span><input id="readerName" autocomplete="off"></label><div class="lr-admin-actions"><button id="saveReader" class="lr-admin-button" type="button">Update reader</button><button id="clearReader" class="lr-admin-button secondary" type="button">Clear</button></div></div>
+   </section>
+   <section class="lr-admin-card">
+    <div class="lr-admin-card-head"><h2>Collected words</h2><span>蒐集區</span></div>
+    <div class="lr-admin-card-body"><div id="adminCollection" class="lr-admin-collection"></div><div class="lr-admin-actions"><button id="clearCollection" class="lr-admin-button danger" type="button">Clear all collected words</button></div></div>
+   </section>
+   <section class="lr-admin-card">
+    <div class="lr-admin-card-head"><h2>Connection</h2><span>Firebase</span></div>
+    <div class="lr-admin-card-body"><p id="connectionNote" class="lr-admin-note">正在連接 Firebase Realtime Database。</p></div>
+   </section>
+  </div>
+ </div>
+</main>
+<script src="firebase-config.js"></script><script src="live-reading-core.js"></script><script src="live-reading-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+window.FIREBASE_CONFIG=Object.freeze({
+ apiKey:'AIzaSyDf8iBsEOT-3x-4R1UlVWVEI4A7rzTE6Dg',
+ authDomain:'fly-language-party.firebaseapp.com',
+ databaseURL:'https://fly-language-party-default-rtdb.asia-southeast1.firebasedatabase.app',
+ projectId:'fly-language-party',
+ storageBucket:'fly-language-party.firebasestorage.app',
+ messagingSenderId:'983024637473',
+ appId:'1:983024637473:web:1e8106809a9bea9175b560'
+});

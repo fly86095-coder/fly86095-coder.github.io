@@ -1,0 +1,54 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "liveReading": {
+      "config": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === 'xCUJOiv8DFhQhShWzuPaEmBLKPa2'"
+      },
+      "votes": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === 'xCUJOiv8DFhQhShWzuPaEmBLKPa2'",
+        "$articleId": {
+          "$segmentIndex": {
+            "$charIndex": {
+              "$uid": {
+                ".write": "auth != null && auth.uid === $uid",
+                ".validate": "newData.isNumber()"
+              }
+            }
+          }
+        }
+      },
+      "pulses": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === 'xCUJOiv8DFhQhShWzuPaEmBLKPa2'",
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.hasChildren(['articleId', 'segmentIndex', 'charIndex', 'at'])",
+          "articleId": { ".validate": "newData.isString()" },
+          "segmentIndex": { ".validate": "newData.isNumber()" },
+          "charIndex": { ".validate": "newData.isNumber()" },
+          "at": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
+        }
+      },
+      "comments": {
+        ".read": "auth != null",
+        "$commentId": {
+          ".write": "auth != null && !data.exists() && newData.child('uid').val() === auth.uid",
+          ".validate": "newData.hasChildren(['displayName', 'message', 'createdAt', 'uid'])",
+          "displayName": { ".validate": "newData.isString()" },
+          "message": { ".validate": "newData.isString() && newData.val().length > 0" },
+          "createdAt": { ".validate": "newData.isNumber()" },
+          "uid": { ".validate": "newData.val() === auth.uid" },
+          "$other": { ".validate": false }
+        }
+      },
+      "$other": {
+        ".validate": false
+      }
+    }
+  }
+}

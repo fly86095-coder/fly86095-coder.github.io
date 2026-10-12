@@ -88,7 +88,8 @@ function readingTopicNav(active='country'){
  const items=[
   ['Country & Culture','国家与文化','#reading','country'],
   ['Business & Current Affairs','商业时事','#reading-business','business'],
-  ['Encyclopedia Articles','百科文章','#reading-encyclopedia','encyclopedia']
+  ['Encyclopedia Articles','百科文章','#reading-encyclopedia','encyclopedia'],
+  ['Live Reading Feedback','即時反饋朗讀','#live-reading','live-reading']
  ];
  return `<div class="reading-topic-tabs">${items.map(([en,zh,route,key])=>`<button class="${active===key?'active':''}" onclick="go('${route}')"><b>${en}</b><span>${zh}</span></button>`).join('')}</div>`
 }
@@ -990,6 +991,7 @@ function render(){
  if(h==='#review-practice')return reviewLibrary();
  if(h==='#reading-business')return readingPlaceholder('business');
  if(h==='#reading-encyclopedia')return readingPlaceholder('encyclopedia');
+ if(h==='#live-reading')return liveReadingPage();
  if(h==='#reading'||h==='#library'||h==='#articles')return library();
  if(h==='#translations')return translationLibrary();
  if(h==='#dialogues')return dialogueLibrary();
