@@ -29,11 +29,11 @@ const SMALL_COUNTRY_MARKERS=[
 ];
 const SITE_SECTIONS = [
  {label:'Single Sentence',navLabel:'Single Sentence',zh:'單句練習',hash:'sentences',key:'Sentence'},
- {label:'Conversation Practice',navLabel:'Conversation',zh:'生活對話練習',hash:'dialogues',key:'Conversation'},
- {label:'Translation Practice',navLabel:'Translation',zh:'翻譯練習',hash:'translations',key:'Translation'},
- {label:'Review Practice',navLabel:'Review',zh:'複習練習',hash:'review-practice',key:'Review'},
- {label:'Reading Practice',navLabel:'Reading',zh:'閱讀練習',hash:'reading',key:'Reading'},
- {label:'Historical Materials',navLabel:'History',zh:'歷史教材',hash:'history',key:'History'},
+ {label:'Conversation',navLabel:'Conversation',zh:'生活對話',hash:'dialogues',key:'Conversation'},
+ {label:'Translation',navLabel:'Translation',zh:'翻譯練習',hash:'translations',key:'Translation'},
+ {label:'Review',navLabel:'Review',zh:'複習練習',hash:'review-practice',key:'Review'},
+ {label:'Reading',navLabel:'Reading',zh:'閱讀專區',hash:'reading',key:'Reading'},
+ {label:'Historical Materials',navLabel:'Historical Materials',zh:'歷史教材',hash:'history',key:'History'},
  {label:'Word Zone',navLabel:'Word Zone',zh:'單字專區',hash:'words',key:'Words'},
  {label:'Idioms & Slang',navLabel:'Idioms & Slang',zh:'俚語專區',hash:'idioms',key:'Idioms'}
 ];
