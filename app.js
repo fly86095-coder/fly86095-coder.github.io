@@ -189,7 +189,7 @@ function submitPronunciationGate(event){
 }
 function wordZone(){
  const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Vocabulary</div><h1 class="page-title">Word Zone</h1><div class="detail-title-zh">單字專區</div></section>
- <section class="section word-zone"><div class="word-zone-actions"><a class="zone-action" href="#word-list"><b>Word List</b><small>單字表</small></a><button class="zone-action" type="button" onclick="openPronunciationGate()" aria-haspopup="dialog" aria-controls="pronunciationGate"><b>Pronunciation &amp; Review</b><small>發音與複習系統</small></button></div></section>
+ <section class="section word-zone"><div class="word-zone-actions"><a class="zone-action" href="#word-list"><b>Word List</b><small>單字表</small></a><button class="zone-action" type="button" onclick="openPronunciationGate()" aria-haspopup="dialog" aria-controls="pronunciationGate"><b>Pronunciation &amp; Review</b><small>發音與複習系統</small></button><a class="zone-action" href="#chunks"><b>English Chunks</b><small>語塊區</small></a></div></section>
  <dialog id="pronunciationGate" class="access-dialog" aria-labelledby="pronunciationGateTitle"><div class="access-dialog-head"><div><h2 id="pronunciationGateTitle">Pronunciation &amp; Review</h2><p>發音與複習系統</p></div><button class="access-dialog-close" type="button" onclick="closePronunciationGate()" aria-label="Close password window">×</button></div><form class="access-dialog-form" onsubmit="return submitPronunciationGate(event)"><label for="pronunciationPassword"><b>Enter password</b><span>請輸入密碼</span></label><input id="pronunciationPassword" class="access-dialog-input" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-describedby="pronunciationPasswordError"><p id="pronunciationPasswordError" class="access-dialog-error" role="alert" aria-live="polite"></p><button class="access-dialog-submit" type="submit">Open system <span>開啟系統</span></button></form></dialog>`;
  shell(content,'Words')
 }
@@ -225,6 +225,37 @@ async function wordList(requestedPage=1){
  const words=window.WORD_LIST_DATA.words||[],perPage=30,totalPages=Math.max(1,Math.ceil(words.length/perPage));
  const page=Math.max(1,Math.min(totalPages,Math.floor(Number(requestedPage)||1))),start=(page-1)*perPage,visible=words.slice(start,start+perPage);
  const content=`${head}<section class="section word-list-section"><div class="word-list-meta"><span><b>${words.length}</b> words <small>單字</small></span><span>${start+1}–${start+visible.length} / ${words.length}</span></div><div class="word-table-wrap"><table class="word-table"><caption class="word-table-caption">Vocabulary · 單字表</caption><colgroup><col class="word-col-name"><col class="word-col-kk"><col class="word-col-meaning"><col class="word-col-detail"></colgroup><thead><tr><th scope="col">Word<small>單字</small></th><th scope="col" class="word-kk-cell">KK<small>KK 音標</small></th><th scope="col" class="word-meaning-cell">Meaning<small>中文意思</small></th><th scope="col">Usage &amp; Example<small class="word-desktop-heading">用法與例句</small><small class="word-mobile-heading">意思與用法</small></th></tr></thead><tbody>${visible.map(wordTableRow).join('')}</tbody></table></div><div class="word-list-bottom"><span>Page ${page} of ${totalPages} · 第 ${page} / ${totalPages} 頁</span>${wordListPagination(page,totalPages)}</div></section>`;
+ shell(content,'Words')
+}
+let chunkCatalog=null,chunkCatalogPromise=null;
+const CHUNK_CATEGORY_LABELS={C1:'Core Speaking Patterns',C2:'Expressing Ideas & Opinions',C3:'Experience & Habits',C4:'Interaction & Clarification',C5:'B1 Speaking Extension'};
+function loadChunkCatalog(){
+ if(chunkCatalog)return Promise.resolve(chunkCatalog);
+ if(chunkCatalogPromise)return chunkCatalogPromise;
+ chunkCatalogPromise=fetch('chunks_50.json',{cache:'no-cache'}).then(response=>{if(!response.ok)throw new Error('Chunk data unavailable');return response.json()}).then(data=>{
+  if(!Array.isArray(data?.categories)||!Array.isArray(data?.items))throw new Error('Invalid chunk data');
+  chunkCatalog=data;return data
+ }).catch(error=>{chunkCatalogPromise=null;throw error});
+ return chunkCatalogPromise
+}
+function chunkCard(item){
+ const note=item.usage_note_zh?`<div class="chunk-usage"><span>Usage · 用法提醒</span><p>${esc(item.usage_note_zh)}</p></div>`:'';
+ return `<article class="chunk-card" id="chunk-${esc(item.id)}"><header class="chunk-card-head"><span class="chunk-number">${String(item.number).padStart(2,'0')}</span><span class="chunk-level">${esc(item.level||'')}</span></header><h3>${esc(item.chunk)}</h3><p class="chunk-meaning">${esc(item.meaning_zh)}</p><div class="chunk-example"><span>Example · 例句</span><p class="chunk-example-en">${esc(item.example_en)}</p><p class="chunk-example-zh">${esc(item.example_zh)}</p></div>${note}</article>`
+}
+async function chunkZone(){
+ const head=`<section class="page-pad practice-page-head chunks-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / English Chunks</div><div class="eyebrow">Vocabulary · A2–B1</div><h1 class="page-title">English Chunks</h1><div class="detail-title-zh">語塊區</div></section>`;
+ if(!chunkCatalog){
+  const route=location.hash;shell(`${head}<section class="section chunks-section"><p role="status">Loading English chunks…</p></section>`,'Words');
+  try{await loadChunkCatalog()}catch(error){if(location.hash===route)shell(`${head}<section class="section chunks-section"><p role="status">Unable to load English chunks. · 語塊資料暫時無法載入。</p><button type="button" class="word-retry" onclick="chunkZone()">Retry · 重試</button></section>`,'Words');return}
+  if(location.hash!==route)return
+ }
+ const categories=chunkCatalog.categories||[],items=chunkCatalog.items||[];
+ const categoryNav=categories.map(category=>`<button type="button" onclick="document.getElementById('chunk-category-${esc(category.id)}')?.scrollIntoView({behavior:'smooth',block:'start'})"><b>${esc(CHUNK_CATEGORY_LABELS[category.id]||category.name)}</b><small>${esc(category.name)}</small></button>`).join('');
+ const groups=categories.map(category=>{
+  const categoryItems=items.filter(item=>item.category_id===category.id);
+  return `<section class="chunk-category" id="chunk-category-${esc(category.id)}"><header class="chunk-category-head"><div><span>${esc(category.id)}</span><h2>${esc(CHUNK_CATEGORY_LABELS[category.id]||category.name)}</h2><p>${esc(category.name)}</p></div><b>${categoryItems.length} chunks</b></header><div class="chunk-grid">${categoryItems.map(chunkCard).join('')}</div></section>`
+ }).join('');
+ const content=`${head}<section class="section chunks-section"><div class="chunks-summary"><span><b>${items.length}</b> chunks <small>語塊</small></span><span>${categories.length} categories · 五大分類</span></div><nav class="chunk-category-nav" aria-label="Chunk categories">${categoryNav}</nav>${groups}</section>`;
  shell(content,'Words')
 }
 const IDIOM_BATCH_1=[
@@ -999,6 +1030,7 @@ function render(){
  if(h==='#idioms')return idiomsZone();
  if(h==='#words')return wordZone();
  if(h==='#word-list'||h.startsWith('#word-list&')){const p=new URLSearchParams(h.slice(1));return wordList(p.get('page')||1)}
+ if(h==='#chunks')return chunkZone();
  if(h==='#history')return historyLibrary('sentence','A1');
  if(h==='#sentences')return sentenceLibrary();
  if(h==='#map')return mapPage();
