@@ -770,6 +770,8 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
 .review-roleplay-part-head>span{flex:0 0 auto;padding:6px 9px;border:1px solid color-mix(in srgb,var(--gold) 44%,var(--line));border-radius:999px;color:var(--gold);font-size:10px;font-weight:850;letter-spacing:.08em}
 .review-roleplay-part-head h2{margin:0;color:#e3d6bc;font-size:22px;line-height:1.3}
 .review-roleplay-part-head p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.review-roleplay-hint-toggle{margin-top:10px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:rgba(10,26,38,.42);color:#aebcc6;font-size:11px;font-weight:750;cursor:pointer}
+.review-roleplay-hint-toggle.active{border-color:color-mix(in srgb,var(--gold) 56%,var(--line));background:rgba(185,145,67,.11);color:var(--gold)}
 .review-roleplay-pattern-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .review-roleplay-pattern-card{display:flex;flex-direction:column;min-width:0;padding:17px;border:1px solid var(--line);border-radius:14px;background:rgba(10,26,38,.42)}
 .review-roleplay-pattern-meta{display:flex;align-items:center;gap:9px;min-width:0}
@@ -795,6 +797,12 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
 .review-roleplay-en{margin:0;color:#e0e9ef;font-size:16px;line-height:1.6;overflow-wrap:anywhere}
 .review-roleplay-zh{margin-top:6px;color:#bdc9d1;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
 .review-roleplay-pinyin{margin-top:2px;color:#7f94a2;font-size:11px;line-height:1.55;overflow-wrap:anywhere}
+.review-roleplay-line-hints{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}
+.review-roleplay-hints-on .review-roleplay-line-hints{display:grid}
+.review-roleplay-line-hints>span{display:grid;min-width:0;padding:8px 9px;border:1px solid color-mix(in srgb,var(--gold) 22%,var(--line));border-radius:9px;background:rgba(185,145,67,.055)}
+.review-roleplay-line-hints b{color:#d9e4eb;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+.review-roleplay-line-hints em{margin-top:3px;color:#aebdc6;font-size:10px;font-style:normal;line-height:1.4}
+.review-roleplay-line-hints small{margin-top:1px;color:#718896;font-size:9px;line-height:1.4;overflow-wrap:anywhere}
 @media(max-width:760px){
  .review-roleplay-grid{grid-template-columns:1fr;gap:10px}
  .review-roleplay-card{padding:18px 16px}.review-roleplay-card h2{font-size:19px}
@@ -808,4 +816,5 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
  .review-roleplay-line{grid-template-columns:31px minmax(0,1fr);gap:9px;padding:12px 10px}
  .review-roleplay-speaker{width:29px;height:29px;font-size:10px}
  .review-roleplay-en{font-size:14px}.review-roleplay-zh{font-size:12px}.review-roleplay-pinyin{font-size:10px}
+ .review-roleplay-line-hints{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
 }

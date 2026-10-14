@@ -992,10 +992,19 @@ function roleplayReviewPart2(course){
  const cards=(course.words||[]).map(word=>`<article class="review-roleplay-word"><b>${esc(word.en||'')}</b><span>${esc(word.zh||'')}</span><small>${practicePinyin(word.zh||'')}</small></article>`).join('');
  return `<section class="review-roleplay-part"><div class="review-roleplay-part-head"><span>PART 2</span><div><h2>Useful Words &amp; Phrases</h2><p>实用词语</p></div></div><div class="review-roleplay-word-grid">${cards}</div></section>`
 }
+function toggleRoleplayHints(button){
+ const section=button.closest('.review-roleplay-part');if(!section)return;
+ const on=section.classList.toggle('review-roleplay-hints-on');
+ button.classList.toggle('active',on);button.setAttribute('aria-pressed',on?'true':'false');
+ button.textContent=on?'Hints: On · 提示词：开':'Hints: Off · 提示词：关'
+}
 function roleplayReviewPart3(course){
  const roles=(course.roles||[]).map(role=>`<article class="review-roleplay-role"><div><b>${esc(role.name||'')}</b><span>${esc(role.nameZh||'')}</span></div><p>${esc(role.en||'')}</p><p>${esc(role.zh||'')}</p></article>`).join('');
- const lines=(course.lines||[]).map((line,index)=>`<article class="review-roleplay-line"><span class="review-roleplay-speaker">${esc(line.speaker||'')}</span><div><small>${String(index+1).padStart(2,'0')}</small><p class="review-roleplay-en">${esc(line.en||'')}</p>${practiceZhPair(line.zh||'','review-roleplay-zh','review-roleplay-pinyin')}</div></article>`).join('');
- return `<section class="review-roleplay-part"><div class="review-roleplay-part-head"><span>PART 3</span><div><h2>Dialogue Practice</h2><p>对话练习</p></div></div><div class="review-roleplay-role-grid">${roles}</div><div class="review-roleplay-dialogue">${lines}</div></section>`
+ const lines=(course.lines||[]).map((line,index)=>{
+  const hints=(line.hints||[]).map(hint=>`<span><b>${esc(hint.en||'')}</b><em>${esc(hint.zh||'')}</em><small>${practicePinyin(hint.zh||'')}</small></span>`).join('');
+  return `<article class="review-roleplay-line"><span class="review-roleplay-speaker">${esc(line.speaker||'')}</span><div><small>${String(index+1).padStart(2,'0')}</small><p class="review-roleplay-en">${esc(line.en||'')}</p>${practiceZhPair(line.zh||'','review-roleplay-zh','review-roleplay-pinyin')}${hints?`<div class="review-roleplay-line-hints">${hints}</div>`:''}</div></article>`
+ }).join('');
+ return `<section class="review-roleplay-part"><div class="review-roleplay-part-head"><span>PART 3</span><div><h2>Dialogue Practice</h2><p>对话练习</p><button class="review-roleplay-hint-toggle" type="button" aria-pressed="false" onclick="toggleRoleplayHints(this)">Hints: Off · 提示词：关</button></div></div><div class="review-roleplay-role-grid">${roles}</div><div class="review-roleplay-dialogue">${lines}</div></section>`
 }
 function reviewPage(id){
  const course=roleplayReviewCourse(id);if(!course)return roleplayReviewHome();
