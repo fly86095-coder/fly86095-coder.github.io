@@ -198,14 +198,24 @@ function loadWordListData(){
  if(window.WORD_LIST_DATA)return Promise.resolve(window.WORD_LIST_DATA);
  if(wordListDataPromise)return wordListDataPromise;
  wordListDataPromise=new Promise((resolve,reject)=>{
-  const script=document.createElement('script');script.src='word-list-data.js';
+  const script=document.createElement('script');script.src='word-list-full-data.js?v=20261015';
   script.onload=()=>{if(window.WORD_LIST_DATA)resolve(window.WORD_LIST_DATA);else{script.remove();wordListDataPromise=null;reject(new Error('Word list unavailable'))}};
   script.onerror=()=>{script.remove();wordListDataPromise=null;reject(new Error('Word list unavailable'))};
   document.head.appendChild(script)
  });
  return wordListDataPromise
 }
-function wordListPageLink(page,label,current=false){return `<a href="#word-list&page=${page}" ${current?'aria-current="page"':''}>${label}</a>`}
+function wordListPageLink(page,label,current=false){return `<a href="#word-list&page=${page}" data-word-page="${page}" ${current?'aria-current="page"':''}>${label}</a>`}
+function wordListTopPagination(page,totalPages){
+ const links=Array.from({length:totalPages},(_,index)=>wordListPageLink(index+1,index+1,index+1===page)).join('');
+ return `<nav class="word-page-toolbar" aria-label="Word list quick page navigation"><button class="word-page-arrow" type="button" onclick="location.hash='#word-list&page=${Math.max(1,page-1)}'" ${page<=1?'disabled':''} aria-label="Previous page">←</button><div class="word-page-rail" id="wordPageRail" tabindex="0" aria-label="Scroll page numbers">${links}</div><button class="word-page-arrow" type="button" onclick="location.hash='#word-list&page=${Math.min(totalPages,page+1)}'" ${page>=totalPages?'disabled':''} aria-label="Next page">→</button><form class="word-page-jump" onsubmit="return jumpToWordListPage(event,${totalPages})"><label for="wordPageInput">Page</label><input id="wordPageInput" type="number" min="1" max="${totalPages}" value="${page}" inputmode="numeric" aria-label="Page number"><button type="submit">Go</button></form></nav>`
+}
+function jumpToWordListPage(event,totalPages){
+ event.preventDefault();const input=event.currentTarget.querySelector('input');const page=Math.max(1,Math.min(totalPages,Math.floor(Number(input.value)||1)));location.hash=`#word-list&page=${page}`;return false
+}
+function positionWordPageRail(page){
+ requestAnimationFrame(()=>{const rail=document.getElementById('wordPageRail');if(!rail)return;const groupStart=Math.floor((page-1)/6)*6+1;const target=rail.querySelector(`[data-word-page="${groupStart}"]`);if(target)rail.scrollLeft=Math.max(0,target.offsetLeft-rail.offsetLeft)})
+}
 function wordListPagination(page,totalPages){
  const nearby=new Set([1,totalPages]);for(let n=page-2;n<=page+2;n++)if(n>=1&&n<=totalPages)nearby.add(n);
  let previous=0;const links=[...nearby].sort((a,b)=>a-b).map(n=>{const gap=previous&&n>previous+1?'<span class="word-page-gap" aria-hidden="true">…</span>':'';previous=n;return gap+wordListPageLink(n,n,n===page)}).join('');
@@ -224,8 +234,8 @@ async function wordList(requestedPage=1){
  }
  const words=window.WORD_LIST_DATA.words||[],perPage=30,totalPages=Math.max(1,Math.ceil(words.length/perPage));
  const page=Math.max(1,Math.min(totalPages,Math.floor(Number(requestedPage)||1))),start=(page-1)*perPage,visible=words.slice(start,start+perPage);
- const content=`${head}<section class="section word-list-section"><div class="word-list-meta"><span><b>${words.length}</b> words <small>單字</small></span><span>${start+1}–${start+visible.length} / ${words.length}</span></div><div class="word-table-wrap"><table class="word-table"><caption class="word-table-caption">Vocabulary · 單字表</caption><colgroup><col class="word-col-name"><col class="word-col-kk"><col class="word-col-meaning"><col class="word-col-detail"></colgroup><thead><tr><th scope="col">Word<small>單字</small></th><th scope="col" class="word-kk-cell">KK<small>KK 音標</small></th><th scope="col" class="word-meaning-cell">Meaning<small>中文意思</small></th><th scope="col">Usage &amp; Example<small class="word-desktop-heading">用法與例句</small><small class="word-mobile-heading">意思與用法</small></th></tr></thead><tbody>${visible.map(wordTableRow).join('')}</tbody></table></div><div class="word-list-bottom"><span>Page ${page} of ${totalPages} · 第 ${page} / ${totalPages} 頁</span>${wordListPagination(page,totalPages)}</div></section>`;
- shell(content,'Words')
+ const content=`${head}<section class="section word-list-section"><div class="word-list-meta"><span><b>${words.length}</b> words <small>單字</small></span><span>${start+1}–${start+visible.length} / ${words.length}</span></div>${wordListTopPagination(page,totalPages)}<div class="word-table-wrap"><table class="word-table"><caption class="word-table-caption">Vocabulary · 單字表</caption><colgroup><col class="word-col-name"><col class="word-col-kk"><col class="word-col-meaning"><col class="word-col-detail"></colgroup><thead><tr><th scope="col">Word<small>單字</small></th><th scope="col" class="word-kk-cell">KK<small>KK 音標</small></th><th scope="col" class="word-meaning-cell">Meaning<small>中文意思</small></th><th scope="col">Usage &amp; Example<small class="word-desktop-heading">用法與例句</small><small class="word-mobile-heading">意思與用法</small></th></tr></thead><tbody>${visible.map(wordTableRow).join('')}</tbody></table></div><div class="word-list-bottom"><span>Page ${page} of ${totalPages} · 第 ${page} / ${totalPages} 頁</span>${wordListPagination(page,totalPages)}</div></section>`;
+ shell(content,'Words');positionWordPageRail(page)
 }
 let chunkCatalog=null,chunkCatalogPromise=null;
 const CHUNK_CATEGORY_LABELS={C1:'Core Speaking Patterns',C2:'Expressing Ideas & Opinions',C3:'Experience & Habits',C4:'Interaction & Clarification',C5:'B1 Speaking Extension'};
