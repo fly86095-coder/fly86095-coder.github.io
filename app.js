@@ -853,7 +853,7 @@ function reviewV2Home(){
  </section>`;
  shell(content,'Review')
 }
-function reviewLibrary(){return reviewV2Home()}
+function reviewLibrary(){return roleplayReviewHome()}
 function reviewV2ThemePage(themeId){
  const theme=reviewV2Theme(themeId);if(!theme)return reviewV2Home();
  const courses=reviewV2CoursesByTheme(themeId);
@@ -940,7 +940,7 @@ function reviewV2Part3(course){
  }).join('');
  return `<section class="review-v2-stage"><div class="review-v2-stage-head"><span>Part 3</span><div><small>Structure notes</small><h2>How the Patterns Work</h2><p>No dropdowns here: this section explains the sentence structures directly.</p></div></div><div class="review-v2-explain-grid">${rows}</div></section>`
 }
-function reviewPage(id){
+function reviewV2LegacyPage(id){
  const course=reviewV2Course(id);if(!course)return reviewV2Home();
  const theme=reviewV2Theme(course.theme);
  const same=reviewV2CoursesByTheme(course.theme);
@@ -949,6 +949,62 @@ function reviewPage(id){
  <div class="review-v2-hero"><div><div class="eyebrow">${esc(theme?.en||'Review')} · Course ${course.order}</div><h1>${esc(course.title)}</h1><div class="detail-title-zh">${esc(course.titleZh||'')}</div><p>${esc(course.summary||'')}</p></div><div class="review-v2-flow"><span>1 Patterns</span><i>→</i><strong>2 Core Text</strong><i>→</i><span>3 Structure Notes</span></div></div>
  ${reviewV2Part1(course)}${reviewV2Part2(course)}${reviewV2Part3(course)}
  <div class="prevnext dialogue-prevnext"><button class="pn" ${prev?`onclick="go('#review=${prev.id}')"`:`onclick="go('#review-theme=${course.theme}')"`}><small>← ${prev?'Previous':'Topic'}</small><b>${prev?`Course ${prev.order}`:esc(theme?.en||'Review')}</b></button><button class="pn" ${next?`onclick="go('#review=${next.id}')"`:`onclick="go('#review-theme=${course.theme}')"`}><small>${next?'Next':'Back to topic'} →</small><b>${next?`Course ${next.order}`:esc(theme?.en||'Review')}</b></button></div>${copyLinkBar()}</section>`;
+ shell(content,'Review')
+}
+
+/* Role-play Review */
+function roleplayReviewCatalog(){return window.REVIEW_ROLEPLAY_CATALOG||{version:'',publishedOn:'',courses:[]}}
+function roleplayReviewCourses(){return [...(roleplayReviewCatalog().courses||[])].sort((a,b)=>(b.order||0)-(a.order||0))}
+function roleplayReviewCourse(id){return roleplayReviewCourses().find(x=>x.id===id)||null}
+function roleplayReviewSentence(id){return (practiceCatalog().sentencePractice||[]).find(x=>x.id===id)||null}
+function roleplayReviewPatternCode(sentence){
+ const match=String(sentence?.id||'').match(/^s-(a1|a2|b1)-(\d+)$/i);
+ return match?`${match[1].toUpperCase()}-${match[2]}`:(sentence?.level||'')
+}
+function roleplayReviewHome(){
+ const courses=roleplayReviewCourses();
+ const latest=[...courses].map(x=>String(x.publishedOn||'')).filter(Boolean).sort().slice(-1)[0]||'';
+ const cards=courses.map(course=>{
+  const today=!!latest&&course.publishedOn===latest;
+  return `<article class="review-roleplay-card ${today?'today-card review-roleplay-today':''}" onclick="go('#review=${course.id}')" role="button" tabindex="0">
+   <div class="review-roleplay-card-top"><span>REVIEW-${course.order}</span>${today?'<em>TODAY</em>':''}</div>
+   <h2>${esc(course.title)}</h2><p>${esc(course.titleZh||'')}</p>
+  </article>`
+ }).join('');
+ const content=`<section class="page-pad practice-page-head review-roleplay-head"><div class="eyebrow">Review</div><h1 class="page-title">Review Practice</h1><div class="detail-title-zh">复习练习</div></section>
+ <section class="section review-roleplay-library"><div class="review-roleplay-grid">${cards}</div></section>`;
+ shell(content,'Review')
+}
+function roleplayReviewPart1(course){
+ const cards=(course.patterns||[]).map(id=>{
+  const sentence=roleplayReviewSentence(id);if(!sentence)return '';
+  const code=roleplayReviewPatternCode(sentence),route=translationPatternRoute(sentence);
+  return `<article class="review-roleplay-pattern-card">
+   <div class="review-roleplay-pattern-meta"><span class="level-pill ${String(sentence.level||'').toLowerCase()}">${esc(code)}</span><small>${esc(String(sentence.title||'').toLowerCase())}</small></div>
+   <h3>${esc(sentence.pattern||'')}</h3>
+   ${practiceZhPair(sentence.zh||'','review-roleplay-pattern-zh','review-roleplay-pattern-pinyin')}
+   <button type="button" onclick="go('${route}')">Open original lesson →</button>
+  </article>`
+ }).join('');
+ return `<section class="review-roleplay-part"><div class="review-roleplay-part-head"><span>PART 1</span><div><h2>Sentence Pattern Review</h2><p>句型复习</p></div></div><div class="review-roleplay-pattern-grid">${cards}</div></section>`
+}
+function roleplayReviewPart2(course){
+ const cards=(course.words||[]).map(word=>`<article class="review-roleplay-word"><b>${esc(word.en||'')}</b><span>${esc(word.zh||'')}</span><small>${practicePinyin(word.zh||'')}</small></article>`).join('');
+ return `<section class="review-roleplay-part"><div class="review-roleplay-part-head"><span>PART 2</span><div><h2>Useful Words &amp; Phrases</h2><p>实用词语</p></div></div><div class="review-roleplay-word-grid">${cards}</div></section>`
+}
+function roleplayReviewPart3(course){
+ const roles=(course.roles||[]).map(role=>`<article class="review-roleplay-role"><div><b>${esc(role.name||'')}</b><span>${esc(role.nameZh||'')}</span></div><p>${esc(role.en||'')}</p><p>${esc(role.zh||'')}</p></article>`).join('');
+ const lines=(course.lines||[]).map((line,index)=>`<article class="review-roleplay-line"><span class="review-roleplay-speaker">${esc(line.speaker||'')}</span><div><small>${String(index+1).padStart(2,'0')}</small><p class="review-roleplay-en">${esc(line.en||'')}</p>${practiceZhPair(line.zh||'','review-roleplay-zh','review-roleplay-pinyin')}</div></article>`).join('');
+ return `<section class="review-roleplay-part"><div class="review-roleplay-part-head"><span>PART 3</span><div><h2>Dialogue Practice</h2><p>对话练习</p></div></div><div class="review-roleplay-role-grid">${roles}</div><div class="review-roleplay-dialogue">${lines}</div></section>`
+}
+function reviewPage(id){
+ const course=roleplayReviewCourse(id);if(!course)return roleplayReviewHome();
+ const courses=roleplayReviewCourses(),index=courses.findIndex(x=>x.id===course.id),newer=courses[index-1],older=courses[index+1];
+ const content=`<section class="review-detail review-roleplay-detail"><div class="breadcrumbs"><a href="#review-practice">Review</a> / REVIEW-${course.order}</div>
+  <div class="review-roleplay-hero"><div class="eyebrow">REVIEW-${course.order} · ${esc(course.level||'A2')}</div><h1>${esc(course.title)}</h1><div class="detail-title-zh">${esc(course.titleZh||'')}</div></div>
+  ${roleplayReviewPart1(course)}${roleplayReviewPart2(course)}${roleplayReviewPart3(course)}
+  <div class="prevnext dialogue-prevnext"><button class="pn" ${newer?`onclick="go('#review=${newer.id}')"`:`onclick="go('#review-practice')"`}><small>← ${newer?'Newer':'Review'}</small><b>${newer?`REVIEW-${newer.order}`:'All reviews'}</b></button><button class="pn" ${older?`onclick="go('#review=${older.id}')"`:`onclick="go('#review-practice')"`}><small>${older?'Older':'Review'} →</small><b>${older?`REVIEW-${older.order}`:'All reviews'}</b></button></div>${copyLinkBar()}
+ </section>`;
  shell(content,'Review')
 }
 
@@ -1013,7 +1069,7 @@ function render(){
  if(h.startsWith('#dialogue=')){const p=new URLSearchParams(h.slice(1));return dialoguePage(p.get('dialogue'))}
  if(h.startsWith('#translation=')){const p=new URLSearchParams(h.slice(1));return translationPage(p.get('translation'))}
  if(h.startsWith('#sentence=')){const p=new URLSearchParams(h.slice(1));return sentencePage(p.get('sentence'))}
- if(h.startsWith('#review-theme=')){const p=new URLSearchParams(h.slice(1));return reviewV2ThemePage(p.get('review-theme'))}
+ if(h.startsWith('#review-theme='))return reviewLibrary();
  if(h.startsWith('#history-sentence=')){const p=new URLSearchParams(h.slice(1));return historySentencePage(p.get('history-sentence'))}
  if(h.startsWith('#history-dialogue=')){const p=new URLSearchParams(h.slice(1));return historyDialoguePage(p.get('history-dialogue'))}
  if(h.startsWith('#history-translation=')){const p=new URLSearchParams(h.slice(1));return historyTranslationPage(p.get('history-translation'))}
