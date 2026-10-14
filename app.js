@@ -205,6 +205,42 @@ function loadWordListData(){
  });
  return wordListDataPromise
 }
+let wordAudioDataPromise=null,wordAudioPlayer=null,wordAudioActiveButton=null;
+function loadWordAudioData(){
+ if(window.WORD_AUDIO_DATA)return Promise.resolve(window.WORD_AUDIO_DATA);
+ if(wordAudioDataPromise)return wordAudioDataPromise;
+ wordAudioDataPromise=new Promise((resolve,reject)=>{
+  const script=document.createElement('script');script.src='word-audio-data.js?v=20261015';
+  script.onload=()=>{if(window.WORD_AUDIO_DATA)resolve(window.WORD_AUDIO_DATA);else{script.remove();wordAudioDataPromise=null;reject(new Error('Word audio index unavailable'))}};
+  script.onerror=()=>{script.remove();wordAudioDataPromise=null;reject(new Error('Word audio index unavailable'))};
+  document.head.appendChild(script)
+ });
+ return wordAudioDataPromise
+}
+function resetWordAudioButton(button=wordAudioActiveButton){
+ if(!button)return;
+ button.classList.remove('is-loading','is-playing');
+ button.querySelector('[data-word-audio-icon]').textContent='▶';
+ button.querySelector('[data-word-audio-label]').textContent='Play';
+ button.setAttribute('aria-pressed','false')
+}
+function playWordAudio(event,wordId){
+ event.preventDefault();event.stopPropagation();
+ const button=event.currentTarget,audioEntry=window.WORD_AUDIO_DATA&&window.WORD_AUDIO_DATA.audio&&window.WORD_AUDIO_DATA.audio[wordId];
+ if(!audioEntry)return false;
+ if(!wordAudioPlayer){
+  wordAudioPlayer=new Audio();wordAudioPlayer.preload='none';
+  wordAudioPlayer.addEventListener('playing',()=>{if(!wordAudioActiveButton)return;wordAudioActiveButton.classList.remove('is-loading');wordAudioActiveButton.classList.add('is-playing');wordAudioActiveButton.querySelector('[data-word-audio-icon]').textContent='■';wordAudioActiveButton.querySelector('[data-word-audio-label]').textContent='Stop';wordAudioActiveButton.setAttribute('aria-pressed','true')});
+  wordAudioPlayer.addEventListener('ended',()=>{resetWordAudioButton();wordAudioActiveButton=null});
+  wordAudioPlayer.addEventListener('error',()=>{const failed=wordAudioActiveButton;resetWordAudioButton();wordAudioActiveButton=null;if(failed){failed.classList.add('is-error');failed.querySelector('[data-word-audio-label]').textContent='Retry';setTimeout(()=>{failed.classList.remove('is-error');if(failed!==wordAudioActiveButton)failed.querySelector('[data-word-audio-label]').textContent='Play'},1800)}})
+ }
+ if(wordAudioActiveButton===button&&!wordAudioPlayer.paused){wordAudioPlayer.pause();resetWordAudioButton();wordAudioActiveButton=null;return false}
+ if(wordAudioActiveButton&&wordAudioActiveButton!==button)resetWordAudioButton(wordAudioActiveButton);
+ wordAudioPlayer.pause();wordAudioActiveButton=button;button.classList.remove('is-error','is-playing');button.classList.add('is-loading');button.querySelector('[data-word-audio-icon]').textContent='…';button.querySelector('[data-word-audio-label]').textContent='Loading';button.setAttribute('aria-pressed','false');
+ wordAudioPlayer.src=audioEntry.src;wordAudioPlayer.currentTime=0;
+ const playback=wordAudioPlayer.play();if(playback&&typeof playback.catch==='function')playback.catch(()=>{});
+ return false
+}
 function wordListPageLink(page,label,current=false){return `<a href="#word-list&page=${page}" data-word-page="${page}" ${current?'aria-current="page"':''}>${label}</a>`}
 function wordListTopPagination(page,totalPages){
  const links=Array.from({length:totalPages},(_,index)=>wordListPageLink(index+1,index+1,index+1===page)).join('');
@@ -223,7 +259,8 @@ function wordListPagination(page,totalPages){
 }
 function wordTableRow(word){
  const detail=(label,zh,text,className)=>text?`<div class="word-detail-line ${className}"><span class="word-field-label">${label}<small>${zh}</small></span><p>${esc(text)}</p></div>`:'';
- return `<tr id="word-${esc(word.id)}"><th scope="row" class="word-name-cell"><span class="word-record-number">${word.number}</span><strong>${esc(word.word)}</strong><span class="word-mobile-kk">${esc(word.kk)}</span><span class="word-part-of-speech">${esc(word.pos)}</span><span class="word-topic">${esc(word.topic)}</span></th><td class="word-kk-cell">${esc(word.kk)}</td><td class="word-meaning-cell">${esc(word.meaning)}</td><td class="word-detail-cell"><p class="word-mobile-meaning">${esc(word.meaning)}</p>${detail('Usage','用法',word.usage,'word-usage')}${detail('Example','例句',word.example,'word-example')}${detail('Forms','其他變化',word.forms,'word-forms')}${detail('Note','註解',word.note,'word-note')}</td></tr>`
+ const audio=window.WORD_AUDIO_DATA&&window.WORD_AUDIO_DATA.audio&&window.WORD_AUDIO_DATA.audio[word.id],audioButton=audio?`<button class="word-audio-button" type="button" onclick="return playWordAudio(event,'${esc(word.id)}')" aria-label="Play pronunciation" aria-pressed="false"><span data-word-audio-icon aria-hidden="true">▶</span><span data-word-audio-label>Play</span></button>`:'';
+ return `<tr id="word-${esc(word.id)}"><th scope="row" class="word-name-cell"><span class="word-record-number">${word.number}</span><strong>${esc(word.word)}</strong><span class="word-mobile-kk">${esc(word.kk)}</span><span class="word-part-of-speech">${esc(word.pos)}</span>${audioButton}<span class="word-topic">${esc(word.topic)}</span></th><td class="word-kk-cell">${esc(word.kk)}</td><td class="word-meaning-cell">${esc(word.meaning)}</td><td class="word-detail-cell"><p class="word-mobile-meaning">${esc(word.meaning)}</p>${detail('Usage','用法',word.usage,'word-usage')}${detail('Example','例句',word.example,'word-example')}${detail('Forms','其他變化',word.forms,'word-forms')}${detail('Note','註解',word.note,'word-note')}</td></tr>`
 }
 async function wordList(requestedPage=1){
  const head=`<section class="page-pad practice-page-head word-list-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Word List</div><h1 class="page-title">Word List</h1><div class="detail-title-zh">單字表</div></section>`;
@@ -232,6 +269,7 @@ async function wordList(requestedPage=1){
   try{await loadWordListData()}catch(error){if(location.hash===route)shell(`${head}<section class="section word-list-section"><p role="status">Unable to load the word list. · 單字表暫時無法載入。</p><button type="button" class="word-retry" onclick="wordList(${Math.max(1,Number(requestedPage)||1)})">Retry · 重試</button></section>`,'Words');return}
   if(location.hash!==route)return
  }
+ if(!window.WORD_AUDIO_DATA){const route=location.hash;try{await loadWordAudioData()}catch(error){}if(location.hash!==route)return}
  const words=window.WORD_LIST_DATA.words||[],perPage=30,totalPages=Math.max(1,Math.ceil(words.length/perPage));
  const page=Math.max(1,Math.min(totalPages,Math.floor(Number(requestedPage)||1))),start=(page-1)*perPage,visible=words.slice(start,start+perPage);
  const content=`${head}<section class="section word-list-section"><div class="word-list-meta"><span><b>${words.length}</b> words <small>單字</small></span><span>${start+1}–${start+visible.length} / ${words.length}</span></div>${wordListTopPagination(page,totalPages)}<div class="word-table-wrap"><table class="word-table"><caption class="word-table-caption">Vocabulary · 單字表</caption><colgroup><col class="word-col-name"><col class="word-col-kk"><col class="word-col-meaning"><col class="word-col-detail"></colgroup><thead><tr><th scope="col">Word<small>單字</small></th><th scope="col" class="word-kk-cell">KK<small>KK 音標</small></th><th scope="col" class="word-meaning-cell">Meaning<small>中文意思</small></th><th scope="col">Usage &amp; Example<small class="word-desktop-heading">用法與例句</small><small class="word-mobile-heading">意思與用法</small></th></tr></thead><tbody>${visible.map(wordTableRow).join('')}</tbody></table></div><div class="word-list-bottom"><span>Page ${page} of ${totalPages} · 第 ${page} / ${totalPages} 頁</span>${wordListPagination(page,totalPages)}</div></section>`;
