@@ -1,6 +1,6 @@
 window.WORD_AUDIO_DATA = {
-  version: "2026-10-15-complete-first500",
-  count: 500,
+  version: "2026-10-15-batch-0577-0599",
+  count: 523,
   audio: {
     "ws_000001": { src: "audio/vocabulary/0001-1000/0002_above.mp3", fileName: "0002_above.mp3" },
     "ws_000002": { src: "audio/vocabulary/0001-1000/0003_abroad.mp3", fileName: "0003_abroad.mp3" },
@@ -501,7 +501,30 @@ window.WORD_AUDIO_DATA = {
     "ws_000512": { src: "audio/vocabulary/0001-1000/0513_drain.mp3", fileName: "0513_drain.mp3" },
     "ws_000513": { src: "audio/vocabulary/0001-1000/0514_effect.mp3", fileName: "0514_effect.mp3" },
     "ws_000514": { src: "audio/vocabulary/0001-1000/0515_embarrass.mp3", fileName: "0515_embarrass.mp3" },
-    "ws_000515": { src: "audio/vocabulary/0001-1000/0516_expect.mp3", fileName: "0516_expect.mp3" }
+    "ws_000515": { src: "audio/vocabulary/0001-1000/0516_expect.mp3", fileName: "0516_expect.mp3" },
+    "ws_000576": { src: "audio/vocabulary/0001-1000/0577_afford.mp3", fileName: "0577_afford.mp3" },
+    "ws_000577": { src: "audio/vocabulary/0001-1000/0578_avoid.mp3", fileName: "0578_avoid.mp3" },
+    "ws_000578": { src: "audio/vocabulary/0001-1000/0579_bother.mp3", fileName: "0579_bother.mp3" },
+    "ws_000579": { src: "audio/vocabulary/0001-1000/0580_confirm.mp3", fileName: "0580_confirm.mp3" },
+    "ws_000580": { src: "audio/vocabulary/0001-1000/0581_delay.mp3", fileName: "0581_delay.mp3" },
+    "ws_000581": { src: "audio/vocabulary/0001-1000/0582_manage.mp3", fileName: "0582_manage.mp3" },
+    "ws_000582": { src: "audio/vocabulary/0001-1000/0583_notice.mp3", fileName: "0583_notice.mp3" },
+    "ws_000583": { src: "audio/vocabulary/0001-1000/0584_remind.mp3", fileName: "0584_remind.mp3" },
+    "ws_000584": { src: "audio/vocabulary/0001-1000/0585_replace.mp3", fileName: "0585_replace.mp3" },
+    "ws_000585": { src: "audio/vocabulary/0001-1000/0586_warn.mp3", fileName: "0586_warn.mp3" },
+    "ws_000586": { src: "audio/vocabulary/0001-1000/0587_clarify.mp3", fileName: "0587_clarify.mp3" },
+    "ws_000587": { src: "audio/vocabulary/0001-1000/0588_arrange.mp3", fileName: "0588_arrange.mp3" },
+    "ws_000588": { src: "audio/vocabulary/0001-1000/0589_adjust.mp3", fileName: "0589_adjust.mp3" },
+    "ws_000589": { src: "audio/vocabulary/0001-1000/0590_attach.mp3", fileName: "0590_attach.mp3" },
+    "ws_000590": { src: "audio/vocabulary/0001-1000/0591_ensure.mp3", fileName: "0591_ensure.mp3" },
+    "ws_000591": { src: "audio/vocabulary/0001-1000/0592_resolve.mp3", fileName: "0592_resolve.mp3" },
+    "ws_000592": { src: "audio/vocabulary/0001-1000/0593_reschedule.mp3", fileName: "0593_reschedule.mp3" },
+    "ws_000593": { src: "audio/vocabulary/0001-1000/0594_commit.mp3", fileName: "0594_commit.mp3" },
+    "ws_000594": { src: "audio/vocabulary/0001-1000/0595_prioritize.mp3", fileName: "0595_prioritize.mp3" },
+    "ws_000595": { src: "audio/vocabulary/0001-1000/0596_negotiate.mp3", fileName: "0596_negotiate.mp3" },
+    "ws_000596": { src: "audio/vocabulary/0001-1000/0597_convenient.mp3", fileName: "0597_convenient.mp3" },
+    "ws_000597": { src: "audio/vocabulary/0001-1000/0598_reliable.mp3", fileName: "0598_reliable.mp3" },
+    "ws_000598": { src: "audio/vocabulary/0001-1000/0599_reasonable.mp3", fileName: "0599_reasonable.mp3" }
   }
 };
 

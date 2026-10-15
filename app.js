@@ -210,7 +210,7 @@ function loadWordAudioData(){
  if(window.WORD_AUDIO_DATA)return Promise.resolve(window.WORD_AUDIO_DATA);
  if(wordAudioDataPromise)return wordAudioDataPromise;
  wordAudioDataPromise=new Promise((resolve,reject)=>{
-  const script=document.createElement('script');script.src='word-audio-data.js?v=20261015-complete';
+  const script=document.createElement('script');script.src='word-audio-data.js?v=20261015-0577-0599';
   script.onload=()=>{if(window.WORD_AUDIO_DATA)resolve(window.WORD_AUDIO_DATA);else{script.remove();wordAudioDataPromise=null;reject(new Error('Word audio index unavailable'))}};
   script.onerror=()=>{script.remove();wordAudioDataPromise=null;reject(new Error('Word audio index unavailable'))};
   document.head.appendChild(script)
