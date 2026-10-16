@@ -291,6 +291,8 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
 .compact-top{text-transform:none}
 .compact-top>span:nth-child(2){text-transform:lowercase;letter-spacing:.035em}
 .dialogue-detail-head .eyebrow,.translation-detail-head .eyebrow{text-transform:lowercase;letter-spacing:.06em}
+.dialogue-role-strip{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:15px 0 20px}.dialogue-role-item{display:flex;align-items:flex-start;gap:10px;min-width:0;padding:11px 13px;border:1px solid color-mix(in srgb,var(--gold) 24%,var(--line));border-radius:12px;background:rgba(185,145,67,.045)}.dialogue-role-speaker{display:grid;place-items:center;flex:0 0 27px;width:27px;height:27px;border:1px solid color-mix(in srgb,var(--gold) 48%,var(--line));border-radius:50%;color:var(--gold);font-size:10px;font-weight:850}.dialogue-role-item div{min-width:0}.dialogue-role-item b{display:block;color:#dbe5eb;font-size:12px;line-height:1.45}.dialogue-role-item small{display:block;margin-top:2px;color:#91a5b2;font-size:11px;line-height:1.45}
+@media(max-width:520px){.dialogue-role-strip{grid-template-columns:1fr;gap:7px}.dialogue-role-item{padding:10px 11px}}
 @media(max-width:900px){
  .clean-nav{display:flex;align-items:center;min-height:64px;padding:10px 14px}
  .clean-nav .brand{min-width:0;flex:1}
