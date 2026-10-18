@@ -1,6 +1,6 @@
 window.REVIEW_ROLEPLAY_CATALOG = {
-  version: "1014_review_roleplay_2",
-  publishedOn: "2026-10-14",
+  version: "1018_review_roleplay_1",
+  publishedOn: "2026-10-18",
   courses: [
     {
       id: "review-1",
@@ -133,8 +133,140 @@ window.REVIEW_ROLEPLAY_CATALOG = {
         { speaker: "A", en: "Good. I'll make a quick version now.", zh: "好。我现在先做一个快速版本。" },
         { speaker: "B", en: "Send it when it's ready, and we'll look again with the title in place.", zh: "做好以后传给我，我们再看看标题放上去的效果。" }
       ]
+    },
+    {
+      id: "review-5",
+      order: 5,
+      level: "A1",
+      publishedOn: "2026-10-18",
+      title: "A Locker That Won't Open after a Swim",
+      titleZh: "游泳后打不开的置物柜",
+      patterns: ["s-a1-93", "s-a1-67", "s-a1-75", "s-a1-85", "s-a1-91"],
+      words: [
+        { en: "the locker", zh: "置物柜" },
+        { en: "the code", zh: "密码" },
+        { en: "reset", zh: "重设" },
+        { en: "a staff key", zh: "工作人员钥匙" },
+        { en: "out of service", zh: "暂停使用" },
+        { en: "another locker", zh: "另一个置物柜" }
+      ],
+      roles: [
+        { name: "Role A · Pool Visitor", nameZh: "角色 A · 游泳池访客", en: "Your locker will not open, and your phone and towel are inside.", zh: "你的置物柜打不开，手机和毛巾都在里面。" },
+        { name: "Role B · Front Desk Attendant", nameZh: "角色 B · 柜台工作人员", en: "You check the lock, open it safely, and offer another locker.", zh: "你检查柜锁、安全打开柜门，并提供另一个置物柜。" }
+      ],
+      lines: [
+        { speaker: "A", en: "My _____ is stuck.", zh: "我的_____卡住了。", hints: [{ en: "locker door", zh: "置物柜门" }, { en: "lock", zh: "柜锁" }, { en: "key", zh: "钥匙" }] },
+        { speaker: "B", en: "Let's take a look. Did you enter your code?", zh: "我们来看看。你输入密码了吗？" },
+        { speaker: "A", en: "The _____ isn't working.", zh: "_____无法运作。", hints: [{ en: "screen", zh: "屏幕" }, { en: "keypad", zh: "数字键盘" }, { en: "green button", zh: "绿色按钮" }] },
+        { speaker: "B", en: "The battery may be low. Which button did you press?", zh: "电池可能快没电了。你刚才按了哪个按钮？" },
+        { speaker: "A", en: "Which button do I press for _____?", zh: "我要按哪个按钮才能_____？", hints: [{ en: "reset", zh: "重设" }, { en: "unlocking", zh: "解锁" }, { en: "a new code", zh: "设定新密码" }] },
+        { speaker: "B", en: "Use the small gray button. If that fails, I have a staff key.", zh: "按灰色的小按钮。如果还是不行，我有工作人员钥匙。" },
+        { speaker: "A", en: "I left _____ on the _____.", zh: "我把_____放在_____上了。", hints: [{ en: "my shoes / bench", zh: "鞋子／长椅" }, { en: "my bag / floor", zh: "包／地板" }, { en: "my water bottle / chair", zh: "水瓶／椅子" }] },
+        { speaker: "B", en: "I opened it. I'll mark this locker out of service.", zh: "我打开了。我会把这个置物柜标示为暂停使用。" },
+        { speaker: "A", en: "Is there somewhere I can _____?", zh: "这里有地方可以让我_____吗？", hints: [{ en: "keep my things", zh: "保管物品" }, { en: "change clothes", zh: "换衣服" }, { en: "leave my bag", zh: "放包包" }] },
+        { speaker: "B", en: "Yes. I'll give you another locker near the front desk.", zh: "有。我会给你柜台附近的另一个置物柜。" }
+      ]
+    },
+    {
+      id: "review-6",
+      order: 6,
+      level: "A2",
+      publishedOn: "2026-10-18",
+      title: "Keeping Groceries Cold during an Elevator Outage",
+      titleZh: "电梯停用时保护冷藏食品",
+      patterns: ["s-a2-62", "s-a2-64", "s-a2-78", "s-a2-82", "s-a2-98"],
+      words: [
+        { en: "frozen food", zh: "冷冻食品" },
+        { en: "thaw", zh: "解冻" },
+        { en: "one load at a time", zh: "一次搬一趟" },
+        { en: "the stairwell", zh: "楼梯间" },
+        { en: "dry goods", zh: "常温食品" },
+        { en: "repair time", zh: "维修时间" }
+      ],
+      roles: [
+        { name: "Role A · Resident", nameZh: "角色 A · 住户", en: "You have several grocery bags, including frozen food, and live on the sixth floor.", zh: "你提着好几袋食品，其中有冷冻食品，而且住在六楼。" },
+        { name: "Role B · Building Caretaker", nameZh: "角色 B · 大楼管理员", en: "The elevator has stopped, so you help protect the food and keep the stairs clear.", zh: "电梯停止运作，你要协助保护食品，并保持楼梯畅通。" }
+      ],
+      lines: [
+        { speaker: "A", en: "The elevator is out, and I have three bags of groceries.", zh: "电梯停用了，而我有三袋刚买的食品。" },
+        { speaker: "B", en: "The repair crew may need about thirty minutes.", zh: "维修人员可能还需要大约三十分钟。" },
+        { speaker: "A", en: "It looks like _____ is going to _____.", zh: "看起来_____快要_____了。", hints: [{ en: "the ice cream / melt", zh: "冰淇淋／融化" }, { en: "the frozen food / thaw", zh: "冷冻食品／解冻" }, { en: "the cold bag / get warm", zh: "保冷袋／变温" }] },
+        { speaker: "B", en: "We should have enough time to _____ before _____.", zh: "我们应该有足够的时间在_____之前_____。", hints: [{ en: "carry the cold items upstairs / they thaw", zh: "把冷藏食品搬上楼／它们解冻" }, { en: "move two bags / the food gets warm", zh: "搬两袋／食品变温" }, { en: "reach your floor / the ice melts", zh: "到你住的楼层／冰融化" }] },
+        { speaker: "A", en: "I can take care of _____ while you _____.", zh: "你_____的时候，我可以负责_____。", hints: [{ en: "the light bags / use the cart", zh: "轻的袋子／使用推车" }, { en: "the frozen food / carry the drinks", zh: "冷冻食品／搬饮料" }, { en: "the first load / check the stairs", zh: "第一趟／查看楼梯" }] },
+        { speaker: "B", en: "We can avoid _____ by _____.", zh: "我们可以透过_____来避免_____。", hints: [{ en: "blocking the stairs / taking one load at a time", zh: "挡住楼梯／一次搬一趟" }, { en: "dropping a bag / using the cart", zh: "袋子掉落／使用推车" }, { en: "a long delay / moving the cold food first", zh: "拖太久／先搬冷藏食品" }] },
+        { speaker: "A", en: "My apartment is on the sixth floor. Should we wait for the elevator?", zh: "我住在六楼。我们应该等电梯吗？" },
+        { speaker: "B", en: "It makes more sense to _____ since _____.", zh: "既然_____，那么_____会更实际。", hints: [{ en: "move the frozen food now / the repair time is uncertain", zh: "现在搬冷冻食品／维修时间不确定" }, { en: "use the stairs / the cold items cannot wait", zh: "走楼梯／冷藏食品不能久等" }, { en: "take two trips / the bags are heavy", zh: "分两趟／袋子很重" }] },
+        { speaker: "A", en: "I'll leave the dry goods here with my neighbor.", zh: "我会把常温食品留在这里，请邻居帮忙看着。" },
+        { speaker: "B", en: "Good. I'll help with the first trip and watch the other bags afterward.", zh: "好。我先帮你搬第一趟，之后再帮你看着其他袋子。" }
+      ]
+    },
+    {
+      id: "review-7",
+      order: 7,
+      level: "A2",
+      publishedOn: "2026-10-18",
+      title: "Reporting a Library Book Damaged by Rain",
+      titleZh: "说明图书被雨水弄湿",
+      patterns: ["s-a2-83", "s-a2-85", "s-a2-77", "s-a2-95", "s-a2-82"],
+      words: [
+        { en: "damp pages", zh: "受潮的书页" },
+        { en: "a return slot", zh: "还书口" },
+        { en: "stick together", zh: "黏在一起" },
+        { en: "absorbent paper", zh: "吸水纸" },
+        { en: "assess the damage", zh: "评估损坏程度" },
+        { en: "a repair fee", zh: "修复费用" }
+      ],
+      roles: [
+        { name: "Role A · Library Member", nameZh: "角色 A · 图书馆读者", en: "A borrowed book became damp at home, and you want to report it honestly.", zh: "借来的书在家中受潮，你想诚实说明情况。" },
+        { name: "Role B · Librarian", nameZh: "角色 B · 图书馆员", en: "You assess the damage, explain safe drying, and discuss the next step.", zh: "你要评估损坏、说明安全的干燥方式，并讨论后续处理。" }
+      ],
+      lines: [
+        { speaker: "A", en: "I need to report some water damage before I return this book.", zh: "还这本书以前，我需要说明一下它受潮的情况。" },
+        { speaker: "B", en: "Thank you for telling me. What happened?", zh: "谢谢你主动告诉我。发生了什么事？" },
+        { speaker: "A", en: "I may have _____ by mistake.", zh: "我可能不小心_____了。", hints: [{ en: "left it beside an open window", zh: "把它放在开着的窗边" }, { en: "put it under a wet bag", zh: "把它压在湿袋子下面" }, { en: "carried it in an unzipped bag", zh: "把它放在没拉拉链的袋子里" }] },
+        { speaker: "B", en: "Do the pages still open, or are some of them sticking together?", zh: "书页还翻得开吗？还是有些已经黏在一起？" },
+        { speaker: "A", en: "I only noticed _____ when _____.", zh: "我直到_____时才发现_____。", hints: [{ en: "the damp pages / I packed my bag", zh: "受潮的书页／整理袋子" }, { en: "the wet cover / I picked up the book", zh: "湿掉的封面／拿起书" }, { en: "the damage / I opened it this morning", zh: "损坏／今天早上翻开书" }] },
+        { speaker: "B", en: "Please don't use a hair dryer. Heat can damage the paper.", zh: "请不要用吹风机。热风可能会损坏纸张。" },
+        { speaker: "A", en: "What do you recommend if _____?", zh: "如果_____，你建议怎么处理？", hints: [{ en: "the pages dry unevenly", zh: "书页干得不均匀" }, { en: "the cover stays damp", zh: "封面一直潮湿" }, { en: "two pages stick together", zh: "两页黏在一起" }] },
+        { speaker: "B", en: "Leave it open near a fan with absorbent paper between the damp sections.", zh: "把书打开，放在风扇附近，并在受潮处之间夹吸水纸。" },
+        { speaker: "A", en: "I meant to _____, but it slipped my mind.", zh: "我本来想要_____，但一时忘了。", hints: [{ en: "move it away from the window", zh: "把它移离窗边" }, { en: "close the window", zh: "关窗" }, { en: "put it back on the shelf", zh: "把它放回书架" }] },
+        { speaker: "B", en: "We can avoid _____ by _____.", zh: "我们可以透过_____来避免_____。", hints: [{ en: "mold / drying it slowly", zh: "发霉／慢慢晾干" }, { en: "more damage / keeping the pages open", zh: "进一步损坏／让书页保持翻开" }, { en: "a repair fee / bringing it in for assessment", zh: "修复费用／带来评估" }] }
+      ]
+    },
+    {
+      id: "review-8",
+      order: 8,
+      level: "B1",
+      publishedOn: "2026-10-18",
+      title: "Finding the Cause of a Recurring Kitchen Leak",
+      titleZh: "找出厨房反复漏水的原因",
+      patterns: ["s-b1-87", "s-b1-81", "s-b1-86", "s-b1-91", "s-b1-77"],
+      words: [
+        { en: "a water stain", zh: "水渍" },
+        { en: "a loose seal", zh: "松动的密封处" },
+        { en: "the drain line", zh: "排水管线" },
+        { en: "water pressure", zh: "水压" },
+        { en: "cabinet damage", zh: "橱柜损坏" },
+        { en: "a connector", zh: "连接管件" }
+      ],
+      roles: [
+        { name: "Role A · Tenant", nameZh: "角色 A · 房客", en: "The leak has returned, and you have noticed that it happens when the dishwasher drains.", zh: "漏水问题再次出现，而且你发现它总在洗碗机排水时发生。" },
+        { name: "Role B · Plumber", nameZh: "角色 B · 水管维修人员", en: "You compare a quick repair with a deeper inspection and explain the risks.", zh: "你要比较快速维修与深入检查，并说明各自的风险。" }
+      ],
+      lines: [
+        { speaker: "A", en: "The water stain under the sink came back last night.", zh: "昨晚水槽下方的水渍又出现了。" },
+        { speaker: "B", en: "I can reseal the visible joint, but first tell me when the leak appears.", zh: "我可以重新密封看得到的接缝，不过先告诉我漏水是在什么时候出现。" },
+        { speaker: "A", en: "I'm not convinced that _____ is the real cause.", zh: "我不确定_____才是真正的原因。", hints: [{ en: "the loose seal", zh: "松动的密封处" }, { en: "the sink faucet", zh: "水槽水龙头" }, { en: "surface water", zh: "表面上的水" }] },
+        { speaker: "B", en: "The line may be partly blocked, which raises the pressure when the dishwasher drains.", zh: "排水管可能有部分堵塞，导致洗碗机排水时水压升高。" },
+        { speaker: "A", en: "Unless we address _____, _____ will keep _____.", zh: "除非我们处理_____，否则_____会不断_____。", hints: [{ en: "the blockage / the leak / coming back", zh: "堵塞／漏水／再次出现" }, { en: "the drain line / the cabinet / getting wet", zh: "排水管／橱柜／受潮" }, { en: "the pressure / the joint / loosening", zh: "水压／接缝／松动" }] },
+        { speaker: "B", en: "I agree. I should inspect the drain line before I reseal anything.", zh: "我同意。我应该先检查排水管，再重新密封任何接缝。" },
+        { speaker: "A", en: "While _____ makes sense in the short term, _____ may be better in the long run.", zh: "虽然_____短期看来合理，但长期而言_____可能更好。", hints: [{ en: "resealing the joint / clearing the drain line", zh: "重新密封接缝／清理排水管" }, { en: "wiping up the water / finding the blockage", zh: "擦干积水／找出堵塞处" }, { en: "a quick repair / replacing the connector", zh: "快速维修／更换连接管件" }] },
+        { speaker: "B", en: "A full inspection costs more today, but it could prevent cabinet damage.", zh: "完整检查今天会多花一些钱，但可以避免橱柜损坏。" },
+        { speaker: "A", en: "I'd rather deal with _____ now than _____ later.", zh: "我宁愿现在处理_____，也不想以后面对_____。", hints: [{ en: "the blockage / cabinet damage", zh: "堵塞／橱柜损坏" }, { en: "the drain line / a larger repair", zh: "排水管／更大的维修" }, { en: "the real cause / another leak", zh: "真正原因／再次漏水" }] },
+        { speaker: "B", en: "If this keeps happening, we may need to _____.", zh: "如果这种情况一直发生，我们可能需要_____。", hints: [{ en: "replace the whole connector", zh: "更换整个连接管件" }, { en: "open the wall for inspection", zh: "打开墙面检查" }, { en: "replace part of the drain line", zh: "更换部分排水管" }] }
+      ]
     }
   ]
 };
 
-if (window.SITE) window.SITE.version = "1014_review_roleplay_2";
+if (window.SITE) window.SITE.version = "1018_review_roleplay_1";
