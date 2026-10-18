@@ -1,5 +1,5 @@
 window.REVIEW_ROLEPLAY_CATALOG = {
-  version: "1018_review_roleplay_1",
+  version: "1018_review_roleplay_2",
   publishedOn: "2026-10-18",
   courses: [
     {
@@ -139,32 +139,32 @@ window.REVIEW_ROLEPLAY_CATALOG = {
       order: 5,
       level: "A1",
       publishedOn: "2026-10-18",
-      title: "A Locker That Won't Open after a Swim",
-      titleZh: "游泳后打不开的置物柜",
-      patterns: ["s-a1-93", "s-a1-67", "s-a1-75", "s-a1-85", "s-a1-91"],
+      title: "Getting Help with an Unfamiliar Machine",
+      titleZh: "不会操作陌生设备时寻求协助",
+      patterns: ["s-a1-9", "s-a1-96", "s-a1-67", "s-a1-75", "s-a1-91"],
       words: [
-        { en: "the locker", zh: "置物柜" },
-        { en: "the code", zh: "密码" },
-        { en: "reset", zh: "重设" },
-        { en: "a staff key", zh: "工作人员钥匙" },
-        { en: "out of service", zh: "暂停使用" },
-        { en: "another locker", zh: "另一个置物柜" }
+        { en: "the screen", zh: "屏幕" },
+        { en: "the card reader", zh: "读卡器" },
+        { en: "the keypad", zh: "数字键盘" },
+        { en: "start over", zh: "重新开始" },
+        { en: "the next step", zh: "下一步" },
+        { en: "another machine", zh: "另一台设备" }
       ],
       roles: [
-        { name: "Role A · Pool Visitor", nameZh: "角色 A · 游泳池访客", en: "Your locker will not open, and your phone and towel are inside.", zh: "你的置物柜打不开，手机和毛巾都在里面。" },
-        { name: "Role B · Front Desk Attendant", nameZh: "角色 B · 柜台工作人员", en: "You check the lock, open it safely, and offer another locker.", zh: "你检查柜锁、安全打开柜门，并提供另一个置物柜。" }
+        { name: "Role A · Visitor", nameZh: "角色 A · 访客", en: "You need to complete a simple task, but you do not know how to use the self-service machine.", zh: "你需要完成一项简单任务，但不知道如何操作自助设备。" },
+        { name: "Role B · Service Assistant", nameZh: "角色 B · 服务人员", en: "You identify the problem, guide the visitor through the controls, and offer another way to finish.", zh: "你要找出问题、引导访客操作，并提供另一种完成方式。" }
       ],
       lines: [
-        { speaker: "A", en: "My _____ is stuck.", zh: "我的_____卡住了。", hints: [{ en: "locker door", zh: "置物柜门" }, { en: "lock", zh: "柜锁" }, { en: "key", zh: "钥匙" }] },
-        { speaker: "B", en: "Let's take a look. Did you enter your code?", zh: "我们来看看。你输入密码了吗？" },
-        { speaker: "A", en: "The _____ isn't working.", zh: "_____无法运作。", hints: [{ en: "screen", zh: "屏幕" }, { en: "keypad", zh: "数字键盘" }, { en: "green button", zh: "绿色按钮" }] },
-        { speaker: "B", en: "The battery may be low. Which button did you press?", zh: "电池可能快没电了。你刚才按了哪个按钮？" },
-        { speaker: "A", en: "Which button do I press for _____?", zh: "我要按哪个按钮才能_____？", hints: [{ en: "reset", zh: "重设" }, { en: "unlocking", zh: "解锁" }, { en: "a new code", zh: "设定新密码" }] },
-        { speaker: "B", en: "Use the small gray button. If that fails, I have a staff key.", zh: "按灰色的小按钮。如果还是不行，我有工作人员钥匙。" },
-        { speaker: "A", en: "I left _____ on the _____.", zh: "我把_____放在_____上了。", hints: [{ en: "my shoes / bench", zh: "鞋子／长椅" }, { en: "my bag / floor", zh: "包／地板" }, { en: "my water bottle / chair", zh: "水瓶／椅子" }] },
-        { speaker: "B", en: "I opened it. I'll mark this locker out of service.", zh: "我打开了。我会把这个置物柜标示为暂停使用。" },
-        { speaker: "A", en: "Is there somewhere I can _____?", zh: "这里有地方可以让我_____吗？", hints: [{ en: "keep my things", zh: "保管物品" }, { en: "change clothes", zh: "换衣服" }, { en: "leave my bag", zh: "放包包" }] },
-        { speaker: "B", en: "Yes. I'll give you another locker near the front desk.", zh: "有。我会给你柜台附近的另一个置物柜。" }
+        { speaker: "A", en: "I'm here to _____.", zh: "我是来_____的。", hints: [{ en: "buy a ticket", zh: "买票" }, { en: "print a form", zh: "打印表格" }, { en: "check in", zh: "办理报到" }] },
+        { speaker: "B", en: "No problem. Which _____ are you trying to use?", zh: "没问题。你想使用哪一台_____？", hints: [{ en: "ticket machine", zh: "售票机" }, { en: "printer", zh: "打印机" }, { en: "check-in kiosk", zh: "报到机" }] },
+        { speaker: "A", en: "I don't know how to use _____.", zh: "我不知道怎么使用_____。", hints: [{ en: "the touch screen", zh: "触控屏幕" }, { en: "the card reader", zh: "读卡器" }, { en: "the keypad", zh: "数字键盘" }] },
+        { speaker: "B", en: "First, choose _____ on the screen.", zh: "先在屏幕上选择_____。", hints: [{ en: "your language", zh: "你的语言" }, { en: "the service you need", zh: "你需要的服务" }, { en: "your destination", zh: "你的目的地" }] },
+        { speaker: "A", en: "The _____ isn't working.", zh: "_____无法运作。", hints: [{ en: "screen", zh: "屏幕" }, { en: "card reader", zh: "读卡器" }, { en: "green button", zh: "绿色按钮" }] },
+        { speaker: "B", en: "Try _____ once more, then wait a few seconds.", zh: "再试一次_____，然后等几秒钟。", hints: [{ en: "tapping the screen", zh: "轻触屏幕" }, { en: "inserting your card", zh: "插入卡片" }, { en: "entering the number", zh: "输入号码" }] },
+        { speaker: "A", en: "Which button do I press for _____?", zh: "我要按哪个按钮才能_____？", hints: [{ en: "the next step", zh: "进入下一步" }, { en: "payment", zh: "付款" }, { en: "printing", zh: "打印" }] },
+        { speaker: "B", en: "Press _____; it should take you to the next step.", zh: "按_____，应该就会进入下一步。", hints: [{ en: "the blue button", zh: "蓝色按钮" }, { en: "the check mark", zh: "勾选符号" }, { en: "the print icon", zh: "打印图示" }] },
+        { speaker: "A", en: "Is there somewhere I can _____?", zh: "这里有地方可以让我_____吗？", hints: [{ en: "finish this with a person", zh: "请工作人员协助完成" }, { en: "use another machine", zh: "使用另一台设备" }, { en: "start over", zh: "重新开始" }] },
+        { speaker: "B", en: "Yes. You can _____ at the service desk.", zh: "可以。你可以在服务台_____。", hints: [{ en: "buy the ticket", zh: "买票" }, { en: "print the form", zh: "打印表格" }, { en: "complete check-in", zh: "完成报到" }] }
       ]
     },
     {
@@ -172,32 +172,32 @@ window.REVIEW_ROLEPLAY_CATALOG = {
       order: 6,
       level: "A2",
       publishedOn: "2026-10-18",
-      title: "Keeping Groceries Cold during an Elevator Outage",
-      titleZh: "电梯停用时保护冷藏食品",
-      patterns: ["s-a2-62", "s-a2-64", "s-a2-78", "s-a2-82", "s-a2-98"],
+      title: "Sharing a Busy Room without Disrupting Each Other",
+      titleZh: "在繁忙的共用空间里互相配合",
+      patterns: ["s-a2-9", "s-a2-4", "s-a2-20", "s-a2-37", "s-a2-22", "s-a2-74"],
       words: [
-        { en: "frozen food", zh: "冷冻食品" },
-        { en: "thaw", zh: "解冻" },
-        { en: "one load at a time", zh: "一次搬一趟" },
-        { en: "the stairwell", zh: "楼梯间" },
-        { en: "dry goods", zh: "常温食品" },
-        { en: "repair time", zh: "维修时间" }
+        { en: "a quiet corner", zh: "安静的角落" },
+        { en: "set up", zh: "布置" },
+        { en: "turn it down", zh: "把音量调低" },
+        { en: "move the tables", zh: "移动桌子" },
+        { en: "for a while", zh: "一会儿" },
+        { en: "work around it", zh: "设法配合" }
       ],
       roles: [
-        { name: "Role A · Resident", nameZh: "角色 A · 住户", en: "You have several grocery bags, including frozen food, and live on the sixth floor.", zh: "你提着好几袋食品，其中有冷冻食品，而且住在六楼。" },
-        { name: "Role B · Building Caretaker", nameZh: "角色 B · 大楼管理员", en: "The elevator has stopped, so you help protect the food and keep the stairs clear.", zh: "电梯停止运作，你要协助保护食品，并保持楼梯畅通。" }
+        { name: "Role A · Remote Worker", nameZh: "角色 A · 远距工作者", en: "You need a quieter area for a short online meeting in a shared community room.", zh: "你需要在共用活动室里找一个较安静的地方参加短时间线上会议。" },
+        { name: "Role B · Activity Leader", nameZh: "角色 B · 活动负责人", en: "You are preparing the same room for an activity and need part of the space.", zh: "你正在为活动布置同一个空间，也需要使用其中一部分。" }
       ],
       lines: [
-        { speaker: "A", en: "The elevator is out, and I have three bags of groceries.", zh: "电梯停用了，而我有三袋刚买的食品。" },
-        { speaker: "B", en: "The repair crew may need about thirty minutes.", zh: "维修人员可能还需要大约三十分钟。" },
-        { speaker: "A", en: "It looks like _____ is going to _____.", zh: "看起来_____快要_____了。", hints: [{ en: "the ice cream / melt", zh: "冰淇淋／融化" }, { en: "the frozen food / thaw", zh: "冷冻食品／解冻" }, { en: "the cold bag / get warm", zh: "保冷袋／变温" }] },
-        { speaker: "B", en: "We should have enough time to _____ before _____.", zh: "我们应该有足够的时间在_____之前_____。", hints: [{ en: "carry the cold items upstairs / they thaw", zh: "把冷藏食品搬上楼／它们解冻" }, { en: "move two bags / the food gets warm", zh: "搬两袋／食品变温" }, { en: "reach your floor / the ice melts", zh: "到你住的楼层／冰融化" }] },
-        { speaker: "A", en: "I can take care of _____ while you _____.", zh: "你_____的时候，我可以负责_____。", hints: [{ en: "the light bags / use the cart", zh: "轻的袋子／使用推车" }, { en: "the frozen food / carry the drinks", zh: "冷冻食品／搬饮料" }, { en: "the first load / check the stairs", zh: "第一趟／查看楼梯" }] },
-        { speaker: "B", en: "We can avoid _____ by _____.", zh: "我们可以透过_____来避免_____。", hints: [{ en: "blocking the stairs / taking one load at a time", zh: "挡住楼梯／一次搬一趟" }, { en: "dropping a bag / using the cart", zh: "袋子掉落／使用推车" }, { en: "a long delay / moving the cold food first", zh: "拖太久／先搬冷藏食品" }] },
-        { speaker: "A", en: "My apartment is on the sixth floor. Should we wait for the elevator?", zh: "我住在六楼。我们应该等电梯吗？" },
-        { speaker: "B", en: "It makes more sense to _____ since _____.", zh: "既然_____，那么_____会更实际。", hints: [{ en: "move the frozen food now / the repair time is uncertain", zh: "现在搬冷冻食品／维修时间不确定" }, { en: "use the stairs / the cold items cannot wait", zh: "走楼梯／冷藏食品不能久等" }, { en: "take two trips / the bags are heavy", zh: "分两趟／袋子很重" }] },
-        { speaker: "A", en: "I'll leave the dry goods here with my neighbor.", zh: "我会把常温食品留在这里，请邻居帮忙看着。" },
-        { speaker: "B", en: "Good. I'll help with the first trip and watch the other bags afterward.", zh: "好。我先帮你搬第一趟，之后再帮你看着其他袋子。" }
+        { speaker: "A", en: "Would it be possible to _____?", zh: "可以_____吗？", hints: [{ en: "keep this corner quiet", zh: "让这个角落保持安静" }, { en: "turn the music down", zh: "把音乐调低" }, { en: "leave one table free", zh: "留一张桌子空着" }] },
+        { speaker: "B", en: "It depends on _____.", zh: "这要看_____。", hints: [{ en: "how long you need it", zh: "你需要多久" }, { en: "when your meeting starts", zh: "你的会议何时开始" }, { en: "how many people arrive", zh: "会来多少人" }] },
+        { speaker: "A", en: "I'd prefer _____ because _____.", zh: "我比较希望_____，因为_____。", hints: [{ en: "this side of the room / it is quieter", zh: "使用房间这一侧／这里比较安静" }, { en: "the corner table / I need a plain background", zh: "使用角落的桌子／我需要简单的背景" }, { en: "to stay near the window / the light is better", zh: "留在窗边／光线比较好" }] },
+        { speaker: "B", en: "I need to _____ for another _____ minutes.", zh: "我还需要_____大约_____分钟。", hints: [{ en: "move the chairs / ten", zh: "移动椅子／十" }, { en: "test the speaker / five", zh: "测试音响／五" }, { en: "set up the tables / fifteen", zh: "布置桌子／十五" }] },
+        { speaker: "A", en: "Could we _____ until then?", zh: "在那之前，我们可以_____吗？", hints: [{ en: "use opposite sides", zh: "各用一边" }, { en: "keep the door closed", zh: "把门关上" }, { en: "leave the middle clear", zh: "让中间保持畅通" }] },
+        { speaker: "B", en: "Either _____ or _____ works for me.", zh: "_____或_____我都可以。", hints: [{ en: "opposite sides / separate corners", zh: "使用两侧／使用不同角落" }, { en: "a closed door / lower music", zh: "关门／降低音乐音量" }, { en: "moving now / waiting ten minutes", zh: "现在移动／等十分钟" }] },
+        { speaker: "A", en: "If that doesn't work, we can _____.", zh: "如果那样不行，我们可以_____。", hints: [{ en: "move my meeting outside", zh: "把会议移到外面" }, { en: "switch tables", zh: "交换桌子" }, { en: "use the smaller room", zh: "使用较小的房间" }] },
+        { speaker: "B", en: "Let me know if _____ works better for you.", zh: "如果_____比较适合你，请告诉我。", hints: [{ en: "the window side", zh: "窗边的位置" }, { en: "starting later", zh: "晚一点开始" }, { en: "using headphones", zh: "使用耳机" }] },
+        { speaker: "A", en: "That sounds good. I'll _____ now.", zh: "听起来不错。我现在会_____。", hints: [{ en: "move my laptop", zh: "移动笔记本电脑" }, { en: "take the corner table", zh: "使用角落的桌子" }, { en: "close the door", zh: "把门关上" }] },
+        { speaker: "B", en: "Great. I'll _____ when the setup is finished.", zh: "很好。布置完成后，我会_____。", hints: [{ en: "turn the music off", zh: "关掉音乐" }, { en: "clear the doorway", zh: "清空门口" }, { en: "move the extra chairs", zh: "移走多余的椅子" }] }
       ]
     },
     {
@@ -205,32 +205,32 @@ window.REVIEW_ROLEPLAY_CATALOG = {
       order: 7,
       level: "A2",
       publishedOn: "2026-10-18",
-      title: "Reporting a Library Book Damaged by Rain",
-      titleZh: "说明图书被雨水弄湿",
-      patterns: ["s-a2-83", "s-a2-85", "s-a2-77", "s-a2-95", "s-a2-82"],
+      title: "Switching Tasks When the Original Job Does Not Fit",
+      titleZh: "原本的工作不适合时重新分工",
+      patterns: ["s-a2-10", "s-a2-11", "s-a2-20", "s-a2-98", "s-a2-78", "s-a2-22"],
       words: [
-        { en: "damp pages", zh: "受潮的书页" },
-        { en: "a return slot", zh: "还书口" },
-        { en: "stick together", zh: "黏在一起" },
-        { en: "absorbent paper", zh: "吸水纸" },
-        { en: "assess the damage", zh: "评估损坏程度" },
-        { en: "a repair fee", zh: "修复费用" }
+        { en: "the supply boxes", zh: "物资箱" },
+        { en: "the welcome table", zh: "接待桌" },
+        { en: "hand out maps", zh: "发放地图" },
+        { en: "put up signs", zh: "张贴标示" },
+        { en: "switch tasks", zh: "交换任务" },
+        { en: "take a break", zh: "休息一下" }
       ],
       roles: [
-        { name: "Role A · Library Member", nameZh: "角色 A · 图书馆读者", en: "A borrowed book became damp at home, and you want to report it honestly.", zh: "借来的书在家中受潮，你想诚实说明情况。" },
-        { name: "Role B · Librarian", nameZh: "角色 B · 图书馆员", en: "You assess the damage, explain safe drying, and discuss the next step.", zh: "你要评估损坏、说明安全的干燥方式，并讨论后续处理。" }
+        { name: "Role A · Market Volunteer", nameZh: "角色 A · 市集志愿者", en: "Your assigned task is difficult today, but you can still help with lighter work.", zh: "今天分配给你的工作有些困难，但你仍然可以协助较轻松的任务。" },
+        { name: "Role B · Shift Coordinator", nameZh: "角色 B · 轮班协调员", en: "You need to redistribute the work without leaving an important area unattended.", zh: "你要重新分配工作，同时不能让重要区域无人负责。" }
       ],
       lines: [
-        { speaker: "A", en: "I need to report some water damage before I return this book.", zh: "还这本书以前，我需要说明一下它受潮的情况。" },
-        { speaker: "B", en: "Thank you for telling me. What happened?", zh: "谢谢你主动告诉我。发生了什么事？" },
-        { speaker: "A", en: "I may have _____ by mistake.", zh: "我可能不小心_____了。", hints: [{ en: "left it beside an open window", zh: "把它放在开着的窗边" }, { en: "put it under a wet bag", zh: "把它压在湿袋子下面" }, { en: "carried it in an unzipped bag", zh: "把它放在没拉拉链的袋子里" }] },
-        { speaker: "B", en: "Do the pages still open, or are some of them sticking together?", zh: "书页还翻得开吗？还是有些已经黏在一起？" },
-        { speaker: "A", en: "I only noticed _____ when _____.", zh: "我直到_____时才发现_____。", hints: [{ en: "the damp pages / I packed my bag", zh: "受潮的书页／整理袋子" }, { en: "the wet cover / I picked up the book", zh: "湿掉的封面／拿起书" }, { en: "the damage / I opened it this morning", zh: "损坏／今天早上翻开书" }] },
-        { speaker: "B", en: "Please don't use a hair dryer. Heat can damage the paper.", zh: "请不要用吹风机。热风可能会损坏纸张。" },
-        { speaker: "A", en: "What do you recommend if _____?", zh: "如果_____，你建议怎么处理？", hints: [{ en: "the pages dry unevenly", zh: "书页干得不均匀" }, { en: "the cover stays damp", zh: "封面一直潮湿" }, { en: "two pages stick together", zh: "两页黏在一起" }] },
-        { speaker: "B", en: "Leave it open near a fan with absorbent paper between the damp sections.", zh: "把书打开，放在风扇附近，并在受潮处之间夹吸水纸。" },
-        { speaker: "A", en: "I meant to _____, but it slipped my mind.", zh: "我本来想要_____，但一时忘了。", hints: [{ en: "move it away from the window", zh: "把它移离窗边" }, { en: "close the window", zh: "关窗" }, { en: "put it back on the shelf", zh: "把它放回书架" }] },
-        { speaker: "B", en: "We can avoid _____ by _____.", zh: "我们可以透过_____来避免_____。", hints: [{ en: "mold / drying it slowly", zh: "发霉／慢慢晾干" }, { en: "more damage / keeping the pages open", zh: "进一步损坏／让书页保持翻开" }, { en: "a repair fee / bringing it in for assessment", zh: "修复费用／带来评估" }] }
+        { speaker: "A", en: "I'm supposed to _____, but _____.", zh: "我本来应该_____，但是_____。", hints: [{ en: "carry the supply boxes / my wrist is sore", zh: "搬物资箱／我的手腕不舒服" }, { en: "stand by the entrance / I feel dizzy", zh: "站在入口处／我觉得头晕" }, { en: "move the tables / my back hurts", zh: "搬桌子／我的背不舒服" }] },
+        { speaker: "B", en: "Thanks for telling me. Are you able to _____?", zh: "谢谢你告诉我。你可以_____吗？", hints: [{ en: "sit at the welcome table", zh: "坐在接待桌" }, { en: "hand out maps", zh: "发放地图" }, { en: "check the signs", zh: "检查标示" }] },
+        { speaker: "A", en: "I'm having trouble _____.", zh: "我做_____有些困难。", hints: [{ en: "lifting heavy things", zh: "搬重物" }, { en: "standing for a long time", zh: "久站" }, { en: "reaching the high signs", zh: "碰到较高的标示" }] },
+        { speaker: "B", en: "It makes more sense to _____ since _____.", zh: "既然_____，那么_____会更实际。", hints: [{ en: "switch tasks / you can work sitting down", zh: "交换任务／你可以坐着工作" }, { en: "move you to the welcome table / it is less physical", zh: "让你到接待桌／那边比较不费力" }, { en: "ask someone else to lift the boxes / they are heavy", zh: "请别人搬箱子／箱子很重" }] },
+        { speaker: "A", en: "I'd prefer _____ because _____.", zh: "我比较希望_____，因为_____。", hints: [{ en: "the welcome table / I can sit there", zh: "负责接待桌／我可以坐着" }, { en: "handing out maps / I can stay near the entrance", zh: "发放地图／我可以留在入口附近" }, { en: "checking the signs / I can move slowly", zh: "检查标示／我可以慢慢移动" }] },
+        { speaker: "B", en: "I can take care of _____ while you _____.", zh: "你_____的时候，我可以负责_____。", hints: [{ en: "the supply boxes / greet visitors", zh: "物资箱／接待访客" }, { en: "the high signs / sort the maps", zh: "较高的标示／整理地图" }, { en: "moving the table / update the guest list", zh: "搬桌子／更新来宾名单" }] },
+        { speaker: "A", en: "Could I also _____ after that?", zh: "之后我也可以_____吗？", hints: [{ en: "label the boxes", zh: "替箱子贴标签" }, { en: "answer questions", zh: "回答问题" }, { en: "check the supply list", zh: "检查物资清单" }] },
+        { speaker: "B", en: "Yes. If that doesn't work, we can _____.", zh: "可以。如果那样不行，我们可以_____。", hints: [{ en: "give you a seated task", zh: "安排坐着完成的工作" }, { en: "shorten your shift", zh: "缩短你的轮班时间" }, { en: "ask another volunteer to join you", zh: "请另一位志愿者和你一起做" }] },
+        { speaker: "A", en: "I'll start with _____ and see how I feel.", zh: "我会先从_____开始，再看看自己的状况。", hints: [{ en: "the welcome table", zh: "接待桌" }, { en: "the maps", zh: "地图" }, { en: "the guest list", zh: "来宾名单" }] },
+        { speaker: "B", en: "Good. Let me know if you need to _____.", zh: "好。如果你需要_____，请告诉我。", hints: [{ en: "take a break", zh: "休息一下" }, { en: "switch again", zh: "再次换工作" }, { en: "leave early", zh: "提早离开" }] }
       ]
     },
     {
@@ -238,35 +238,35 @@ window.REVIEW_ROLEPLAY_CATALOG = {
       order: 8,
       level: "B1",
       publishedOn: "2026-10-18",
-      title: "Finding the Cause of a Recurring Kitchen Leak",
-      titleZh: "找出厨房反复漏水的原因",
-      patterns: ["s-b1-87", "s-b1-81", "s-b1-86", "s-b1-91", "s-b1-77"],
+      title: "Sharing Pet Care When a Schedule Changes",
+      titleZh: "行程临时改变时分担宠物照顾",
+      patterns: ["s-b1-14", "s-b1-15", "s-b1-27", "s-b1-80", "s-b1-68", "s-b1-96"],
       words: [
-        { en: "a water stain", zh: "水渍" },
-        { en: "a loose seal", zh: "松动的密封处" },
-        { en: "the drain line", zh: "排水管线" },
-        { en: "water pressure", zh: "水压" },
-        { en: "cabinet damage", zh: "橱柜损坏" },
-        { en: "a connector", zh: "连接管件" }
+        { en: "the evening walk", zh: "傍晚散步" },
+        { en: "the feeding time", zh: "喂食时间" },
+        { en: "the spare key", zh: "备用钥匙" },
+        { en: "take responsibility", zh: "承担责任" },
+        { en: "a backup plan", zh: "备用方案" },
+        { en: "care instructions", zh: "照顾说明" }
       ],
       roles: [
-        { name: "Role A · Tenant", nameZh: "角色 A · 房客", en: "The leak has returned, and you have noticed that it happens when the dishwasher drains.", zh: "漏水问题再次出现，而且你发现它总在洗碗机排水时发生。" },
-        { name: "Role B · Plumber", nameZh: "角色 B · 水管维修人员", en: "You compare a quick repair with a deeper inspection and explain the risks.", zh: "你要比较快速维修与深入检查，并说明各自的风险。" }
+        { name: "Role A · Pet Owner", nameZh: "角色 A · 宠物主人", en: "Your work schedule changed unexpectedly, and you need help with part of your pet's routine.", zh: "你的工作时间临时改变，需要别人协助完成宠物日常照顾的一部分。" },
+        { name: "Role B · Neighbor", nameZh: "角色 B · 邻居", en: "You are willing to help, but you need clear limits and practical instructions.", zh: "你愿意帮忙，但需要明确的范围与实际的照顾说明。" }
       ],
       lines: [
-        { speaker: "A", en: "The water stain under the sink came back last night.", zh: "昨晚水槽下方的水渍又出现了。" },
-        { speaker: "B", en: "I can reseal the visible joint, but first tell me when the leak appears.", zh: "我可以重新密封看得到的接缝，不过先告诉我漏水是在什么时候出现。" },
-        { speaker: "A", en: "I'm not convinced that _____ is the real cause.", zh: "我不确定_____才是真正的原因。", hints: [{ en: "the loose seal", zh: "松动的密封处" }, { en: "the sink faucet", zh: "水槽水龙头" }, { en: "surface water", zh: "表面上的水" }] },
-        { speaker: "B", en: "The line may be partly blocked, which raises the pressure when the dishwasher drains.", zh: "排水管可能有部分堵塞，导致洗碗机排水时水压升高。" },
-        { speaker: "A", en: "Unless we address _____, _____ will keep _____.", zh: "除非我们处理_____，否则_____会不断_____。", hints: [{ en: "the blockage / the leak / coming back", zh: "堵塞／漏水／再次出现" }, { en: "the drain line / the cabinet / getting wet", zh: "排水管／橱柜／受潮" }, { en: "the pressure / the joint / loosening", zh: "水压／接缝／松动" }] },
-        { speaker: "B", en: "I agree. I should inspect the drain line before I reseal anything.", zh: "我同意。我应该先检查排水管，再重新密封任何接缝。" },
-        { speaker: "A", en: "While _____ makes sense in the short term, _____ may be better in the long run.", zh: "虽然_____短期看来合理，但长期而言_____可能更好。", hints: [{ en: "resealing the joint / clearing the drain line", zh: "重新密封接缝／清理排水管" }, { en: "wiping up the water / finding the blockage", zh: "擦干积水／找出堵塞处" }, { en: "a quick repair / replacing the connector", zh: "快速维修／更换连接管件" }] },
-        { speaker: "B", en: "A full inspection costs more today, but it could prevent cabinet damage.", zh: "完整检查今天会多花一些钱，但可以避免橱柜损坏。" },
-        { speaker: "A", en: "I'd rather deal with _____ now than _____ later.", zh: "我宁愿现在处理_____，也不想以后面对_____。", hints: [{ en: "the blockage / cabinet damage", zh: "堵塞／橱柜损坏" }, { en: "the drain line / a larger repair", zh: "排水管／更大的维修" }, { en: "the real cause / another leak", zh: "真正原因／再次漏水" }] },
-        { speaker: "B", en: "If this keeps happening, we may need to _____.", zh: "如果这种情况一直发生，我们可能需要_____。", hints: [{ en: "replace the whole connector", zh: "更换整个连接管件" }, { en: "open the wall for inspection", zh: "打开墙面检查" }, { en: "replace part of the drain line", zh: "更换部分排水管" }] }
+        { speaker: "A", en: "My schedule changed, and I need help with _____.", zh: "我的行程改变了，需要别人帮忙_____。", hints: [{ en: "the evening walk", zh: "傍晚散步" }, { en: "the afternoon feeding", zh: "下午喂食" }, { en: "a short visit", zh: "短时间探视" }] },
+        { speaker: "B", en: "I can work around _____ as long as _____.", zh: "只要_____，我就可以配合_____。", hints: [{ en: "my dinner plans / it is before eight", zh: "我的晚餐安排／时间在八点以前" }, { en: "my work call / you leave clear instructions", zh: "我的工作电话／你留下明确说明" }, { en: "the school pickup / the visit is short", zh: "接孩子放学／探视时间不长" }] },
+        { speaker: "A", en: "The main issue isn't _____; it's _____.", zh: "主要问题不是_____，而是_____。", hints: [{ en: "the food / the evening walk", zh: "食物／傍晚散步" }, { en: "the spare key / the feeding time", zh: "备用钥匙／喂食时间" }, { en: "one visit / the late return", zh: "探视一次／我会很晚回来" }] },
+        { speaker: "B", en: "If we can only fix one thing first, I'd prioritize _____.", zh: "如果只能先处理一件事，我会优先_____。", hints: [{ en: "the walk", zh: "散步" }, { en: "fresh water", zh: "补充清水" }, { en: "the medication", zh: "喂药" }] },
+        { speaker: "A", en: "I'm not opposed to _____; I just need _____.", zh: "我不反对_____，只是需要_____。", hints: [{ en: "a shorter walk / someone to check the water", zh: "缩短散步时间／有人检查饮水" }, { en: "changing the feeding time / a reliable schedule", zh: "调整喂食时间／可靠的时间安排" }, { en: "asking another neighbor / one person to coordinate", zh: "请另一位邻居帮忙／由一个人协调" }] },
+        { speaker: "B", en: "What if we _____ for now and _____ later?", zh: "不如我们先_____，之后再_____？", hints: [{ en: "take a short walk / do a longer one", zh: "短暂散步／进行较长的散步" }, { en: "leave fresh water / refill the bowl", zh: "先放好清水／再次补充水碗" }, { en: "use your spare key / return it", zh: "使用备用钥匙／归还钥匙" }] },
+        { speaker: "A", en: "I don't want _____ to come at the expense of _____.", zh: "我不希望_____是以牺牲_____为代价。", hints: [{ en: "saving time / the dog's routine", zh: "省时间／狗的日常作息" }, { en: "a quick solution / your evening", zh: "快速解决／占用你的晚上" }, { en: "changing the plan / the medication time", zh: "改变计划／喂药时间" }] },
+        { speaker: "B", en: "I can _____, but I can't _____.", zh: "我可以_____，但无法_____。", hints: [{ en: "handle the walk / stay all evening", zh: "负责散步／待一整个晚上" }, { en: "refill the bowls / give medication", zh: "补充食物和水／喂药" }, { en: "visit after work / come back late at night", zh: "下班后探视／深夜再来" }] },
+        { speaker: "A", en: "That would help. I'll make sure _____.", zh: "这样很有帮助。我会确保_____。", hints: [{ en: "the leash is by the door", zh: "牵绳放在门边" }, { en: "the food is ready", zh: "食物准备好" }, { en: "the instructions are clear", zh: "说明写得清楚" }] },
+        { speaker: "B", en: "Good. Send me _____, and I'll take care of _____.", zh: "好。把_____传给我，我会负责_____。", hints: [{ en: "the door code / the walk", zh: "门锁密码／散步" }, { en: "the feeding notes / the afternoon visit", zh: "喂食说明／下午探视" }, { en: "the medication time / the water and food", zh: "喂药时间／饮水与食物" }] }
       ]
     }
   ]
 };
 
-if (window.SITE) window.SITE.version = "1018_review_roleplay_1";
+if (window.SITE) window.SITE.version = "1018_review_roleplay_2";
