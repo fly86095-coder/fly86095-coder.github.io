@@ -1,6 +1,6 @@
 window.REVIEW_ROLEPLAY_CATALOG = {
-  version: "1018_review_roleplay_2",
-  publishedOn: "2026-10-18",
+  version: "1019_review_roleplay_1",
+  publishedOn: "2026-10-19",
   courses: [
     {
       id: "review-1",
@@ -265,8 +265,140 @@ window.REVIEW_ROLEPLAY_CATALOG = {
         { speaker: "A", en: "That would help. I'll make sure _____.", zh: "这样很有帮助。我会确保_____。", hints: [{ en: "the leash is by the door", zh: "牵绳放在门边" }, { en: "the food is ready", zh: "食物准备好" }, { en: "the instructions are clear", zh: "说明写得清楚" }] },
         { speaker: "B", en: "Good. Send me _____, and I'll take care of _____.", zh: "好。把_____传给我，我会负责_____。", hints: [{ en: "the door code / the walk", zh: "门锁密码／散步" }, { en: "the feeding notes / the afternoon visit", zh: "喂食说明／下午探视" }, { en: "the medication time / the water and food", zh: "喂药时间／饮水与食物" }] }
       ]
+    },
+    {
+      id: "review-9",
+      order: 9,
+      level: "A2",
+      publishedOn: "2026-10-19",
+      title: "A Flat Tire Before an Early Shift",
+      titleZh: "早班前遇到轮胎漏气",
+      patterns: ["s-a2-11", "s-a1-13", "s-a1-29", "s-a2-28", "s-a2-22"],
+      words: [
+        { en: "a wheel nut", zh: "轮胎螺帽" },
+        { en: "the spare tire", zh: "备用轮胎" },
+        { en: "a wrench", zh: "扳手" },
+        { en: "the hazard lights", zh: "双闪灯" },
+        { en: "roadside assistance", zh: "道路救援" },
+        { en: "cover the front desk", zh: "暂时负责前台" }
+      ],
+      roles: [
+        { name: "Role A · Driver", nameZh: "角色 A · 驾驶人", en: "Your tire is flat, and your early work shift starts soon.", zh: "你的轮胎没气了，而且早班很快就要开始。" },
+        { name: "Role B · Coworker", nameZh: "角色 B · 同事", en: "You stop to help and arrange cover at work while the tire is handled.", zh: "你停下来帮忙，并在处理轮胎时安排工作上的替班。" }
+      ],
+      lines: [
+        { speaker: "A", en: "I'm having trouble _____.", zh: "我在_____方面遇到困难。", hints: [{ en: "loosening this wheel nut", zh: "松开这个轮胎螺帽" }, { en: "lifting the car with the jack", zh: "用千斤顶把车顶起来" }, { en: "finding the spare tire", zh: "找到备用轮胎" }] },
+        { speaker: "B", en: "Do you want me to _____?", zh: "你要不要我_____？", hints: [{ en: "try the longer wrench", zh: "试试较长的扳手" }, { en: "check the spare tire", zh: "检查备用轮胎" }, { en: "call roadside assistance", zh: "打给道路救援" }] },
+        { speaker: "A", en: "I need help with _____.", zh: "我需要别人帮忙_____。", hints: [{ en: "changing the tire", zh: "换轮胎" }, { en: "the jack", zh: "使用千斤顶" }, { en: "the spare tire", zh: "处理备用轮胎" }] },
+        { speaker: "B", en: "I can _____ until _____.", zh: "我可以_____到_____为止。", hints: [{ en: "cover the front desk / nine thirty", zh: "暂时负责前台／九点半" }, { en: "handle the first customers / you arrive", zh: "接待第一批客人／你到达" }, { en: "take your first task / the tire is fixed", zh: "先处理你的第一项工作／轮胎修好" }] },
+        { speaker: "A", en: "The _____ looks low on air, and I still need to call work.", zh: "_____看起来气压不足，而且我还得打电话到公司。", hints: [{ en: "spare tire", zh: "备用轮胎" }, { en: "front tire", zh: "前轮" }, { en: "replacement tire", zh: "替换轮胎" }] },
+        { speaker: "B", en: "What pressure does _____ recommend?", zh: "_____建议的胎压是多少？", hints: [{ en: "the door label", zh: "车门标签" }, { en: "the manual", zh: "说明书" }, { en: "the tire shop", zh: "轮胎店" }] },
+        { speaker: "A", en: "It says _____, but the gauge shows only _____.", zh: "上面写_____，但压力表只显示_____。", hints: [{ en: "thirty-two / twenty", zh: "三十二／二十" }, { en: "thirty-five / twenty-four", zh: "三十五／二十四" }, { en: "forty / twenty-eight", zh: "四十／二十八" }] },
+        { speaker: "B", en: "If that doesn't work, we can _____.", zh: "如果那样不行，我们可以_____。", hints: [{ en: "call roadside assistance", zh: "打给道路救援" }, { en: "use my portable air pump", zh: "用我的便携式打气机" }, { en: "ask the nearby garage for help", zh: "请附近修车厂帮忙" }] },
+        { speaker: "A", en: "Could you ask them _____?", zh: "你可以问他们_____吗？", hints: [{ en: "how long the wait will be", zh: "要等多久" }, { en: "whether they can bring a tire", zh: "能不能带轮胎过来" }, { en: "where I should wait", zh: "我应该在哪里等" }] },
+        { speaker: "B", en: "Sure. Turn on _____ while I _____.", zh: "可以。我_____的时候，你先打开_____。", hints: [{ en: "the hazard lights / make the call", zh: "双闪灯／打电话" }, { en: "your location sharing / contact work", zh: "位置分享／联络公司" }, { en: "the cabin light / check the tire", zh: "车内灯／检查轮胎" }] }
+      ]
+    },
+    {
+      id: "review-10",
+      order: 10,
+      level: "A2",
+      publishedOn: "2026-10-19",
+      title: "Feeling Unwell on a Ferry",
+      titleZh: "搭渡轮时感到不舒服",
+      patterns: ["s-a1-54", "s-a1-91", "s-a2-92", "s-a2-28", "s-a2-77", "s-a2-22"],
+      words: [
+        { en: "the rear deck", zh: "后甲板" },
+        { en: "the horizon", zh: "地平线" },
+        { en: "take slow breaths", zh: "慢慢呼吸" },
+        { en: "the lower deck", zh: "下层甲板" },
+        { en: "a first-aid bag", zh: "急救包" },
+        { en: "hold the rail", zh: "扶好栏杆" }
+      ],
+      roles: [
+        { name: "Role A · Passenger", nameZh: "角色 A · 乘客", en: "You begin to feel seasick halfway through a ferry ride.", zh: "渡轮航程过半时，你开始晕船。" },
+        { name: "Role B · Ferry Crew Member", nameZh: "角色 B · 渡轮工作人员", en: "You help A move safely and choose a simple next step.", zh: "你协助 A 安全移动，并选择简单的处理方式。" }
+      ],
+      lines: [
+        { speaker: "A", en: "I'm getting _____.", zh: "我开始觉得_____。", hints: [{ en: "dizzy", zh: "头晕" }, { en: "nauseous", zh: "恶心" }, { en: "a little weak", zh: "有点虚弱" }] },
+        { speaker: "B", en: "Would you rather _____ now or _____ later?", zh: "你想现在_____，还是晚一点_____？", hints: [{ en: "sit by an open window / step outside", zh: "坐到开着的窗边／到外面" }, { en: "move to the rear deck / rest inside", zh: "移到后甲板／在室内休息" }, { en: "drink some water / try a cracker", zh: "喝点水／吃一片饼干" }] },
+        { speaker: "A", en: "Is there somewhere I can _____?", zh: "有可以_____的地方吗？", hints: [{ en: "get some fresh air", zh: "呼吸新鲜空气" }, { en: "sit quietly", zh: "安静坐着" }, { en: "lie down for a few minutes", zh: "躺几分钟" }] },
+        { speaker: "B", en: "I can _____ until _____.", zh: "我可以_____到_____为止。", hints: [{ en: "stay with you / you feel steadier", zh: "陪着你／你感觉稳定一些" }, { en: "walk with you / we reach the rear deck", zh: "陪你走／我们到后甲板" }, { en: "bring you water / the next stop", zh: "拿水给你／下一站" }] },
+        { speaker: "A", en: "What do you recommend if _____?", zh: "如果_____，你建议怎么做？", hints: [{ en: "I still feel sick", zh: "我还是不舒服" }, { en: "the dizziness gets worse", zh: "头晕变严重" }, { en: "I cannot stand safely", zh: "我无法安全站立" }] },
+        { speaker: "B", en: "Try _____ and _____.", zh: "试着_____，并且_____。", hints: [{ en: "looking at the horizon / taking slow breaths", zh: "看着地平线／慢慢呼吸" }, { en: "sitting still / sipping water", zh: "坐着不动／小口喝水" }, { en: "keeping your head up / closing your eyes", zh: "抬起头／闭上眼睛" }] },
+        { speaker: "A", en: "The _____ feels too _____ for me.", zh: "_____让我觉得太_____了。", hints: [{ en: "lower deck / warm", zh: "下层甲板／闷热" }, { en: "engine area / noisy", zh: "引擎附近／吵" }, { en: "inside cabin / crowded", zh: "室内客舱／拥挤" }] },
+        { speaker: "B", en: "If that doesn't work, we can _____.", zh: "如果那样不行，我们可以_____。", hints: [{ en: "ask the first-aid officer to check you", zh: "请急救人员检查你的状况" }, { en: "move you to a quieter seat", zh: "让你换到较安静的座位" }, { en: "bring the first-aid bag", zh: "把急救包拿来" }] },
+        { speaker: "A", en: "I'll try _____ first.", zh: "我会先试试_____。", hints: [{ en: "the rear deck", zh: "到后甲板" }, { en: "some fresh air", zh: "呼吸新鲜空气" }, { en: "sitting by the window", zh: "坐在窗边" }] },
+        { speaker: "B", en: "Hold _____, and tell me if _____.", zh: "扶好_____，如果_____就告诉我。", hints: [{ en: "the rail / you feel worse", zh: "栏杆／你感觉更不舒服" }, { en: "my arm / you feel unsteady", zh: "我的手臂／你站不稳" }, { en: "the seat back / you need to stop", zh: "椅背／你需要停下来" }] }
+      ]
+    },
+    {
+      id: "review-11",
+      order: 11,
+      level: "A2",
+      publishedOn: "2026-10-19",
+      title: "Protecting Food When a Donation Cooler Fails",
+      titleZh: "捐赠站冷藏柜故障时保护食物",
+      patterns: ["s-a2-25", "s-a1-80", "s-a2-78", "s-a1-43", "s-a2-82", "s-a2-22"],
+      words: [
+        { en: "the cooler", zh: "冷藏柜" },
+        { en: "ice packs", zh: "冰袋" },
+        { en: "the dairy boxes", zh: "乳制品箱" },
+        { en: "the outlet", zh: "插座" },
+        { en: "temperature-sensitive", zh: "对温度敏感的" },
+        { en: "label each box", zh: "给每个箱子贴标签" }
+      ],
+      roles: [
+        { name: "Role A · Food Pantry Volunteer", nameZh: "角色 A · 食物捐赠站志愿者", en: "You notice that a cooler is getting warm during a donation shift.", zh: "值班期间，你发现一台冷藏柜正在变暖。" },
+        { name: "Role B · Site Coordinator", nameZh: "角色 B · 现场协调员", en: "You organize a safe transfer before the chilled food is damaged.", zh: "你要在冷藏食物受损前安排安全转移。" }
+      ],
+      lines: [
+        { speaker: "A", en: "There seems to be a problem with _____.", zh: "_____好像出了问题。", hints: [{ en: "the main cooler", zh: "主要冷藏柜" }, { en: "the temperature display", zh: "温度显示器" }, { en: "the power cord", zh: "电源线" }] },
+        { speaker: "B", en: "We are out of _____.", zh: "我们的_____用完了。", hints: [{ en: "large ice packs", zh: "大型冰袋" }, { en: "empty cooler boxes", zh: "空的冷藏箱" }, { en: "space in the back freezer", zh: "后方冷冻柜的空间" }] },
+        { speaker: "A", en: "I can take care of _____ while you _____.", zh: "你_____的时候，我可以负责_____。", hints: [{ en: "moving the dairy boxes / check the outlet", zh: "移动乳制品箱／检查插座" }, { en: "sorting the cold food / call the repair service", zh: "整理冷藏食物／打给维修人员" }, { en: "checking the labels / find another cooler", zh: "检查标签／寻找另一台冷藏柜" }] },
+        { speaker: "B", en: "Where should I put _____?", zh: "我应该把_____放在哪里？", hints: [{ en: "the frozen meals", zh: "冷冻餐点" }, { en: "the milk crates", zh: "牛奶箱" }, { en: "the temperature log", zh: "温度记录表" }] },
+        { speaker: "A", en: "Put _____ in _____ for now.", zh: "暂时把_____放进_____。", hints: [{ en: "the dairy / the blue cooler", zh: "乳制品／蓝色冷藏箱" }, { en: "the frozen meals / the back freezer", zh: "冷冻餐点／后方冷冻柜" }, { en: "the produce / the insulated bags", zh: "蔬果／保温袋" }] },
+        { speaker: "B", en: "We can avoid _____ by _____.", zh: "我们可以通过_____来避免_____。", hints: [{ en: "food waste / moving the most sensitive items first", zh: "食物浪费／先移动最怕热的食物" }, { en: "confusion / labeling every box", zh: "混乱／给每个箱子贴标签" }, { en: "warming / keeping the doors closed", zh: "温度升高／保持柜门关闭" }] },
+        { speaker: "A", en: "The temperature is still _____.", zh: "温度仍在_____。", hints: [{ en: "rising", zh: "上升" }, { en: "above the safe range", zh: "超过安全范围" }, { en: "changing too quickly", zh: "变化得太快" }] },
+        { speaker: "B", en: "If that doesn't work, we can _____.", zh: "如果那样不行，我们可以_____。", hints: [{ en: "use the cooler at the community kitchen", zh: "使用社区厨房的冷藏柜" }, { en: "ask the nearby shelter for space", zh: "询问附近收容所是否有空间" }, { en: "move the food to the delivery van", zh: "把食物移到冷藏配送车" }] },
+        { speaker: "A", en: "I'll label each box with _____.", zh: "我会在每个箱子上标明_____。", hints: [{ en: "its new location", zh: "新的存放位置" }, { en: "the time it was moved", zh: "移动时间" }, { en: "the food category", zh: "食物类别" }] },
+        { speaker: "B", en: "I'll call _____ and check _____.", zh: "我会打给_____，确认_____。", hints: [{ en: "the community kitchen / how much space they have", zh: "社区厨房／他们有多少空间" }, { en: "the repair service / when they can arrive", zh: "维修人员／何时能到" }, { en: "the delivery driver / whether the van is nearby", zh: "配送司机／冷藏车是否在附近" }] }
+      ]
+    },
+    {
+      id: "review-12",
+      order: 12,
+      level: "A2",
+      publishedOn: "2026-10-19",
+      title: "Making a Potluck Safe for a Food Allergy",
+      titleZh: "让聚餐对食物过敏者更安全",
+      patterns: ["s-a1-47", "s-a2-13", "s-a1-36", "s-a2-39", "s-a2-38", "s-a2-40"],
+      words: [
+        { en: "a food allergy", zh: "食物过敏" },
+        { en: "the serving table", zh: "取餐桌" },
+        { en: "an ingredient label", zh: "成分标签" },
+        { en: "an unopened snack", zh: "未开封的点心" },
+        { en: "a clean plate", zh: "干净的盘子" },
+        { en: "a shared serving spoon", zh: "共用取餐匙" }
+      ],
+      roles: [
+        { name: "Role A · Guest", nameZh: "角色 A · 聚餐来宾", en: "You have a food allergy and need to check the dishes before serving yourself.", zh: "你有食物过敏，需要在取餐前检查各道餐点。" },
+        { name: "Role B · Potluck Host", nameZh: "角色 B · 聚餐主人", en: "You help identify ingredients and prepare a safer separate option.", zh: "你协助确认成分，并准备较安全的独立选择。" }
+      ],
+      lines: [
+        { speaker: "A", en: "I'm allergic to _____.", zh: "我对_____过敏。", hints: [{ en: "peanuts", zh: "花生" }, { en: "sesame", zh: "芝麻" }, { en: "dairy products", zh: "乳制品" }] },
+        { speaker: "B", en: "I'd like to make sure _____.", zh: "我想确认_____。", hints: [{ en: "there is something safe to eat", zh: "有可以安全食用的食物" }, { en: "the ingredients are clearly labeled", zh: "成分都有清楚标示" }, { en: "we use a clean plate", zh: "我们使用干净的盘子" }] },
+        { speaker: "A", en: "Can I get _____ without _____?", zh: "我可以拿不加_____的_____吗？", hints: [{ en: "the noodles / the sauce", zh: "面条／酱汁" }, { en: "some fruit / the topping", zh: "水果／配料" }, { en: "a sandwich / the spread", zh: "三明治／抹酱" }] },
+        { speaker: "B", en: "The _____ and _____ were prepared in the same bowl.", zh: "_____和_____是在同一个碗里准备的。", hints: [{ en: "sauce / toppings", zh: "酱汁／配料" }, { en: "salad / nuts", zh: "沙拉／坚果" }, { en: "fruit / dessert", zh: "水果／甜点" }] },
+        { speaker: "A", en: "I didn't realize _____ until _____.", zh: "我直到_____才发现_____。", hints: [{ en: "everything was on one serving table / we arrived", zh: "所有食物都放在同一张取餐桌上／我们到达" }, { en: "the labels were missing / I checked the dishes", zh: "没有成分标签／我检查餐点" }, { en: "the spoons were shared / my child picked up a plate", zh: "取餐匙是共用的／孩子拿起盘子" }] },
+        { speaker: "B", en: "It would be easier if we _____.", zh: "如果我们_____，事情会比较容易。", hints: [{ en: "used a clean plate and an unopened snack", zh: "使用干净的盘子和未开封的点心" }, { en: "kept one dish separate", zh: "把一份餐点分开放" }, { en: "checked the packages in the kitchen", zh: "到厨房查看包装" }] },
+        { speaker: "A", en: "Do you happen to know where _____ is?", zh: "你刚好知道_____在哪里吗？", hints: [{ en: "the ingredient list", zh: "成分表" }, { en: "the original package", zh: "原包装" }, { en: "a clean serving spoon", zh: "干净的取餐匙" }] },
+        { speaker: "B", en: "It's next to _____ in _____.", zh: "它在_____旁边，放在_____。", hints: [{ en: "the empty containers / the kitchen", zh: "空容器／厨房" }, { en: "the food labels / the supply box", zh: "食物标签／用品箱" }, { en: "the paper plates / the side room", zh: "纸盘／侧边房间" }] },
+        { speaker: "A", en: "I'll check _____ before _____.", zh: "我会先检查_____，再_____。", hints: [{ en: "the labels / putting anything on the plate", zh: "标签／把食物放到盘子上" }, { en: "the package / eating the snack", zh: "包装／吃点心" }, { en: "the serving spoon / taking a portion", zh: "取餐匙／拿取食物" }] },
+        { speaker: "B", en: "I'll keep _____ away from _____.", zh: "我会让_____远离_____。", hints: [{ en: "the shared serving spoons / the separate plate", zh: "共用取餐匙／独立盘子" }, { en: "the peanut dessert / the fruit", zh: "花生甜点／水果" }, { en: "the open dishes / the safe snack", zh: "开放式餐点／安全的点心" }] }
+      ]
     }
   ]
 };
 
-if (window.SITE) window.SITE.version = "1018_review_roleplay_2";
+if (window.SITE) window.SITE.version = "1019_review_roleplay_1";
