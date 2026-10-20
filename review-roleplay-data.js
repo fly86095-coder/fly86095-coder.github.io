@@ -1,6 +1,6 @@
 window.REVIEW_ROLEPLAY_CATALOG = {
-  version: "1019_review_roleplay_1",
-  publishedOn: "2026-10-19",
+  version: "1020_review_roleplay_1",
+  publishedOn: "2026-10-20",
   courses: [
     {
       id: "review-1",
@@ -397,8 +397,140 @@ window.REVIEW_ROLEPLAY_CATALOG = {
         { speaker: "A", en: "I'll check _____ before _____.", zh: "我会先检查_____，再_____。", hints: [{ en: "the labels / putting anything on the plate", zh: "标签／把食物放到盘子上" }, { en: "the package / eating the snack", zh: "包装／吃点心" }, { en: "the serving spoon / taking a portion", zh: "取餐匙／拿取食物" }] },
         { speaker: "B", en: "I'll keep _____ away from _____.", zh: "我会让_____远离_____。", hints: [{ en: "the shared serving spoons / the separate plate", zh: "共用取餐匙／独立盘子" }, { en: "the peanut dessert / the fruit", zh: "花生甜点／水果" }, { en: "the open dishes / the safe snack", zh: "开放式餐点／安全的点心" }] }
       ]
+    },
+    {
+      id: "review-13",
+      order: 13,
+      level: "A2",
+      publishedOn: "2026-10-20",
+      title: "A Smoke Alarm Chirping Late at Night",
+      titleZh: "深夜里不断鸣响的烟雾警报器",
+      patterns: ["s-a2-93", "s-a1-44", "s-a2-18", "s-a2-75", "s-a2-96"],
+      words: [
+        { en: "the smoke alarm", zh: "烟雾警报器" },
+        { en: "a spare battery", zh: "备用电池" },
+        { en: "the test button", zh: "测试按钮" },
+        { en: "the alarm cover", zh: "警报器外盖" },
+        { en: "a step stool", zh: "踏脚凳" },
+        { en: "chirp", zh: "发出短促鸣声" }
+      ],
+      roles: [
+        { name: "Role A · Tenant", nameZh: "角色 A · 房客", en: "A smoke alarm is chirping, and you need help replacing the battery safely.", zh: "烟雾警报器持续鸣响，你需要协助安全更换电池。" },
+        { name: "Role B · On-call Caretaker", nameZh: "角色 B · 值班管理员", en: "You identify the alarm and guide A through the safe steps by phone.", zh: "你确认是哪一台警报器，并透过电话指导 A 安全处理。" }
+      ],
+      lines: [
+        { speaker: "A", en: "The _____ keeps _____ whenever _____.", zh: "每当_____时，_____就一直_____。", hints: [{ en: "smoke alarm / chirping / the hallway gets quiet", zh: "烟雾警报器／发出短促鸣声／走廊安静下来" }, { en: "alarm by the kitchen / beeping / I turn off the lights", zh: "厨房旁的警报器／发出哔声／我关灯" }, { en: "ceiling alarm / making a sound / the room is quiet", zh: "天花板警报器／发出声音／房间安静" }] },
+        { speaker: "B", en: "Does the sound come from _____ or _____?", zh: "声音是从_____还是_____传来的？", hints: [{ en: "the kitchen alarm / the bedroom alarm", zh: "厨房警报器／卧室警报器" }, { en: "the hallway / inside your apartment", zh: "走廊／你的公寓内" }, { en: "the ceiling / the wall unit", zh: "天花板／墙上的装置" }] },
+        { speaker: "A", en: "I don't have _____ with me.", zh: "我身边没有_____。", hints: [{ en: "a spare battery", zh: "备用电池" }, { en: "a step stool", zh: "踏脚凳" }, { en: "the alarm manual", zh: "警报器说明书" }] },
+        { speaker: "B", en: "There should be _____ in _____.", zh: "_____里应该有_____。", hints: [{ en: "a battery / the maintenance box", zh: "电池／维修箱" }, { en: "a step stool / the storage room", zh: "踏脚凳／储藏室" }, { en: "instructions / the cabinet", zh: "说明／柜子" }] },
+        { speaker: "A", en: "Do I need to _____ before _____?", zh: "我需要先_____再_____吗？", hints: [{ en: "test the alarm / putting the cover back", zh: "测试警报器／装回外盖" }, { en: "remove the old battery / opening the new one", zh: "取出旧电池／拆开新电池" }, { en: "call you / touching the alarm", zh: "打给你／碰警报器" }] },
+        { speaker: "B", en: "Press _____ after _____.", zh: "_____之后，按下_____。", hints: [{ en: "the test button / the new battery is in", zh: "测试按钮／装好新电池" }, { en: "the small tab / opening the cover", zh: "小卡榫／打开外盖" }, { en: "the reset button / closing the cover", zh: "重设按钮／盖好外盖" }] },
+        { speaker: "A", en: "Could you walk me through how to _____?", zh: "你可以一步一步告诉我怎么_____吗？", hints: [{ en: "open the alarm cover", zh: "打开警报器外盖" }, { en: "remove the old battery", zh: "取出旧电池" }, { en: "test the alarm", zh: "测试警报器" }] },
+        { speaker: "B", en: "Hold _____ and turn _____ slowly.", zh: "扶住_____，再慢慢转动_____。", hints: [{ en: "the base / the cover", zh: "底座／外盖" }, { en: "the alarm / the outer ring", zh: "警报器／外圈" }, { en: "the ladder / the cover", zh: "梯子／外盖" }] },
+        { speaker: "A", en: "I won't be able to _____ until _____.", zh: "我要等到_____以后才能_____。", hints: [{ en: "reach it safely / I get a step stool", zh: "安全碰到警报器／拿到踏脚凳" }, { en: "replace the battery / you bring the right size", zh: "更换电池／你带来正确尺寸" }, { en: "test it / the cover is back on", zh: "测试／装回外盖" }] },
+        { speaker: "B", en: "Don't use _____. I'll bring _____ from storage.", zh: "不要用_____。我会从储藏室拿_____来。", hints: [{ en: "a chair / a stable step stool", zh: "椅子／稳固的踏脚凳" }, { en: "a loose box / a small ladder", zh: "不稳的箱子／小梯子" }, { en: "the wrong battery / the correct battery", zh: "错误的电池／正确的电池" }] }
+      ]
+    },
+    {
+      id: "review-14",
+      order: 14,
+      level: "A2",
+      publishedOn: "2026-10-20",
+      title: "What to Do after a Phone Falls into Water",
+      titleZh: "手机掉进水里后的处理方式",
+      patterns: ["s-a2-34", "s-a2-83", "s-a1-26", "s-a2-27", "s-a2-70"],
+      words: [
+        { en: "the power button", zh: "电源按钮" },
+        { en: "the charging port", zh: "充电孔" },
+        { en: "the SIM card", zh: "SIM 卡" },
+        { en: "a hair dryer", zh: "吹风机" },
+        { en: "a ventilated place", zh: "通风处" },
+        { en: "the screen flickers", zh: "屏幕闪烁" }
+      ],
+      roles: [
+        { name: "Role A · Phone Owner", nameZh: "角色 A · 手机主人", en: "Your phone fell into water, and you want to avoid making the damage worse.", zh: "你的手机掉进水里，你想避免让损坏变得更严重。" },
+        { name: "Role B · Repair Technician", nameZh: "角色 B · 维修技术人员", en: "You ask what happened and explain the safest immediate steps.", zh: "你询问事情经过，并说明较安全的立即处理步骤。" }
+      ],
+      lines: [
+        { speaker: "A", en: "I was about to _____ when _____.", zh: "我正要_____，这时_____。", hints: [{ en: "put my phone in my pocket / it slipped into the sink", zh: "把手机放进口袋／手机滑进水槽" }, { en: "answer a message / the phone fell into a puddle", zh: "回复讯息／手机掉进水坑" }, { en: "move the phone / a cup spilled beside it", zh: "移动手机／旁边的杯子打翻" }] },
+        { speaker: "B", en: "Did you _____ right away?", zh: "你有立刻_____吗？", hints: [{ en: "turn it off", zh: "把它关机" }, { en: "remove it from the water", zh: "把它从水里拿出来" }, { en: "unplug the charger", zh: "拔掉充电线" }] },
+        { speaker: "A", en: "I may have _____ by mistake.", zh: "我可能不小心_____了。", hints: [{ en: "pressed the power button", zh: "按到电源按钮" }, { en: "connected the charger", zh: "接上充电线" }, { en: "shaken the phone", zh: "摇晃手机" }] },
+        { speaker: "B", en: "I can't _____ because _____.", zh: "我无法_____，因为_____。", hints: [{ en: "test the charging port / the phone is still wet", zh: "测试充电孔／手机仍是湿的" }, { en: "turn it on / water may still be inside", zh: "把它开机／里面可能还有水" }, { en: "promise a quick repair / we need to inspect it first", zh: "保证快速修好／我们得先检查" }] },
+        { speaker: "A", en: "Should I remove _____ now?", zh: "我现在应该取下_____吗？", hints: [{ en: "the case and SIM card", zh: "手机壳和 SIM 卡" }, { en: "the screen protector", zh: "屏幕保护贴" }, { en: "the memory card", zh: "存储卡" }] },
+        { speaker: "B", en: "In case _____, we could _____.", zh: "为了防止_____，我们可以_____。", hints: [{ en: "the battery gets warm / move it away from anything flammable", zh: "电池变热／把手机移离易燃物" }, { en: "more water reaches the port / keep it upright", zh: "更多水进入充电孔／让手机保持直立" }, { en: "the phone turns on by itself / place it on a clear surface", zh: "手机自行开机／把它放在清空的表面" }] },
+        { speaker: "A", en: "Can I dry it with _____?", zh: "我可以用_____把它弄干吗？", hints: [{ en: "a hair dryer", zh: "吹风机" }, { en: "a heater", zh: "暖气机" }, { en: "a towel", zh: "毛巾" }] },
+        { speaker: "B", en: "Avoid _____. Leave it in _____.", zh: "不要_____。把它放在_____。", hints: [{ en: "direct heat / a dry, ventilated place", zh: "直接加热／干燥通风处" }, { en: "charging it / a clear area", zh: "充电／空旷处" }, { en: "turning it on / the repair tray", zh: "开机／维修托盘" }] },
+        { speaker: "A", en: "I may need a little more time to _____.", zh: "我可能需要多一点时间来_____。", hints: [{ en: "recover my files", zh: "找回档案" }, { en: "restore the backup", zh: "还原备份" }, { en: "set up a spare phone", zh: "设定备用手机" }] },
+        { speaker: "B", en: "Bring it back _____ if _____.", zh: "如果_____，请在_____把它带回来。", hints: [{ en: "tomorrow / the screen still flickers", zh: "明天／屏幕仍闪烁" }, { en: "this afternoon / the phone gets warm", zh: "今天下午／手机变热" }, { en: "after it dries / the charging port fails", zh: "干燥后／充电孔无法使用" }] }
+      ]
+    },
+    {
+      id: "review-15",
+      order: 15,
+      level: "A2",
+      publishedOn: "2026-10-20",
+      title: "Returning a Borrowed Drill That Broke",
+      titleZh: "归还损坏的借用电钻",
+      patterns: ["s-a1-88", "s-a2-12", "s-a2-3", "s-a2-52", "s-a2-59"],
+      words: [
+        { en: "the drill handle", zh: "电钻握把" },
+        { en: "a wood bit", zh: "木工钻头" },
+        { en: "a masonry bit", zh: "水泥钻头" },
+        { en: "the repair estimate", zh: "维修报价" },
+        { en: "the motor", zh: "马达" },
+        { en: "a replacement", zh: "替代品" }
+      ],
+      roles: [
+        { name: "Role A · Borrower", nameZh: "角色 A · 借用工具的邻居", en: "A borrowed drill stopped during your project, and you want to take responsibility.", zh: "借来的电钻在施工时停止运转，你想负起责任。" },
+        { name: "Role B · Tool Owner", nameZh: "角色 B · 工具主人", en: "You inspect the drill and decide whether repair or replacement makes more sense.", zh: "你检查电钻，并判断维修还是更换比较合理。" }
+      ],
+      lines: [
+        { speaker: "A", en: "This _____ has a crack in it.", zh: "这个_____有裂痕。", hints: [{ en: "drill handle", zh: "电钻握把" }, { en: "battery case", zh: "电池外壳" }, { en: "plastic ring", zh: "塑料环" }] },
+        { speaker: "B", en: "It turns out that _____.", zh: "结果发现_____。", hints: [{ en: "the plastic was already weak near the screw", zh: "螺丝附近的塑料原本就很脆弱" }, { en: "the battery was not fully locked in", zh: "电池没有完全卡紧" }, { en: "the drill bit was the wrong type", zh: "钻头类型不对" }] },
+        { speaker: "A", en: "It stopped while I was _____.", zh: "我在_____的时候，它停了。", hints: [{ en: "drilling a hole for a shelf", zh: "为架子钻孔" }, { en: "putting up a curtain rod", zh: "安装窗帘杆" }, { en: "fixing a loose cabinet", zh: "修理松动的柜子" }] },
+        { speaker: "B", en: "Were you using _____ or _____?", zh: "你当时使用的是_____还是_____？", hints: [{ en: "the wood bit / the masonry bit", zh: "木工钻头／水泥钻头" }, { en: "low speed / high speed", zh: "低速／高速" }, { en: "the small battery / the large battery", zh: "小电池／大电池" }] },
+        { speaker: "A", en: "I was wondering if you could _____.", zh: "我想请问你能不能_____。", hints: [{ en: "check whether the motor still runs", zh: "检查马达是否仍能运转" }, { en: "look at the cracked handle", zh: "看看有裂痕的握把" }, { en: "tell me which bit I should use", zh: "告诉我该用哪种钻头" }] },
+        { speaker: "B", en: "I can _____, but don't _____ yet.", zh: "我可以_____，但先不要_____。", hints: [{ en: "inspect it / plug it in", zh: "检查／插电" }, { en: "remove the battery / press the trigger", zh: "取下电池／按下开关" }, { en: "call the repair shop / buy a new one", zh: "打给维修店／买新的" }] },
+        { speaker: "A", en: "I owe you _____.", zh: "我欠你_____。", hints: [{ en: "a repair", zh: "一次维修" }, { en: "a replacement if it cannot be fixed", zh: "无法修理时的替代品" }, { en: "the cost of the damaged part", zh: "损坏零件的费用" }] },
+        { speaker: "B", en: "Let's ask _____ for _____ first.", zh: "我们先向_____询问_____。", hints: [{ en: "the repair shop / an estimate", zh: "维修店／报价" }, { en: "the manufacturer / a replacement handle", zh: "制造商／替换握把" }, { en: "the hardware store / the correct drill bit", zh: "五金行／正确的钻头" }] },
+        { speaker: "A", en: "Would it be possible to _____ instead?", zh: "可以改成_____吗？", hints: [{ en: "repair it", zh: "把它修好" }, { en: "replace only the handle", zh: "只更换握把" }, { en: "rent one while this is being fixed", zh: "维修期间先租一台" }] },
+        { speaker: "B", en: "If _____, we can choose _____ together.", zh: "如果_____，我们可以一起选择_____。", hints: [{ en: "the repair costs too much / a similar model", zh: "维修费用太高／类似型号" }, { en: "the motor is damaged / a replacement", zh: "马达损坏／替代品" }, { en: "the part is unavailable / another option", zh: "零件缺货／其他选择" }] }
+      ]
+    },
+    {
+      id: "review-16",
+      order: 16,
+      level: "A2",
+      publishedOn: "2026-10-20",
+      title: "Packing for an Unexpected Overnight Stay",
+      titleZh: "为临时过夜住院准备物品",
+      patterns: ["s-a1-33", "s-a2-63", "s-a1-81", "s-a2-57", "s-a2-69", "s-a1-78"],
+      words: [
+        { en: "an overnight stay", zh: "过夜住院" },
+        { en: "an ID card", zh: "身份证件" },
+        { en: "a medicine list", zh: "用药清单" },
+        { en: "a phone charger", zh: "手机充电器" },
+        { en: "the spare key", zh: "备用钥匙" },
+        { en: "feed the cat", zh: "喂猫" }
+      ],
+      roles: [
+        { name: "Role A · Patient", nameZh: "角色 A · 需要住院观察的人", en: "You were told to stay overnight and need help organizing home responsibilities.", zh: "你被告知需要住院观察一晚，需要协助安排家里的事情。" },
+        { name: "Role B · Sibling", nameZh: "角色 B · 手足", en: "You help pack essentials, arrange pet care, and secure the apartment.", zh: "你协助准备必需品、安排宠物照顾，并确认公寓安全。" }
+      ],
+      lines: [
+        { speaker: "A", en: "What should I bring for _____?", zh: "为了_____，我应该带什么？", hints: [{ en: "an overnight stay", zh: "过夜住院" }, { en: "tomorrow morning", zh: "明天早上" }, { en: "the hospital check-in", zh: "办理住院手续" }] },
+        { speaker: "B", en: "Bring _____ and _____.", zh: "带上_____和_____。", hints: [{ en: "your ID / comfortable clothes", zh: "身份证件／舒适的衣服" }, { en: "your phone charger / glasses", zh: "手机充电器／眼镜" }, { en: "the appointment paper / a sweater", zh: "预约资料／毛衣" }] },
+        { speaker: "A", en: "I've already _____, but I still need to _____.", zh: "我已经_____，但还需要_____。", hints: [{ en: "packed my medicine list / pack my glasses", zh: "放好用药清单／收好眼镜" }, { en: "called work / charge my phone", zh: "打电话到公司／给手机充电" }, { en: "put my ID in the bag / find the appointment paper", zh: "把身份证件放进包里／找预约资料" }] },
+        { speaker: "B", en: "Please remind me to _____.", zh: "请提醒我_____。", hints: [{ en: "lock your apartment before we leave", zh: "出门前锁好你的公寓" }, { en: "bring the spare key", zh: "带上备用钥匙" }, { en: "turn off the kitchen light", zh: "关掉厨房灯" }] },
+        { speaker: "A", en: "Would you be able to _____ by _____?", zh: "你能在_____以前_____吗？", hints: [{ en: "feed my cat / seven", zh: "喂我的猫／七点" }, { en: "pick up the overnight bag / six thirty", zh: "拿过夜用品袋／六点半" }, { en: "call our neighbor / this evening", zh: "打给邻居／今天晚上" }] },
+        { speaker: "B", en: "Yes. I'll _____ after _____.", zh: "可以。我会在_____以后_____。", hints: [{ en: "stop by your apartment / I drive you to the hospital", zh: "去你的公寓／开车送你到医院" }, { en: "feed the cat / we check you in", zh: "喂猫／帮你办理住院" }, { en: "bring the bag / I park the car", zh: "把袋子带来／停车" }] },
+        { speaker: "A", en: "Do you think we could _____ after _____?", zh: "你觉得我们可以在_____以后_____吗？", hints: [{ en: "call our neighbor / we arrive", zh: "打给邻居／我们到达" }, { en: "check the apartment / the doctor speaks with me", zh: "检查公寓／医生和我谈过" }, { en: "make a plan for tomorrow / I settle in", zh: "安排明天／我安顿好" }] },
+        { speaker: "B", en: "Good idea. _____ can help if _____.", zh: "好主意。如果_____，_____可以帮忙。", hints: [{ en: "our neighbor / you stay longer", zh: "邻居／你住得更久" }, { en: "your friend / I cannot return tonight", zh: "你的朋友／我今晚无法回去" }, { en: "the building manager / we need another key", zh: "大楼管理员／我们需要另一把钥匙" }] },
+        { speaker: "A", en: "Please leave _____ at _____.", zh: "请把_____放在_____。", hints: [{ en: "the spare key / the front desk", zh: "备用钥匙／前台" }, { en: "the cat food / the kitchen counter", zh: "猫食／厨房流理台" }, { en: "the overnight bag / the nurses' station", zh: "过夜用品袋／护理站" }] },
+        { speaker: "B", en: "I will, and I'll message you when _____.", zh: "我会的。_____以后，我会传讯息给你。", hints: [{ en: "everything is done", zh: "所有事情都处理好" }, { en: "the cat has been fed", zh: "猫已经喂好" }, { en: "the apartment is locked", zh: "公寓已经锁好" }] }
+      ]
     }
   ]
 };
 
-if (window.SITE) window.SITE.version = "1019_review_roleplay_1";
+if (window.SITE) window.SITE.version = "1020_review_roleplay_1";
