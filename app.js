@@ -189,10 +189,61 @@ function submitPronunciationGate(event){
 }
 function wordZone(){
  const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Vocabulary</div><h1 class="page-title">Word Zone</h1><div class="detail-title-zh">單字專區</div></section>
- <section class="section word-zone"><div class="word-zone-actions"><a class="zone-action" href="#word-list"><b>Word List</b><small>單字表</small></a><button class="zone-action" type="button" onclick="openPronunciationGate()" aria-haspopup="dialog" aria-controls="pronunciationGate"><b>Pronunciation &amp; Review</b><small>發音與複習系統</small></button><a class="zone-action" href="#chunks"><b>English Chunks</b><small>語塊區</small></a></div></section>
+ <section class="section word-zone"><div class="word-zone-actions"><a class="zone-action" href="#word-list"><b>Word List</b><small>單字表</small></a><button class="zone-action" type="button" onclick="openPronunciationGate()" aria-haspopup="dialog" aria-controls="pronunciationGate"><b>Pronunciation &amp; Review</b><small>發音與複習系統</small></button><a class="zone-action" href="#chunks"><b>English Chunks</b><small>語塊區</small></a><a class="zone-action" href="#picture-learning"><b>Picture Learning</b><small>圖片學習</small></a></div></section>
  <dialog id="pronunciationGate" class="access-dialog" aria-labelledby="pronunciationGateTitle"><div class="access-dialog-head"><div><h2 id="pronunciationGateTitle">Pronunciation &amp; Review</h2><p>發音與複習系統</p></div><button class="access-dialog-close" type="button" onclick="closePronunciationGate()" aria-label="Close password window">×</button></div><form class="access-dialog-form" onsubmit="return submitPronunciationGate(event)"><label for="pronunciationPassword"><b>Enter password</b><span>請輸入密碼</span></label><input id="pronunciationPassword" class="access-dialog-input" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-describedby="pronunciationPasswordError"><p id="pronunciationPasswordError" class="access-dialog-error" role="alert" aria-live="polite"></p><button class="access-dialog-submit" type="submit">Open system <span>開啟系統</span></button></form></dialog>`;
  shell(content,'Words')
 }
+const PICTURE_LEARNING_ITEMS=[
+ {id:'umbrella',word:'umbrella',zh:'雨傘',image:'assets/picture-learning/umbrella.jpg',sentence:'An umbrella is beside the door.',sentenceZh:'門邊放著一把雨傘。'},
+ {id:'kettle',word:'kettle',zh:'水壺',image:'assets/picture-learning/kettle.jpg',sentence:'The kettle is on the kitchen counter.',sentenceZh:'水壺放在廚房流理台上。'},
+ {id:'carry',word:'carry',zh:'拿／搬運',image:'assets/picture-learning/carry.jpg',sentence:'She is carrying two bags of groceries.',sentenceZh:'她正提著兩袋雜貨。'},
+ {id:'stretch',word:'stretch',zh:'伸展',image:'assets/picture-learning/stretch.jpg',sentence:'She stretches after exercise.',sentenceZh:'她運動後做伸展。'},
+ {id:'wait-in-line',word:'wait in line',zh:'排隊等候',image:'assets/picture-learning/wait-in-line.jpg',sentence:'They are waiting in line at the café.',sentenceZh:'他們正在咖啡館排隊。'}
+];
+let pictureLearningMode='single',pictureLearningIndex=0,pictureLearningReveal=false,pictureLearningStreamTimer=null,pictureLearningChoiceOptions=[],pictureLearningChoiceSelection='';
+function pictureLearningCurrent(){return PICTURE_LEARNING_ITEMS[pictureLearningIndex]||PICTURE_LEARNING_ITEMS[0]}
+function stopPictureLearningStream(){if(pictureLearningStreamTimer){clearInterval(pictureLearningStreamTimer);pictureLearningStreamTimer=null}}
+function pictureLearningModes(){
+ const modes=[['single','Single Picture','單圖學習'],['stream','Random Stream','連續隨機圖'],['choice','Picture Choice','看圖選答案']];
+ return `<div class="picture-mode-tabs" role="tablist" aria-label="Picture learning modes">${modes.map(([id,en,zh])=>`<button class="picture-mode-tab ${pictureLearningMode===id?'active':''}" type="button" role="tab" aria-selected="${pictureLearningMode===id}" onclick="setPictureLearningMode('${id}')"><b>${en}</b><small>${zh}</small></button>`).join('')}</div>`
+}
+function pictureLearningImage(item){return `<figure class="picture-study-figure"><img src="${item.image}" alt="Picture learning prompt" width="900" height="900" decoding="async"></figure>`}
+function pictureLearningAnswer(item){return `<div class="picture-study-answer"><h2>${esc(item.word)}</h2><p class="picture-study-zh">${esc(item.zh)}</p><div class="picture-study-example"><p>${esc(item.sentence)}</p><small>${esc(item.sentenceZh)}</small></div></div>`}
+function buildPictureLearningChoices(){
+ const current=pictureLearningCurrent(),others=PICTURE_LEARNING_ITEMS.filter(item=>item.id!==current.id).sort(()=>Math.random()-.5).slice(0,2);
+ pictureLearningChoiceOptions=[current,...others].sort(()=>Math.random()-.5)
+}
+function renderPictureLearningStage(){
+ const stage=document.getElementById('pictureLearningStage');if(!stage)return;
+ const item=pictureLearningCurrent();
+ if(pictureLearningMode==='single'){
+  stage.innerHTML=`<article class="picture-study-card">${pictureLearningImage(item)}<div class="picture-study-content"><span class="picture-study-step">Look first · 先看圖片</span>${pictureLearningReveal?pictureLearningAnswer(item):'<div class="picture-study-question"><h2>What is this?</h2><p>先想一想，再顯示答案。</p></div>'}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide answer · 隱藏答案':'Show answer · 顯示答案'}</button><button type="button" onclick="nextPictureLearning()">Next picture · 下一張</button></div></div></article>`;
+  return
+ }
+ if(pictureLearningMode==='stream'){
+  stage.innerHTML=`<article class="picture-study-card picture-stream-card">${pictureLearningImage(item)}<div class="picture-study-content"><span class="picture-study-step">Changes every 4 seconds · 每 4 秒換圖</span>${pictureLearningAnswer(item)}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningStream()">${pictureLearningStreamTimer?'Pause · 暫停':'Start continuous · 開始連續播放'}</button><button type="button" onclick="nextPictureLearning()">Next now · 立即換圖</button></div></div></article>`;
+  return
+ }
+ if(!pictureLearningChoiceOptions.length)buildPictureLearningChoices();
+ const answered=Boolean(pictureLearningChoiceSelection),correct=pictureLearningChoiceSelection===item.id;
+ stage.innerHTML=`<article class="picture-study-card picture-choice-card">${pictureLearningImage(item)}<div class="picture-study-content"><span class="picture-study-step">Choose the matching word · 選出正確單字</span><h2>Which word matches the picture?</h2><div class="picture-choice-options">${pictureLearningChoiceOptions.map(option=>{const status=answered?(option.id===item.id?'correct':option.id===pictureLearningChoiceSelection?'wrong':''):'';return `<button class="${status}" type="button" onclick="answerPictureLearning('${option.id}')" ${answered?'disabled':''}><b>${esc(option.word)}</b><small>${esc(option.zh)}</small></button>`}).join('')}</div>${answered?`<p class="picture-choice-feedback ${correct?'correct':'wrong'}" role="status">${correct?'Correct! 答對了。':`Not quite. The answer is ${esc(item.word)} · ${esc(item.zh)}。`}</p><div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="nextPictureLearning()">Next question · 下一題</button></div>`:''}</div></article>`
+}
+function pictureLearning(mode=pictureLearningMode){
+ pictureLearningMode=mode;
+ const content=`<section class="page-pad practice-page-head picture-learning-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Picture Learning</div><h1 class="page-title">Picture Learning</h1><div class="detail-title-zh">圖片學習</div><p class="picture-learning-intro">用寫實物件與簡潔人物插畫，測試名詞、動作和生活語塊的三種學習方式；不會改動你的單字表進度。</p></section><section class="section picture-learning-section">${pictureLearningModes()}<div id="pictureLearningStage" class="picture-learning-stage"></div></section>`;
+ shell(content,'Words');renderPictureLearningStage()
+}
+function setPictureLearningMode(mode){stopPictureLearningStream();pictureLearningMode=mode;pictureLearningReveal=false;pictureLearningChoiceOptions=[];pictureLearningChoiceSelection='';pictureLearning(mode)}
+function togglePictureLearningAnswer(){pictureLearningReveal=!pictureLearningReveal;renderPictureLearningStage()}
+function nextPictureLearning(){
+ const previous=pictureLearningIndex;while(PICTURE_LEARNING_ITEMS.length>1&&pictureLearningIndex===previous)pictureLearningIndex=Math.floor(Math.random()*PICTURE_LEARNING_ITEMS.length);
+ pictureLearningReveal=false;pictureLearningChoiceOptions=[];pictureLearningChoiceSelection='';renderPictureLearningStage()
+}
+function togglePictureLearningStream(){
+ if(pictureLearningStreamTimer){stopPictureLearningStream();renderPictureLearningStage();return}
+ pictureLearningStreamTimer=setInterval(nextPictureLearning,4000);renderPictureLearningStage()
+}
+function answerPictureLearning(id){if(pictureLearningChoiceSelection)return;pictureLearningChoiceSelection=id;renderPictureLearningStage()}
 let wordListDataPromise=null;
 function loadWordListData(){
  if(window.WORD_LIST_DATA)return Promise.resolve(window.WORD_LIST_DATA);
@@ -1126,6 +1177,7 @@ function historyTranslationPage(id){
 function journey(){const list=[...COUNTRIES].sort((a,b)=>a.readOrder-b.readOrder);const content=`<section class="page-pad practice-page-head"><div class="eyebrow">Reading</div><h1 class="page-title">Country & Culture</h1>${readingTopicNav('country')}${countryReadingNav('journey')}</section><div class="journey-list">${list.map(c=>`<div class="journey-item" onclick="go('#country=${c.slug}&level=${preferredLevel(c)}')"><span class="n">#${c.readOrder}</span><b>${esc(c.name)}</b><small style="color:var(--muted)">${esc(c.region)}</small></div>`).join('')}</div>`;shell(content,'Reading')}
 function render(){
  const h=location.hash||'#home';
+ if(h!=='#picture-learning')stopPictureLearningStream();
  if(h.startsWith('#country=')){const p=new URLSearchParams(h.slice(1));return country(p.get('country'),p.get('level')||'B1')}
  if(h.startsWith('#article=')){const slug=h.split('=')[1];return country(slug,'B1')}
  if(h.startsWith('#dialogue=')){const p=new URLSearchParams(h.slice(1));return dialoguePage(p.get('dialogue'))}
@@ -1149,6 +1201,7 @@ function render(){
  if(h==='#words')return wordZone();
  if(h==='#word-list'||h.startsWith('#word-list&')){const p=new URLSearchParams(h.slice(1));return wordList(p.get('page')||1)}
  if(h==='#chunks')return chunkZone();
+ if(h==='#picture-learning')return pictureLearning();
  if(h==='#history')return historyLibrary('sentence','A1');
  if(h==='#sentences')return sentenceLibrary();
  if(h==='#map')return mapPage();
