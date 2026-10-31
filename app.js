@@ -193,57 +193,69 @@ function wordZone(){
  <dialog id="pronunciationGate" class="access-dialog" aria-labelledby="pronunciationGateTitle"><div class="access-dialog-head"><div><h2 id="pronunciationGateTitle">Pronunciation &amp; Review</h2><p>發音與複習系統</p></div><button class="access-dialog-close" type="button" onclick="closePronunciationGate()" aria-label="Close password window">×</button></div><form class="access-dialog-form" onsubmit="return submitPronunciationGate(event)"><label for="pronunciationPassword"><b>Enter password</b><span>請輸入密碼</span></label><input id="pronunciationPassword" class="access-dialog-input" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-describedby="pronunciationPasswordError"><p id="pronunciationPasswordError" class="access-dialog-error" role="alert" aria-live="polite"></p><button class="access-dialog-submit" type="submit">Open system <span>開啟系統</span></button></form></dialog>`;
  shell(content,'Words')
 }
-const PICTURE_LEARNING_ITEMS=[
- {id:'umbrella',word:'umbrella',zh:'雨傘',image:'assets/picture-learning/umbrella.jpg',sentence:'An umbrella is beside the door.',sentenceZh:'門邊放著一把雨傘。'},
- {id:'kettle',word:'kettle',zh:'水壺',image:'assets/picture-learning/kettle.jpg',sentence:'The kettle is on the kitchen counter.',sentenceZh:'水壺放在廚房流理台上。'},
- {id:'carry',word:'carry',zh:'拿／搬運',image:'assets/picture-learning/carry.jpg',sentence:'She is carrying two bags of groceries.',sentenceZh:'她正提著兩袋雜貨。'},
- {id:'stretch',word:'stretch',zh:'伸展',image:'assets/picture-learning/stretch.jpg',sentence:'She stretches after exercise.',sentenceZh:'她運動後做伸展。'},
- {id:'wait-in-line',word:'wait in line',zh:'排隊等候',image:'assets/picture-learning/wait-in-line.jpg',sentence:'They are waiting in line at the café.',sentenceZh:'他們正在咖啡館排隊。'}
+const PICTURE_LEARNING_STORIES=[
+ {id:'rain',title:'A Rainy Trip',zh:'雨天出門',panels:[
+  {image:'assets/picture-learning/rain-1.jpg',sample:'She notices that it is raining outside.',sampleZh:'她注意到外面正在下雨。'},
+  {image:'assets/picture-learning/rain-2.jpg',sample:'She picks up a red umbrella before leaving.',sampleZh:'她出門前拿起一把紅色雨傘。'},
+  {image:'assets/picture-learning/rain-3.jpg',sample:'She opens the umbrella outside the building.',sampleZh:'她在大樓外打開雨傘。'},
+  {image:'assets/picture-learning/rain-4.jpg',sample:'She walks to the bus stop in the rain.',sampleZh:'她撐著傘走向公車站。'}]},
+ {id:'laundry',title:'Laundry Day',zh:'洗衣日',panels:[
+  {image:'assets/picture-learning/laundry-1.jpg',sample:'He sorts the clothes before washing them.',sampleZh:'他洗衣服前先把衣物分類。'},
+  {image:'assets/picture-learning/laundry-2.jpg',sample:'He puts the clothes into the washing machine.',sampleZh:'他把衣服放進洗衣機。'},
+  {image:'assets/picture-learning/laundry-3.jpg',sample:'He takes the clean clothes out of the machine.',sampleZh:'他把洗好的衣服從洗衣機拿出來。'},
+  {image:'assets/picture-learning/laundry-4.jpg',sample:'He folds the clothes neatly on the table.',sampleZh:'他把衣服整齊地摺在桌上。'}]},
+ {id:'breakfast',title:'Making Breakfast',zh:'準備早餐',panels:[
+  {image:'assets/picture-learning/breakfast-1.jpg',sample:'She takes some eggs out of the refrigerator.',sampleZh:'她從冰箱拿出一些雞蛋。'},
+  {image:'assets/picture-learning/breakfast-2.jpg',sample:'She cracks the eggs into a bowl.',sampleZh:'她把雞蛋打進碗裡。'},
+  {image:'assets/picture-learning/breakfast-3.jpg',sample:'She cooks the eggs in a frying pan.',sampleZh:'她用平底鍋煮雞蛋。'},
+  {image:'assets/picture-learning/breakfast-4.jpg',sample:'She sits down and eats her breakfast.',sampleZh:'她坐下來吃早餐。'}]}
 ];
-let pictureLearningMode='single',pictureLearningIndex=0,pictureLearningReveal=false,pictureLearningStreamTimer=null,pictureLearningChoiceOptions=[],pictureLearningChoiceSelection='';
-function pictureLearningCurrent(){return PICTURE_LEARNING_ITEMS[pictureLearningIndex]||PICTURE_LEARNING_ITEMS[0]}
+let pictureLearningMode='step',pictureLearningStoryIndex=0,pictureLearningPanelIndex=0,pictureLearningReveal=false,pictureLearningStreamTimer=null;
+function pictureLearningCurrentStory(){return PICTURE_LEARNING_STORIES[pictureLearningStoryIndex]||PICTURE_LEARNING_STORIES[0]}
+function pictureLearningCurrentPanel(){const story=pictureLearningCurrentStory();return story.panels[pictureLearningPanelIndex]||story.panels[0]}
 function stopPictureLearningStream(){if(pictureLearningStreamTimer){clearInterval(pictureLearningStreamTimer);pictureLearningStreamTimer=null}}
 function pictureLearningModes(){
- const modes=[['single','Single Picture','單圖學習'],['stream','Random Stream','連續隨機圖'],['choice','Picture Choice','看圖選答案']];
+ const modes=[['step','Step by Step','逐格描述'],['story','Full Story','完整故事'],['stream','Auto Sequence','連續播放']];
  return `<div class="picture-mode-tabs" role="tablist" aria-label="Picture learning modes">${modes.map(([id,en,zh])=>`<button class="picture-mode-tab ${pictureLearningMode===id?'active':''}" type="button" role="tab" aria-selected="${pictureLearningMode===id}" onclick="setPictureLearningMode('${id}')"><b>${en}</b><small>${zh}</small></button>`).join('')}</div>`
 }
-function pictureLearningImage(item){return `<figure class="picture-study-figure"><img src="${item.image}" alt="Picture learning prompt" width="900" height="900" decoding="async"></figure>`}
-function pictureLearningAnswer(item){return `<div class="picture-study-answer"><h2>${esc(item.word)}</h2><p class="picture-study-zh">${esc(item.zh)}</p><div class="picture-study-example"><p>${esc(item.sentence)}</p><small>${esc(item.sentenceZh)}</small></div></div>`}
-function buildPictureLearningChoices(){
- const current=pictureLearningCurrent(),others=PICTURE_LEARNING_ITEMS.filter(item=>item.id!==current.id).sort(()=>Math.random()-.5).slice(0,2);
- pictureLearningChoiceOptions=[current,...others].sort(()=>Math.random()-.5)
+function pictureLearningImage(panel,alt='Wordless story panel'){return `<figure class="picture-study-figure"><img src="${panel.image}" alt="${alt}" width="700" height="700" decoding="async"></figure>`}
+function pictureLearningSample(panel){return `<div class="picture-study-example"><p>${esc(panel.sample)}</p><small>${esc(panel.sampleZh)}</small></div>`}
+function pictureStorySample(story){return `<div class="picture-story-sample">${story.panels.map((panel,index)=>`<p><b>${index+1}</b><span>${esc(panel.sample)}</span><small>${esc(panel.sampleZh)}</small></p>`).join('')}</div>`}
+function nextPictureStory(random=false){
+ if(random){const previous=pictureLearningStoryIndex;while(PICTURE_LEARNING_STORIES.length>1&&pictureLearningStoryIndex===previous)pictureLearningStoryIndex=Math.floor(Math.random()*PICTURE_LEARNING_STORIES.length)}else pictureLearningStoryIndex=(pictureLearningStoryIndex+1)%PICTURE_LEARNING_STORIES.length;
+ pictureLearningPanelIndex=0;pictureLearningReveal=false;renderPictureLearningStage()
 }
 function renderPictureLearningStage(){
  const stage=document.getElementById('pictureLearningStage');if(!stage)return;
- const item=pictureLearningCurrent();
- if(pictureLearningMode==='single'){
-  stage.innerHTML=`<article class="picture-study-card">${pictureLearningImage(item)}<div class="picture-study-content"><span class="picture-study-step">Look first · 先看圖片</span>${pictureLearningReveal?pictureLearningAnswer(item):'<div class="picture-study-question"><h2>What is this?</h2><p>先想一想，再顯示答案。</p></div>'}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide answer · 隱藏答案':'Show answer · 顯示答案'}</button><button type="button" onclick="nextPictureLearning()">Next picture · 下一張</button></div></div></article>`;
+ const story=pictureLearningCurrentStory(),panel=pictureLearningCurrentPanel();
+ if(pictureLearningMode==='step'){
+  stage.innerHTML=`<article class="picture-study-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a wordless story`)}<div class="picture-study-content"><span class="picture-study-step">${esc(story.title)} · ${esc(story.zh)} · ${pictureLearningPanelIndex+1} / ${story.panels.length}</span><div class="picture-study-question"><h2>Describe what is happening.</h2><p>可以說人物、動作、地點，也可以猜下一步會發生什麼。</p></div>${pictureLearningReveal?pictureLearningSample(panel):''}<div class="picture-study-actions"><button type="button" onclick="previousPicturePanel()" ${pictureLearningPanelIndex===0?'disabled':''}>← Previous · 上一格</button><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide sample · 隱藏參考':'Show sample · 顯示參考'}</button><button type="button" onclick="nextPicturePanel()">${pictureLearningPanelIndex===story.panels.length-1?'Next story · 下一組':'Next panel · 下一格'} →</button></div></div></article>`;
   return
  }
- if(pictureLearningMode==='stream'){
-  stage.innerHTML=`<article class="picture-study-card picture-stream-card">${pictureLearningImage(item)}<div class="picture-study-content"><span class="picture-study-step">Changes every 4 seconds · 每 4 秒換圖</span>${pictureLearningAnswer(item)}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningStream()">${pictureLearningStreamTimer?'Pause · 暫停':'Start continuous · 開始連續播放'}</button><button type="button" onclick="nextPictureLearning()">Next now · 立即換圖</button></div></div></article>`;
+ if(pictureLearningMode==='story'){
+  stage.innerHTML=`<article class="picture-story-card"><header><span>Wordless sequence · 無文字連續圖</span><h2>${esc(story.title)}</h2><p>${esc(story.zh)}</p></header><div class="picture-story-grid">${story.panels.map((item,index)=>`<figure><img src="${item.image}" alt="Panel ${index+1} of ${esc(story.title)}" width="700" height="700" decoding="async"><figcaption>${index+1}</figcaption></figure>`).join('')}</div><div class="picture-story-practice"><h3>Tell the story from beginning to end.</h3><p>試著使用 first、then、after that、finally，把四格連成一段話。</p>${pictureLearningReveal?pictureStorySample(story):''}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide sample story · 隱藏參考':'Show sample story · 顯示參考'}</button><button type="button" onclick="nextPictureStory()">Next story · 下一組 →</button></div></div></article>`;
   return
  }
- if(!pictureLearningChoiceOptions.length)buildPictureLearningChoices();
- const answered=Boolean(pictureLearningChoiceSelection),correct=pictureLearningChoiceSelection===item.id;
- stage.innerHTML=`<article class="picture-study-card picture-choice-card">${pictureLearningImage(item)}<div class="picture-study-content"><span class="picture-study-step">Choose the matching word · 選出正確單字</span><h2>Which word matches the picture?</h2><div class="picture-choice-options">${pictureLearningChoiceOptions.map(option=>{const status=answered?(option.id===item.id?'correct':option.id===pictureLearningChoiceSelection?'wrong':''):'';return `<button class="${status}" type="button" onclick="answerPictureLearning('${option.id}')" ${answered?'disabled':''}><b>${esc(option.word)}</b><small>${esc(option.zh)}</small></button>`}).join('')}</div>${answered?`<p class="picture-choice-feedback ${correct?'correct':'wrong'}" role="status">${correct?'Correct! 答對了。':`Not quite. The answer is ${esc(item.word)} · ${esc(item.zh)}。`}</p><div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="nextPictureLearning()">Next question · 下一題</button></div>`:''}</div></article>`
+ stage.innerHTML=`<article class="picture-study-card picture-stream-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a continuous wordless story`)}<div class="picture-study-content"><span class="picture-study-step">${esc(story.title)} · ${pictureLearningPanelIndex+1} / ${story.panels.length}</span><div class="picture-study-question"><h2>Watch the story develop.</h2><p>畫面會依照劇情順序前進；一組結束後，會隨機換到下一組。</p></div><div class="picture-sequence-dots" aria-label="Story progress">${story.panels.map((_,index)=>`<span class="${index===pictureLearningPanelIndex?'active':''}"></span>`).join('')}</div><div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningStream()">${pictureLearningStreamTimer?'Pause · 暫停':'Start sequence · 開始播放'}</button><button type="button" onclick="advancePictureSequence()">Next panel · 下一格</button><button type="button" onclick="nextPictureStory(true)">Random story · 隨機換組</button></div></div></article>`
 }
 function pictureLearning(mode=pictureLearningMode){
  pictureLearningMode=mode;
- const content=`<section class="page-pad practice-page-head picture-learning-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Picture Learning</div><h1 class="page-title">Picture Learning</h1><div class="detail-title-zh">圖片學習</div><p class="picture-learning-intro">用寫實物件與簡潔人物插畫，測試名詞、動作和生活語塊的三種學習方式；不會改動你的單字表進度。</p></section><section class="section picture-learning-section">${pictureLearningModes()}<div id="pictureLearningStage" class="picture-learning-stage"></div></section>`;
+ const content=`<section class="page-pad practice-page-head picture-learning-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Picture Learning</div><h1 class="page-title">Picture Learning</h1><div class="detail-title-zh">圖片學習</div><p class="picture-learning-intro">每組都是四格無文字連續圖，練習描述人物、動作、先後順序和故事結果。</p></section><section class="section picture-learning-section">${pictureLearningModes()}<div id="pictureLearningStage" class="picture-learning-stage"></div></section>`;
  shell(content,'Words');renderPictureLearningStage()
 }
-function setPictureLearningMode(mode){stopPictureLearningStream();pictureLearningMode=mode;pictureLearningReveal=false;pictureLearningChoiceOptions=[];pictureLearningChoiceSelection='';pictureLearning(mode)}
-function togglePictureLearningAnswer(){pictureLearningReveal=!pictureLearningReveal;renderPictureLearningStage()}
-function nextPictureLearning(){
- const previous=pictureLearningIndex;while(PICTURE_LEARNING_ITEMS.length>1&&pictureLearningIndex===previous)pictureLearningIndex=Math.floor(Math.random()*PICTURE_LEARNING_ITEMS.length);
- pictureLearningReveal=false;pictureLearningChoiceOptions=[];pictureLearningChoiceSelection='';renderPictureLearningStage()
+function setPictureLearningMode(mode){
+ stopPictureLearningStream();pictureLearningMode=mode;pictureLearningPanelIndex=0;pictureLearningReveal=false;
+ if(mode==='stream'){const previous=pictureLearningStoryIndex;while(PICTURE_LEARNING_STORIES.length>1&&pictureLearningStoryIndex===previous)pictureLearningStoryIndex=Math.floor(Math.random()*PICTURE_LEARNING_STORIES.length)}
+ pictureLearning(mode)
 }
+function togglePictureLearningAnswer(){pictureLearningReveal=!pictureLearningReveal;renderPictureLearningStage()}
+function previousPicturePanel(){if(pictureLearningPanelIndex>0){pictureLearningPanelIndex--;pictureLearningReveal=false;renderPictureLearningStage()}}
+function nextPicturePanel(){const story=pictureLearningCurrentStory();if(pictureLearningPanelIndex<story.panels.length-1){pictureLearningPanelIndex++;pictureLearningReveal=false;renderPictureLearningStage()}else nextPictureStory()}
+function advancePictureSequence(){const story=pictureLearningCurrentStory();if(pictureLearningPanelIndex<story.panels.length-1)pictureLearningPanelIndex++;else nextPictureStory(true);renderPictureLearningStage()}
 function togglePictureLearningStream(){
  if(pictureLearningStreamTimer){stopPictureLearningStream();renderPictureLearningStage();return}
- pictureLearningStreamTimer=setInterval(nextPictureLearning,4000);renderPictureLearningStage()
+ pictureLearningStreamTimer=setInterval(advancePictureSequence,3500);renderPictureLearningStage()
 }
-function answerPictureLearning(id){if(pictureLearningChoiceSelection)return;pictureLearningChoiceSelection=id;renderPictureLearningStage()}
 let wordListDataPromise=null;
 function loadWordListData(){
  if(window.WORD_LIST_DATA)return Promise.resolve(window.WORD_LIST_DATA);
