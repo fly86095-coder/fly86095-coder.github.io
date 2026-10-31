@@ -194,6 +194,26 @@ function wordZone(){
  shell(content,'Words')
 }
 const PICTURE_LEARNING_STORIES=[
+ {id:'cafe',title:'At the Café',zh:'在咖啡館',panels:[
+  {image:'assets/picture-learning/cafe-1.jpg',sample:'Two people are sitting together at a café.',sampleZh:'兩個人一起坐在咖啡館裡。'},
+  {image:'assets/picture-learning/cafe-2.jpg',sample:'One person shows the other something on a phone.',sampleZh:'其中一人把手機上的某個內容給另一人看。'},
+  {image:'assets/picture-learning/cafe-3.jpg',sample:'They both turn toward the entrance or window.',sampleZh:'他們同時轉向入口或窗外。'},
+  {image:'assets/picture-learning/cafe-4.jpg',sample:'One person gets ready to leave while the other remains seated.',sampleZh:'一個人準備離開，另一個人仍坐在位子上。'}]},
+ {id:'waiting',title:'In the Waiting Area',zh:'在等候區',panels:[
+  {image:'assets/picture-learning/waiting-1.jpg',sample:'Two people are waiting while another person approaches.',sampleZh:'兩個人正在等候，另一個人走了過來。'},
+  {image:'assets/picture-learning/waiting-2.jpg',sample:'The newcomer pauses near the empty seat.',sampleZh:'剛到的人在空位附近停下來。'},
+  {image:'assets/picture-learning/waiting-3.jpg',sample:'The three people begin to talk and change positions.',sampleZh:'三個人開始交談，並調整了原本的位置。'},
+  {image:'assets/picture-learning/waiting-4.jpg',sample:'They settle into a new arrangement, but their plans are still unclear.',sampleZh:'他們重新坐好，但接下來的安排仍不明確。'}]},
+ {id:'park-choice',title:'At the Park',zh:'在公園',panels:[
+  {image:'assets/picture-learning/park-choice-1.jpg',sample:'Three people are walking together along a park path.',sampleZh:'三個人一起沿著公園步道往前走。'},
+  {image:'assets/picture-learning/park-choice-2.jpg',sample:'They stop where the path divides.',sampleZh:'他們在步道分岔的地方停下來。'},
+  {image:'assets/picture-learning/park-choice-3.jpg',sample:'Two people point in different directions while the third person thinks.',sampleZh:'兩個人指向不同方向，第三個人正在思考。'},
+  {image:'assets/picture-learning/park-choice-4.jpg',sample:'One person starts walking while the other two react.',sampleZh:'一個人先往前走，另外兩個人給出了不同反應。'}]},
+ {id:'hallway',title:'In the Hallway',zh:'在走廊',panels:[
+  {image:'assets/picture-learning/hallway-1.jpg',sample:'Two neighbors meet near their apartment doors.',sampleZh:'兩位鄰居在住宅門口附近遇見。'},
+  {image:'assets/picture-learning/hallway-2.jpg',sample:'One person notices something near a door and points to it.',sampleZh:'其中一人注意到門邊的某樣東西，並指給另一人看。'},
+  {image:'assets/picture-learning/hallway-3.jpg',sample:'A third neighbor arrives and joins the conversation.',sampleZh:'第三位鄰居到了，也加入交談。'},
+  {image:'assets/picture-learning/hallway-4.jpg',sample:'The three people stand by one door and appear to be deciding what to do.',sampleZh:'三個人站在其中一扇門旁，似乎正在決定下一步。'}]},
  {id:'rain',title:'A Rainy Trip',zh:'雨天出門',panels:[
   {image:'assets/picture-learning/rain-1.jpg',sample:'She notices that it is raining outside.',sampleZh:'她注意到外面正在下雨。'},
   {image:'assets/picture-learning/rain-2.jpg',sample:'She picks up a red umbrella before leaving.',sampleZh:'她出門前拿起一把紅色雨傘。'},
@@ -219,8 +239,8 @@ function pictureLearningModes(){
  return `<div class="picture-mode-tabs" role="tablist" aria-label="Picture learning modes">${modes.map(([id,en,zh])=>`<button class="picture-mode-tab ${pictureLearningMode===id?'active':''}" type="button" role="tab" aria-selected="${pictureLearningMode===id}" onclick="setPictureLearningMode('${id}')"><b>${en}</b><small>${zh}</small></button>`).join('')}</div>`
 }
 function pictureLearningImage(panel,alt='Wordless story panel'){return `<figure class="picture-study-figure"><img src="${panel.image}" alt="${alt}" width="700" height="700" decoding="async"></figure>`}
-function pictureLearningSample(panel){return `<div class="picture-study-example"><p>${esc(panel.sample)}</p><small>${esc(panel.sampleZh)}</small></div>`}
-function pictureStorySample(story){return `<div class="picture-story-sample">${story.panels.map((panel,index)=>`<p><b>${index+1}</b><span>${esc(panel.sample)}</span><small>${esc(panel.sampleZh)}</small></p>`).join('')}</div>`}
+function pictureLearningSample(panel){return `<div class="picture-study-example"><span class="picture-possible-label">One possible description · 其中一種描述</span><p>${esc(panel.sample)}</p><small>${esc(panel.sampleZh)}</small></div>`}
+function pictureStorySample(story){return `<div class="picture-story-sample"><span class="picture-possible-label">One possible story · 其中一種故事</span>${story.panels.map((panel,index)=>`<p><b>${index+1}</b><span>${esc(panel.sample)}</span><small>${esc(panel.sampleZh)}</small></p>`).join('')}</div>`}
 function nextPictureStory(random=false){
  if(random){const previous=pictureLearningStoryIndex;while(PICTURE_LEARNING_STORIES.length>1&&pictureLearningStoryIndex===previous)pictureLearningStoryIndex=Math.floor(Math.random()*PICTURE_LEARNING_STORIES.length)}else pictureLearningStoryIndex=(pictureLearningStoryIndex+1)%PICTURE_LEARNING_STORIES.length;
  pictureLearningPanelIndex=0;pictureLearningReveal=false;renderPictureLearningStage()
@@ -229,18 +249,18 @@ function renderPictureLearningStage(){
  const stage=document.getElementById('pictureLearningStage');if(!stage)return;
  const story=pictureLearningCurrentStory(),panel=pictureLearningCurrentPanel();
  if(pictureLearningMode==='step'){
-  stage.innerHTML=`<article class="picture-study-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a wordless story`)}<div class="picture-study-content"><span class="picture-study-step">${esc(story.title)} · ${esc(story.zh)} · ${pictureLearningPanelIndex+1} / ${story.panels.length}</span><div class="picture-study-question"><h2>Describe what is happening.</h2><p>可以說人物、動作、地點，也可以猜下一步會發生什麼。</p></div>${pictureLearningReveal?pictureLearningSample(panel):''}<div class="picture-study-actions"><button type="button" onclick="previousPicturePanel()" ${pictureLearningPanelIndex===0?'disabled':''}>← Previous · 上一格</button><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide sample · 隱藏參考':'Show sample · 顯示參考'}</button><button type="button" onclick="nextPicturePanel()">${pictureLearningPanelIndex===story.panels.length-1?'Next story · 下一組':'Next panel · 下一格'} →</button></div></div></article>`;
+  stage.innerHTML=`<article class="picture-study-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a wordless story`)}<div class="picture-study-content"><span class="picture-study-step">${esc(story.title)} · ${esc(story.zh)} · ${pictureLearningPanelIndex+1} / ${story.panels.length}</span><div class="picture-study-question"><h2>Describe what might be happening.</h2><p>觀察表情、視線和互動線索；人物關係與事情原因可以有不同解釋。</p></div>${pictureLearningReveal?pictureLearningSample(panel):''}<div class="picture-study-actions"><button type="button" onclick="previousPicturePanel()" ${pictureLearningPanelIndex===0?'disabled':''}>← Previous · 上一格</button><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide version · 隱藏說法':'Show one version · 顯示一種說法'}</button><button type="button" onclick="nextPicturePanel()">${pictureLearningPanelIndex===story.panels.length-1?'Next story · 下一組':'Next panel · 下一格'} →</button></div></div></article>`;
   return
  }
  if(pictureLearningMode==='story'){
-  stage.innerHTML=`<article class="picture-story-card"><header><span>Wordless sequence · 無文字連續圖</span><h2>${esc(story.title)}</h2><p>${esc(story.zh)}</p></header><div class="picture-story-grid">${story.panels.map((item,index)=>`<figure><img src="${item.image}" alt="Panel ${index+1} of ${esc(story.title)}" width="700" height="700" decoding="async"><figcaption>${index+1}</figcaption></figure>`).join('')}</div><div class="picture-story-practice"><h3>Tell the story from beginning to end.</h3><p>試著使用 first、then、after that、finally，把四格連成一段話。</p>${pictureLearningReveal?pictureStorySample(story):''}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide sample story · 隱藏參考':'Show sample story · 顯示參考'}</button><button type="button" onclick="nextPictureStory()">Next story · 下一組 →</button></div></div></article>`;
+  stage.innerHTML=`<article class="picture-story-card"><header><span>Wordless sequence · 無文字連續圖</span><h2>${esc(story.title)}</h2><p>${esc(story.zh)}</p></header><div class="picture-story-grid">${story.panels.map((item,index)=>`<figure><img src="${item.image}" alt="Panel ${index+1} of ${esc(story.title)}" width="700" height="700" decoding="async"><figcaption>${index+1}</figcaption></figure>`).join('')}</div><div class="picture-story-practice"><h3>Tell one possible story.</h3><p>圖片沒有唯一答案。試著用不同的人物關係、原因與結果，把四格連成故事。</p>${pictureLearningReveal?pictureStorySample(story):''}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide story · 隱藏說法':'Show one possible story · 顯示一種故事'}</button><button type="button" onclick="nextPictureStory()">Next story · 下一組 →</button></div></div></article>`;
   return
  }
  stage.innerHTML=`<article class="picture-study-card picture-stream-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a continuous wordless story`)}<div class="picture-study-content"><span class="picture-study-step">${esc(story.title)} · ${pictureLearningPanelIndex+1} / ${story.panels.length}</span><div class="picture-study-question"><h2>Watch the story develop.</h2><p>畫面會依照劇情順序前進；一組結束後，會隨機換到下一組。</p></div><div class="picture-sequence-dots" aria-label="Story progress">${story.panels.map((_,index)=>`<span class="${index===pictureLearningPanelIndex?'active':''}"></span>`).join('')}</div><div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningStream()">${pictureLearningStreamTimer?'Pause · 暫停':'Start sequence · 開始播放'}</button><button type="button" onclick="advancePictureSequence()">Next panel · 下一格</button><button type="button" onclick="nextPictureStory(true)">Random story · 隨機換組</button></div></div></article>`
 }
 function pictureLearning(mode=pictureLearningMode){
  pictureLearningMode=mode;
- const content=`<section class="page-pad practice-page-head picture-learning-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Picture Learning</div><h1 class="page-title">Picture Learning</h1><div class="detail-title-zh">圖片學習</div><p class="picture-learning-intro">每組都是四格無文字連續圖，練習描述人物、動作、先後順序和故事結果。</p></section><section class="section picture-learning-section">${pictureLearningModes()}<div id="pictureLearningStage" class="picture-learning-stage"></div></section>`;
+ const content=`<section class="page-pad practice-page-head picture-learning-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Picture Learning</div><h1 class="page-title">Picture Learning</h1><div class="detail-title-zh">圖片學習</div><p class="picture-learning-intro">每組都是四格無文字連續圖。你可以依照表情、視線與互動線索，自由描述人物關係、原因和結果。</p></section><section class="section picture-learning-section">${pictureLearningModes()}<div id="pictureLearningStage" class="picture-learning-stage"></div></section>`;
  shell(content,'Words');renderPictureLearningStage()
 }
 function setPictureLearningMode(mode){

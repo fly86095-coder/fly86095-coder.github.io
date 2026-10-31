@@ -612,6 +612,7 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
 .picture-study-question p{margin:12px 0 0;color:var(--muted);font-size:14px}
 .picture-study-zh{margin:8px 0 0;color:#c1cdd4;font-size:17px}
 .picture-study-example{margin-top:24px;padding:16px 17px;border:1px solid var(--line);border-radius:14px;background:rgba(7,18,27,.38)}
+.picture-possible-label{display:block;margin-bottom:8px;color:var(--gold);font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
 .picture-study-example p{margin:0;color:var(--ink);font-size:16px;line-height:1.55}
 .picture-study-example small{display:block;margin-top:7px;color:var(--muted);font-size:12px;line-height:1.55}
 .picture-study-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:28px}
