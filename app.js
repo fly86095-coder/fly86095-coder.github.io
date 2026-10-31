@@ -194,6 +194,36 @@ function wordZone(){
  shell(content,'Words')
 }
 const PICTURE_LEARNING_STORIES=[
+ {id:'grocery-checkout',panels:[
+  {image:'assets/picture-learning/grocery-checkout-1.jpg',sample:'A customer brings several groceries to the checkout while another person waits nearby.',sampleZh:'一位顧客把幾樣商品放到結帳櫃台，另一個人在附近等候。'},
+  {image:'assets/picture-learning/grocery-checkout-2.jpg',sample:'The cashier holds up one item and gestures toward the register.',sampleZh:'收銀員拿起其中一樣商品，並朝收銀機做出手勢。'},
+  {image:'assets/picture-learning/grocery-checkout-3.jpg',sample:'The customer checks a wallet while the other shopper points toward a bag.',sampleZh:'顧客查看錢包，另一位購物者則指向一個袋子。'},
+  {image:'assets/picture-learning/grocery-checkout-4.jpg',sample:'The conversation continues while the groceries remain partly packed.',sampleZh:'商品還沒有全部裝好，而幾個人仍在交談。'}]},
+ {id:'bus-door',panels:[
+  {image:'assets/picture-learning/bus-door-1.jpg',sample:'A passenger pauses at the open bus door while the driver looks over.',sampleZh:'一位乘客在敞開的公車門口停下，司機轉頭看向他。'},
+  {image:'assets/picture-learning/bus-door-2.jpg',sample:'The driver and passenger exchange gestures.',sampleZh:'司機和乘客用手勢互相回應。'},
+  {image:'assets/picture-learning/bus-door-3.jpg',sample:'Another passenger points toward something near the entrance.',sampleZh:'另一位乘客指向入口附近的某個地方。'},
+  {image:'assets/picture-learning/bus-door-4.jpg',sample:'The first passenger steps onto the bus while the others wait.',sampleZh:'第一位乘客踏上公車，其他人仍在等待。'}]},
+ {id:'fitting-room',panels:[
+  {image:'assets/picture-learning/fitting-room-1.jpg',sample:'A customer shows a jacket to a friend and a store worker.',sampleZh:'一位顧客把外套拿給朋友和店員看。'},
+  {image:'assets/picture-learning/fitting-room-2.jpg',sample:'The customer tries on the jacket and discusses how it feels.',sampleZh:'顧客試穿外套，並討論穿起來的感覺。'},
+  {image:'assets/picture-learning/fitting-room-3.jpg',sample:'The friend holds up another jacket for comparison.',sampleZh:'朋友拿起另一件外套作比較。'},
+  {image:'assets/picture-learning/fitting-room-4.jpg',sample:'The customer removes one jacket while the discussion continues.',sampleZh:'顧客脫下其中一件外套，幾個人繼續討論。'}]},
+ {id:'stairs-boxes',panels:[
+  {image:'assets/picture-learning/stairs-boxes-1.jpg',sample:'One person carries boxes on the stairs while two others approach from different directions.',sampleZh:'一個人在樓梯上搬箱子，另外兩個人從不同方向走近。'},
+  {image:'assets/picture-learning/stairs-boxes-2.jpg',sample:'The person carrying the boxes pauses as someone reaches out.',sampleZh:'搬箱子的人停下來，另一個人伸出手。'},
+  {image:'assets/picture-learning/stairs-boxes-3.jpg',sample:'A second person offers support or points toward the landing.',sampleZh:'第二個人似乎想幫忙，也可能是在指向樓梯平台。'},
+  {image:'assets/picture-learning/stairs-boxes-4.jpg',sample:'The people and boxes have changed positions as they continue moving.',sampleZh:'幾個人和箱子的位置改變了，他們仍在繼續移動。'}]},
+ {id:'cafe-pickup',panels:[
+  {image:'assets/picture-learning/cafe-pickup-1.jpg',sample:'Two customers wait beside two plain takeaway cups.',sampleZh:'兩位顧客在兩杯外帶飲料旁等候。'},
+  {image:'assets/picture-learning/cafe-pickup-2.jpg',sample:'The barista places one cup forward, and both customers react.',sampleZh:'咖啡師把一杯飲料往前放，兩位顧客都做出反應。'},
+  {image:'assets/picture-learning/cafe-pickup-3.jpg',sample:'One customer checks a bag while the other points toward a cup.',sampleZh:'一位顧客查看袋子，另一位則指向其中一杯飲料。'},
+  {image:'assets/picture-learning/cafe-pickup-4.jpg',sample:'The cups have changed hands, but the conversation continues.',sampleZh:'飲料已經到了不同的人手中，但他們仍在交談。'}]},
+ {id:'pharmacy-counter',panels:[
+  {image:'assets/picture-learning/pharmacy-counter-1.jpg',sample:'A customer speaks with a staff member while another person waits nearby.',sampleZh:'一位顧客和店員交談，另一個人在附近等候。'},
+  {image:'assets/picture-learning/pharmacy-counter-2.jpg',sample:'The staff member places two plain packages on the counter and explains something.',sampleZh:'店員把兩個沒有標示的包裝放在櫃台上，並說明某件事。'},
+  {image:'assets/picture-learning/pharmacy-counter-3.jpg',sample:'The customer points toward one package and another object on the counter.',sampleZh:'顧客指向其中一個包裝，以及櫃台上的另一樣物品。'},
+  {image:'assets/picture-learning/pharmacy-counter-4.jpg',sample:'The second person steps closer while the explanation continues.',sampleZh:'第二個人走近一些，而說明仍在繼續。'}]},
  {id:'hands-table',panels:[
   {image:'assets/picture-learning/hands-table-1.jpg',sample:'Four people are sitting around a table with several objects between them.',sampleZh:'四個人圍坐在桌邊，桌上放著幾樣物品。'},
   {image:'assets/picture-learning/hands-table-2.jpg',sample:'One person moves a card while another points to a different one.',sampleZh:'一個人移動一張卡片，另一個人則指向不同的卡片。'},
@@ -258,6 +288,7 @@ const PICTURE_LEARNING_STORIES=[
 let pictureLearningMode='step',pictureLearningStoryIndex=0,pictureLearningPanelIndex=0,pictureLearningReveal=false,pictureLearningStreamTimer=null;
 function pictureLearningCurrentStory(){return PICTURE_LEARNING_STORIES[pictureLearningStoryIndex]||PICTURE_LEARNING_STORIES[0]}
 function pictureLearningCurrentPanel(){const story=pictureLearningCurrentStory();return story.panels[pictureLearningPanelIndex]||story.panels[0]}
+function pictureLearningSetNumber(){return String(pictureLearningStoryIndex+1).padStart(2,'0')}
 function stopPictureLearningStream(){if(pictureLearningStreamTimer){clearInterval(pictureLearningStreamTimer);pictureLearningStreamTimer=null}}
 function pictureLearningModes(){
  const modes=[['step','Step by Step','逐格描述'],['story','Full Story','完整故事'],['stream','Auto Sequence','連續播放']];
@@ -272,16 +303,16 @@ function nextPictureStory(random=false){
 }
 function renderPictureLearningStage(){
  const stage=document.getElementById('pictureLearningStage');if(!stage)return;
- const story=pictureLearningCurrentStory(),panel=pictureLearningCurrentPanel();
+ const story=pictureLearningCurrentStory(),panel=pictureLearningCurrentPanel(),setNumber=pictureLearningSetNumber();
  if(pictureLearningMode==='step'){
-  stage.innerHTML=`<article class="picture-study-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a wordless sequence`)}<div class="picture-study-content"><span class="picture-study-step">Panel ${pictureLearningPanelIndex+1} / ${story.panels.length} · 第 ${pictureLearningPanelIndex+1} 格</span><div class="picture-study-question"><h2>Describe what might be happening.</h2><p>觀察手勢、姿態、物品與環境變化；人物感受和事情原因可以有不同解釋。</p></div>${pictureLearningReveal?pictureLearningSample(panel):''}<div class="picture-study-actions"><button type="button" onclick="previousPicturePanel()" ${pictureLearningPanelIndex===0?'disabled':''}>← Previous · 上一格</button><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide version · 隱藏說法':'Show one version · 顯示一種說法'}</button><button type="button" onclick="nextPicturePanel()">${pictureLearningPanelIndex===story.panels.length-1?'Next story · 下一組':'Next panel · 下一格'} →</button></div></div></article>`;
+  stage.innerHTML=`<article class="picture-study-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a wordless sequence`)}<div class="picture-study-content"><span class="picture-study-step">Set ${setNumber} · 組別 ${setNumber} · Panel ${pictureLearningPanelIndex+1} / ${story.panels.length} · 第 ${pictureLearningPanelIndex+1} 格</span><div class="picture-study-question"><h2>Describe what might be happening.</h2><p>觀察手勢、姿態、物品與環境變化；人物感受和事情原因可以有不同解釋。</p></div>${pictureLearningReveal?pictureLearningSample(panel):''}<div class="picture-study-actions"><button type="button" onclick="previousPicturePanel()" ${pictureLearningPanelIndex===0?'disabled':''}>← Previous · 上一格</button><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide version · 隱藏說法':'Show one version · 顯示一種說法'}</button><button type="button" onclick="nextPicturePanel()">${pictureLearningPanelIndex===story.panels.length-1?'Next story · 下一組':'Next panel · 下一格'} →</button></div></div></article>`;
   return
  }
  if(pictureLearningMode==='story'){
-  stage.innerHTML=`<article class="picture-story-card"><header><span>Wordless sequence · 無文字連續圖</span></header><div class="picture-story-grid">${story.panels.map((item,index)=>`<figure><img src="${item.image}" alt="Panel ${index+1} of a wordless sequence" width="700" height="700" decoding="async"><figcaption>${index+1}</figcaption></figure>`).join('')}</div><div class="picture-story-practice"><h3>Tell one possible story.</h3><p>圖片沒有預設標題或唯一答案。試著用不同的人物關係、感受、原因與結果，把四格連成故事。</p>${pictureLearningReveal?pictureStorySample(story):''}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide story · 隱藏說法':'Show one possible story · 顯示一種故事'}</button><button type="button" onclick="nextPictureStory()">Next story · 下一組 →</button></div></div></article>`;
+  stage.innerHTML=`<article class="picture-story-card"><header><span>Set ${setNumber} · 組別 ${setNumber} · Wordless sequence · 無文字連續圖</span></header><div class="picture-story-grid">${story.panels.map((item,index)=>`<figure><img src="${item.image}" alt="Panel ${index+1} of a wordless sequence" width="700" height="700" decoding="async"><figcaption>${index+1}</figcaption></figure>`).join('')}</div><div class="picture-story-practice"><h3>Tell one possible story.</h3><p>圖片沒有預設標題或唯一答案。試著用不同的人物關係、感受、原因與結果，把四格連成故事。</p>${pictureLearningReveal?pictureStorySample(story):''}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide story · 隱藏說法':'Show one possible story · 顯示一種故事'}</button><button type="button" onclick="nextPictureStory()">Next story · 下一組 →</button></div></div></article>`;
   return
  }
- stage.innerHTML=`<article class="picture-study-card picture-stream-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a continuous wordless sequence`)}<div class="picture-study-content"><span class="picture-study-step">Panel ${pictureLearningPanelIndex+1} / ${story.panels.length} · 第 ${pictureLearningPanelIndex+1} 格</span><div class="picture-study-question"><h2>Watch the sequence develop.</h2><p>畫面會依序前進，但不預設故事標題與解釋；一組結束後，會隨機換到下一組。</p></div><div class="picture-sequence-dots" aria-label="Story progress">${story.panels.map((_,index)=>`<span class="${index===pictureLearningPanelIndex?'active':''}"></span>`).join('')}</div><div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningStream()">${pictureLearningStreamTimer?'Pause · 暫停':'Start sequence · 開始播放'}</button><button type="button" onclick="advancePictureSequence()">Next panel · 下一格</button><button type="button" onclick="nextPictureStory(true)">Random story · 隨機換組</button></div></div></article>`
+ stage.innerHTML=`<article class="picture-study-card picture-stream-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a continuous wordless sequence`)}<div class="picture-study-content"><span class="picture-study-step">Set ${setNumber} · 組別 ${setNumber} · Panel ${pictureLearningPanelIndex+1} / ${story.panels.length} · 第 ${pictureLearningPanelIndex+1} 格</span><div class="picture-study-question"><h2>Watch the sequence develop.</h2><p>畫面會依序前進，但不預設故事標題與解釋；一組結束後，會隨機換到下一組。</p></div><div class="picture-sequence-dots" aria-label="Story progress">${story.panels.map((_,index)=>`<span class="${index===pictureLearningPanelIndex?'active':''}"></span>`).join('')}</div><div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningStream()">${pictureLearningStreamTimer?'Pause · 暫停':'Start sequence · 開始播放'}</button><button type="button" onclick="advancePictureSequence()">Next panel · 下一格</button><button type="button" onclick="nextPictureStory(true)">Random story · 隨機換組</button></div></div></article>`
 }
 function pictureLearning(mode=pictureLearningMode){
  pictureLearningMode=mode;
