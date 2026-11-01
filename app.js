@@ -294,6 +294,9 @@ function pictureLearningModes(){
  const modes=[['step','Step by Step','逐格描述'],['story','Full Story','完整故事'],['stream','Auto Sequence','連續播放']];
  return `<div class="picture-mode-tabs" role="tablist" aria-label="Picture learning modes">${modes.map(([id,en,zh])=>`<button class="picture-mode-tab ${pictureLearningMode===id?'active':''}" type="button" role="tab" aria-selected="${pictureLearningMode===id}" onclick="setPictureLearningMode('${id}')"><b>${en}</b><small>${zh}</small></button>`).join('')}</div>`
 }
+function pictureLearningSetSelector(){
+ return `<div class="picture-set-picker"><label for="pictureLearningSetSelect"><span><b>Choose Set</b><small>選擇組別</small></span><select id="pictureLearningSetSelect" onchange="selectPictureLearningSet(this.value)" aria-label="Choose a picture learning set">${PICTURE_LEARNING_STORIES.map((_,index)=>{const number=String(index+1).padStart(2,'0');return `<option value="${index}" ${index===pictureLearningStoryIndex?'selected':''}>Set ${number} · 組別 ${number}</option>`}).join('')}</select></label></div>`
+}
 function pictureLearningImage(panel,alt='Wordless story panel'){return `<figure class="picture-study-figure"><img src="${panel.image}" alt="${alt}" width="700" height="700" decoding="async"></figure>`}
 function pictureLearningSample(panel){return `<div class="picture-study-example"><span class="picture-possible-label">One possible description · 其中一種描述</span><p>${esc(panel.sample)}</p><small>${esc(panel.sampleZh)}</small></div>`}
 function pictureStorySample(story){return `<div class="picture-story-sample"><span class="picture-possible-label">One possible story · 其中一種故事</span>${story.panels.map((panel,index)=>`<p><b>${index+1}</b><span>${esc(panel.sample)}</span><small>${esc(panel.sampleZh)}</small></p>`).join('')}</div>`}
@@ -304,6 +307,7 @@ function nextPictureStory(random=false){
 function renderPictureLearningStage(){
  const stage=document.getElementById('pictureLearningStage');if(!stage)return;
  const story=pictureLearningCurrentStory(),panel=pictureLearningCurrentPanel(),setNumber=pictureLearningSetNumber();
+ const selector=document.getElementById('pictureLearningSetSelect');if(selector)selector.value=String(pictureLearningStoryIndex);
  if(pictureLearningMode==='step'){
   stage.innerHTML=`<article class="picture-study-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a wordless sequence`)}<div class="picture-study-content"><span class="picture-study-step">Set ${setNumber} · 組別 ${setNumber} · Panel ${pictureLearningPanelIndex+1} / ${story.panels.length} · 第 ${pictureLearningPanelIndex+1} 格</span><div class="picture-study-question"><h2>Describe what might be happening.</h2><p>觀察手勢、姿態、物品與環境變化；人物感受和事情原因可以有不同解釋。</p></div>${pictureLearningReveal?pictureLearningSample(panel):''}<div class="picture-study-actions"><button type="button" onclick="previousPicturePanel()" ${pictureLearningPanelIndex===0?'disabled':''}>← Previous · 上一格</button><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide version · 隱藏說法':'Show one version · 顯示一種說法'}</button><button type="button" onclick="nextPicturePanel()">${pictureLearningPanelIndex===story.panels.length-1?'Next story · 下一組':'Next panel · 下一格'} →</button></div></div></article>`;
   return
@@ -316,8 +320,12 @@ function renderPictureLearningStage(){
 }
 function pictureLearning(mode=pictureLearningMode){
  pictureLearningMode=mode;
- const content=`<section class="page-pad practice-page-head picture-learning-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Picture Learning</div><h1 class="page-title">Picture Learning</h1><div class="detail-title-zh">圖片學習</div><p class="picture-learning-intro">每組都是沒有預設標題的四格無文字連續圖。你可以依照手勢、肢體姿態、物品與環境變化，自由描述感受、關係、原因和結果。</p></section><section class="section picture-learning-section">${pictureLearningModes()}<div id="pictureLearningStage" class="picture-learning-stage"></div></section>`;
+ const content=`<section class="page-pad practice-page-head picture-learning-head"><div class="breadcrumbs"><a href="#words">Word Zone</a> / Picture Learning</div><h1 class="page-title">Picture Learning</h1><div class="detail-title-zh">圖片學習</div><p class="picture-learning-intro">每組都是沒有預設標題的四格無文字連續圖。你可以依照手勢、肢體姿態、物品與環境變化，自由描述感受、關係、原因和結果。</p></section><section class="section picture-learning-section">${pictureLearningModes()}${pictureLearningSetSelector()}<div id="pictureLearningStage" class="picture-learning-stage"></div></section>`;
  shell(content,'Words');renderPictureLearningStage()
+}
+function selectPictureLearningSet(value){
+ const next=Number(value);if(!Number.isInteger(next)||next<0||next>=PICTURE_LEARNING_STORIES.length)return;
+ stopPictureLearningStream();pictureLearningStoryIndex=next;pictureLearningPanelIndex=0;pictureLearningReveal=false;renderPictureLearningStage()
 }
 function setPictureLearningMode(mode){
  stopPictureLearningStream();pictureLearningMode=mode;pictureLearningPanelIndex=0;pictureLearningReveal=false;
