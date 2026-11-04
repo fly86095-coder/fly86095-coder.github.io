@@ -12,7 +12,7 @@
  function escapeHtml(value=''){return String(value).replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]))}
  function setStatus(message,type=''){elements.articleStatus.textContent=message;elements.articleStatus.className=`lr-admin-status ${type}`.trim()}
  function setGlobalStatus(message,type=''){elements.adminGlobalStatus.textContent=message;elements.adminGlobalStatus.className=`lr-admin-status ${type}`.trim()}
- function preview(article,text,wordCount){elements.articlePreview.innerHTML=`${article.title?`<h3>${escapeHtml(article.title)}</h3>`:''}<p>${escapeHtml(text)}</p><div class="lr-preview-meta"><span>${escapeHtml(article.language)}</span><span>${wordCount} word units</span><span>${Array.from(text).length} characters</span></div>`}
+ function preview(article,text,wordCount){elements.articlePreview.innerHTML=`${article.title?`<h3>${escapeHtml(article.title)}</h3>`:''}<p>${escapeHtml(text)}</p><div class="lr-preview-meta"><span>${escapeHtml(article.language)}</span><span>${wordCount} clickable units</span><span>${Array.from(text).length} characters</span></div>`}
  function collectionMarkup(){
   const entries=LiveReadingCore.collection();
   if(!entries.length)return '<p class="lr-admin-empty">No collected words</p>';
@@ -50,7 +50,7 @@
   if(document.activeElement!==elements.readerName)elements.readerName.value=state.readerName||'';
   if(state.article&&!elements.articlePackage.value.trim()){
    const article={schema:state.article.schema,language:state.article.language,title:state.article.title,segments:state.article.segments};
-   elements.articlePackage.value=JSON.stringify(article,null,2);const checked=LiveReadingCore.validateArticlePackage(article);
+   elements.articlePackage.value=article.segments.map(segment=>segment.text).join('');const checked=LiveReadingCore.validateArticlePackage(article);
    if(checked.ok){validatedArticle=checked.article;elements.publishArticle.disabled=!signedIn;preview(checked.article,checked.text,checked.wordCount)}
   }
   elements.adminCollection.innerHTML=collectionMarkup();
@@ -73,7 +73,7 @@
  elements.validateArticle.addEventListener('click',()=>{
   const checked=LiveReadingCore.validateArticlePackage(elements.articlePackage.value);
   if(!checked.ok){validatedArticle=null;elements.publishArticle.disabled=true;setStatus(checked.error,'error');return}
-  validatedArticle=checked.article;elements.publishArticle.disabled=false;preview(checked.article,checked.text,checked.wordCount);setStatus('格式正確，可以發布。','success')
+  validatedArticle=checked.article;elements.publishArticle.disabled=false;preview(checked.article,checked.text,checked.wordCount);setStatus('文本已整理完成，可以發布。','success')
  });
  elements.articlePackage.addEventListener('input',()=>{validatedArticle=null;elements.publishArticle.disabled=true;setStatus('')});
  elements.publishArticle.addEventListener('click',async()=>{

@@ -29,10 +29,46 @@
  function patchState(patch){state={...state,...patch};notify()}
  function notifyPulse(pulse){pulseSubscribers.forEach(callback=>callback(clone(pulse)))}
  function cleanPackageText(input){return String(input||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'')}
+ function isHanCharacter(character){return typeof character==='string'&&/\p{Script=Han}/u.test(character)}
+ function isWordCharacter(character){return typeof character==='string'&&/[\p{L}\p{M}\p{N}]/u.test(character)&&!isHanCharacter(character)}
+ function plainTextSegments(input){
+  const text=String(input||'').replace(/\r\n?/g,'\n').trim(),characters=Array.from(text),segments=[];
+  const push=(type,value)=>{if(value)segments.push({type,text:value})};
+  for(let index=0;index<characters.length;){
+   const character=characters[index];
+   if(character==='\n'){
+    let value='';while(characters[index]==='\n')value+=characters[index++];push('break',value);continue
+   }
+   if(/\s/u.test(character)){
+    let value='';while(index<characters.length&&characters[index]!=='\n'&&/\s/u.test(characters[index]))value+=characters[index++];push('space',value);continue
+   }
+   if(isHanCharacter(character)){push('character',character);index++;continue}
+   if(isWordCharacter(character)){
+    let value=character;index++;
+    while(index<characters.length){
+     const next=characters[index],after=characters[index+1];
+     if(isWordCharacter(next)){value+=next;index++;continue}
+     if(/[’'\-]/u.test(next)&&isWordCharacter(after)){value+=next+after;index+=2;continue}
+     break
+    }
+    push('word',value);continue
+   }
+   push('punctuation',character);index++
+  }
+  return segments
+ }
+ function plainTextArticle(input){
+  const segments=plainTextSegments(input),text=segments.map(segment=>segment.text).join('');
+  return {schema:'live-reading-article-v1',language:/\p{Script=Han}/u.test(text)?'zh-Hant':'en',title:'',segments}
+ }
  function validateArticlePackage(input){
   let data=input;
   if(typeof input==='string'){
-   try{data=JSON.parse(cleanPackageText(input))}catch(error){return {ok:false,error:'JSON 格式無法解析，請確認內容完整。'}}
+   const text=cleanPackageText(input);
+   if(!text)return {ok:false,error:'請先貼上文章文本。'};
+   if(/^\{\s*"schema"/.test(text)){
+    try{data=JSON.parse(text)}catch(error){return {ok:false,error:'舊版 JSON 格式無法解析；也可以直接改貼純文字。'}}
+   }else data=plainTextArticle(text)
   }
   if(!data||data.schema!=='live-reading-article-v1')return {ok:false,error:'schema 必須是 live-reading-article-v1。'};
   if(!Array.isArray(data.segments)||!data.segments.length)return {ok:false,error:'segments 必須包含至少一個片段。'};
@@ -178,7 +214,7 @@
  const ready=initializeFirebase();
  window.LiveReadingCore={
   mode:'firebase',ready,getState:()=>clone(state),subscribe,onPulse,participantId:()=>currentUser?.uid||'',displayName,
-  validateArticlePackage,publishArticle,setPageEnabled,setReaderName,clearArticle,clearCollection,removeCollectionWord,
+  plainTextSegments,plainTextArticle,validateArticlePackage,publishArticle,setPageEnabled,setReaderName,clearArticle,clearCollection,removeCollectionWord,
   vote,collection,addComment,signInAdmin,signOutAdmin,errorMessage
  };
 })();

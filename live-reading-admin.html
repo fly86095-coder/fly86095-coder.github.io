@@ -18,10 +18,11 @@
  <div id="adminControls" class="lr-admin-grid is-locked" aria-disabled="true">
   <div class="lr-admin-column">
    <section class="lr-admin-card">
-    <div class="lr-admin-card-head"><h2>Article package</h2><span>文章資料</span></div>
+    <div class="lr-admin-card-head"><h2>Article text</h2><span>文章文本</span></div>
     <div class="lr-admin-card-body">
-     <label class="lr-admin-field"><span>Paste live-reading-article-v1 JSON</span><textarea id="articlePackage" spellcheck="false" placeholder='{"schema":"live-reading-article-v1", ...}'></textarea></label>
-     <div class="lr-admin-actions"><button id="validateArticle" class="lr-admin-button secondary" type="button">Validate & preview</button><button id="publishArticle" class="lr-admin-button" type="button" disabled>Publish article</button><button id="clearArticle" class="lr-admin-button danger" type="button">Clear article</button></div>
+     <label class="lr-admin-field"><span>Paste plain text directly</span><textarea id="articlePackage" spellcheck="false" placeholder="直接貼上文章。英文會以完整單字為點擊單位；中文會以單一漢字為點擊單位。"></textarea></label>
+     <p class="lr-admin-note">不需要 JSON，也不需要手動拆字。English words stay whole; Chinese characters remain individually clickable.</p>
+     <div class="lr-admin-actions"><button id="validateArticle" class="lr-admin-button secondary" type="button">Preview article</button><button id="publishArticle" class="lr-admin-button" type="button" disabled>Publish article</button><button id="clearArticle" class="lr-admin-button danger" type="button">Clear article</button></div>
      <p id="articleStatus" class="lr-admin-status" role="status" aria-live="polite"></p>
      <div id="articlePreview" class="lr-article-preview"><p></p></div>
     </div>
@@ -47,6 +48,6 @@
   </div>
  </div>
 </main>
-<script src="firebase-config.js"></script><script src="live-reading-core.js"></script><script src="live-reading-admin.js"></script>
+<script src="firebase-config.js"></script><script src="live-reading-core.js?v=20261104-plain-text-1"></script><script src="live-reading-admin.js?v=20261104-plain-text-1"></script>
 </body>
 </html>
