@@ -283,7 +283,47 @@ const PICTURE_LEARNING_STORIES=[
   {image:'assets/picture-learning/breakfast-1.jpg',sample:'She takes some eggs out of the refrigerator.',sampleZh:'她從冰箱拿出一些雞蛋。'},
   {image:'assets/picture-learning/breakfast-2.jpg',sample:'She cracks the eggs into a bowl.',sampleZh:'她把雞蛋打進碗裡。'},
   {image:'assets/picture-learning/breakfast-3.jpg',sample:'She cooks the eggs in a frying pan.',sampleZh:'她用平底鍋煮雞蛋。'},
-  {image:'assets/picture-learning/breakfast-4.jpg',sample:'She sits down and eats her breakfast.',sampleZh:'她坐下來吃早餐。'}]}
+  {image:'assets/picture-learning/breakfast-4.jpg',sample:'She sits down and eats her breakfast.',sampleZh:'她坐下來吃早餐。'}]},
+ {id:'community-garden',panels:[
+  {image:'assets/picture-learning/community-garden-sheet.jpg',frame:0,sample:'Three people are working in a community garden early in the morning.',sampleZh:'清晨時，三個人在社區花園裡工作。'},
+  {image:'assets/picture-learning/community-garden-sheet.jpg',frame:1,sample:'One gardener notices that the plant markers and seed packets may not match.',sampleZh:'其中一人發現植物標記和種子包似乎對不上。'},
+  {image:'assets/picture-learning/community-garden-sheet.jpg',frame:2,sample:'They compare ideas and react differently to the mix-up.',sampleZh:'他們交換看法，對這個混亂狀況有不同反應。'},
+  {image:'assets/picture-learning/community-garden-sheet.jpg',frame:3,sample:'They begin reorganizing the garden, although the final plan is still unclear.',sampleZh:'他們開始重新整理花圃，但最後如何安排仍不明確。'}]},
+ {id:'subway-platform',panels:[
+  {image:'assets/picture-learning/subway-platform-sheet.jpg',frame:0,sample:'Two travelers pause near an open train while a station worker speaks to them.',sampleZh:'兩位旅客停在敞開的列車旁，站務人員正在和他們交談。'},
+  {image:'assets/picture-learning/subway-platform-sheet.jpg',frame:1,sample:'The doors close as one traveler reaches forward with a suitcase.',sampleZh:'車門關上時，其中一位旅客拉著行李向前伸手。'},
+  {image:'assets/picture-learning/subway-platform-sheet.jpg',frame:2,sample:'They look through the window and try to understand what happened.',sampleZh:'他們看向車窗，試著弄清楚剛才發生了什麼。'},
+  {image:'assets/picture-learning/subway-platform-sheet.jpg',frame:3,sample:'The three people consider their next step while the train remains at the platform.',sampleZh:'列車仍停在月台時，三個人思考下一步該怎麼做。'}]},
+ {id:'windy-beach',panels:[
+  {image:'assets/picture-learning/windy-beach-sheet.jpg',frame:0,sample:'Four people arrive at a beach and find their shelter partly collapsed in the wind.',sampleZh:'四個人到了海邊，發現遮棚被風吹得有些倒塌。'},
+  {image:'assets/picture-learning/windy-beach-sheet.jpg',frame:1,sample:'They disagree about the shelter and the scattered belongings.',sampleZh:'他們對遮棚和散落的物品有不同看法。'},
+  {image:'assets/picture-learning/windy-beach-sheet.jpg',frame:2,sample:'Everyone starts moving or packing something in a different way.',sampleZh:'每個人都用不同方式移動或收拾物品。'},
+  {image:'assets/picture-learning/windy-beach-sheet.jpg',frame:3,sample:'They head in different directions, and it is not clear whether they are staying or leaving.',sampleZh:'他們朝不同方向走去，無法確定是要留下還是離開。'}]},
+ {id:'closing-kitchen',panels:[
+  {image:'assets/picture-learning/closing-kitchen-sheet.jpg',frame:0,sample:'Three coworkers are cleaning a restaurant kitchen after closing.',sampleZh:'餐廳打烊後，三位同事正在清理廚房。'},
+  {image:'assets/picture-learning/closing-kitchen-sheet.jpg',frame:1,sample:'They search the shelves while one person thinks about where something belongs.',sampleZh:'他們查看架子，其中一人正在思考某樣東西該放在哪裡。'},
+  {image:'assets/picture-learning/closing-kitchen-sheet.jpg',frame:2,sample:'A covered container becomes the center of their discussion.',sampleZh:'一個有蓋容器成了他們討論的焦點。'},
+  {image:'assets/picture-learning/closing-kitchen-sheet.jpg',frame:3,sample:'They put several objects away, but the keys may still be in an unexpected place.',sampleZh:'他們把幾樣物品收好，但鑰匙可能仍放在意想不到的地方。'}]},
+ {id:'rooftop-wind',panels:[
+  {image:'assets/picture-learning/rooftop-wind-sheet.jpg',frame:0,sample:'Five neighbors prepare a rooftop space together at twilight.',sampleZh:'黃昏時，五位鄰居一起布置屋頂空間。'},
+  {image:'assets/picture-learning/rooftop-wind-sheet.jpg',frame:1,sample:'A sudden gust moves the lights, cushions, and plants.',sampleZh:'一陣強風吹動了燈串、靠墊和盆栽。'},
+  {image:'assets/picture-learning/rooftop-wind-sheet.jpg',frame:2,sample:'They move the furniture and point toward different parts of the roof.',sampleZh:'他們移動家具，並指向屋頂的不同位置。'},
+  {image:'assets/picture-learning/rooftop-wind-sheet.jpg',frame:3,sample:'The group discusses a new arrangement, but they have not agreed yet.',sampleZh:'大家討論新的安排，但似乎還沒有取得共識。'}]},
+ {id:'bicycle-path',panels:[
+  {image:'assets/picture-learning/bicycle-path-sheet.jpg',frame:0,sample:'Two adults and a child stop beside a bicycle path with a loose chain.',sampleZh:'兩位大人和一名孩子停在自行車道旁，車鏈似乎鬆脫了。'},
+  {image:'assets/picture-learning/bicycle-path-sheet.jpg',frame:1,sample:'One adult works on the bicycle while the others watch closely.',sampleZh:'其中一位大人修理自行車，另外兩人仔細看著。'},
+  {image:'assets/picture-learning/bicycle-path-sheet.jpg',frame:2,sample:'The child suddenly points toward something farther down the path.',sampleZh:'孩子突然指向步道遠處的某樣東西。'},
+  {image:'assets/picture-learning/bicycle-path-sheet.jpg',frame:3,sample:'They must decide whether to finish the repair or respond to what the child noticed.',sampleZh:'他們必須決定要先修好車，還是回應孩子發現的事情。'}]},
+ {id:'museum-gallery',panels:[
+  {image:'assets/picture-learning/museum-gallery-sheet.jpg',frame:0,sample:'A family and a gallery attendant stand near an abstract sculpture on a rainy day.',sampleZh:'下雨天，一家人和展館人員站在抽象雕塑附近。'},
+  {image:'assets/picture-learning/museum-gallery-sheet.jpg',frame:1,sample:'A child asks about something while the attendant gives an explanation.',sampleZh:'一個孩子詢問某件事，展館人員正在說明。'},
+  {image:'assets/picture-learning/museum-gallery-sheet.jpg',frame:2,sample:'The adults react differently as the children continue looking around.',sampleZh:'孩子們繼續觀察時，兩位大人有不同反應。'},
+  {image:'assets/picture-learning/museum-gallery-sheet.jpg',frame:3,sample:'Everyone gathers around a reflection or object on the floor.',sampleZh:'大家圍到地面上的反光或某個物件旁。'}]},
+ {id:'ferry-dock',panels:[
+  {image:'assets/picture-learning/ferry-dock-sheet.jpg',frame:0,sample:'Three travelers approach a ferry in the fog with bags, a bicycle, and a cart.',sampleZh:'三位旅客帶著行李、自行車和推車，在霧中走向渡輪。'},
+  {image:'assets/picture-learning/ferry-dock-sheet.jpg',frame:1,sample:'One person points toward the ferry while the others look ahead.',sampleZh:'其中一人指向渡輪，另外兩人看向前方。'},
+  {image:'assets/picture-learning/ferry-dock-sheet.jpg',frame:2,sample:'They stop to search one of the bags before moving on.',sampleZh:'他們停下來翻找其中一個袋子。'},
+  {image:'assets/picture-learning/ferry-dock-sheet.jpg',frame:3,sample:'They continue toward the ferry, but it is unclear whether they found what they needed.',sampleZh:'他們繼續走向渡輪，但不確定是否找到了需要的東西。'}]}
 ];
 let pictureLearningMode='step',pictureLearningStoryIndex=0,pictureLearningPanelIndex=0,pictureLearningReveal=false,pictureLearningStreamTimer=null;
 function pictureLearningCurrentStory(){return PICTURE_LEARNING_STORIES[pictureLearningStoryIndex]||PICTURE_LEARNING_STORIES[0]}
@@ -297,7 +337,12 @@ function pictureLearningModes(){
 function pictureLearningSetSelector(){
  return `<div class="picture-set-picker"><label for="pictureLearningSetSelect"><span><b>Choose Set</b><small>選擇組別</small></span><select id="pictureLearningSetSelect" onchange="selectPictureLearningSet(this.value)" aria-label="Choose a picture learning set">${PICTURE_LEARNING_STORIES.map((_,index)=>{const number=String(index+1).padStart(2,'0');return `<option value="${index}" ${index===pictureLearningStoryIndex?'selected':''}>Set ${number} · 組別 ${number}</option>`}).join('')}</select></label></div>`
 }
-function pictureLearningImage(panel,alt='Wordless story panel'){return `<figure class="picture-study-figure"><img src="${panel.image}" alt="${alt}" width="700" height="700" decoding="async"></figure>`}
+function pictureLearningFrame(panel,alt='Wordless story panel',extraClass=''){
+ if(Number.isInteger(panel.frame))return `<div class="picture-sheet-frame picture-frame-${panel.frame} ${extraClass}" style="background-image:url('${panel.image}')" role="img" aria-label="${esc(alt)}"></div>`;
+ return `<img class="${extraClass}" src="${panel.image}" alt="${esc(alt)}" width="700" height="700" decoding="async">`
+}
+function pictureLearningImage(panel,alt='Wordless story panel'){return `<figure class="picture-study-figure">${pictureLearningFrame(panel,alt)}</figure>`}
+function pictureLearningStoryPanel(panel,index){return `<figure>${pictureLearningFrame(panel,`Panel ${index+1} of a wordless sequence`,'picture-story-frame')}<figcaption>${index+1}</figcaption></figure>`}
 function pictureLearningSample(panel){return `<div class="picture-study-example"><span class="picture-possible-label">One possible description · 其中一種描述</span><p>${esc(panel.sample)}</p><small>${esc(panel.sampleZh)}</small></div>`}
 function pictureStorySample(story){return `<div class="picture-story-sample"><span class="picture-possible-label">One possible story · 其中一種故事</span>${story.panels.map((panel,index)=>`<p><b>${index+1}</b><span>${esc(panel.sample)}</span><small>${esc(panel.sampleZh)}</small></p>`).join('')}</div>`}
 function nextPictureStory(random=false){
@@ -313,7 +358,7 @@ function renderPictureLearningStage(){
   return
  }
  if(pictureLearningMode==='story'){
-  stage.innerHTML=`<article class="picture-story-card"><header><span>Set ${setNumber} · 組別 ${setNumber} · Wordless sequence · 無文字連續圖</span></header><div class="picture-story-grid">${story.panels.map((item,index)=>`<figure><img src="${item.image}" alt="Panel ${index+1} of a wordless sequence" width="700" height="700" decoding="async"><figcaption>${index+1}</figcaption></figure>`).join('')}</div><div class="picture-story-practice"><h3>Tell one possible story.</h3><p>圖片沒有預設標題或唯一答案。試著用不同的人物關係、感受、原因與結果，把四格連成故事。</p>${pictureLearningReveal?pictureStorySample(story):''}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide story · 隱藏說法':'Show one possible story · 顯示一種故事'}</button><button type="button" onclick="nextPictureStory()">Next story · 下一組 →</button></div></div></article>`;
+  stage.innerHTML=`<article class="picture-story-card"><header><span>Set ${setNumber} · 組別 ${setNumber} · Wordless sequence · 無文字連續圖</span></header><div class="picture-story-grid">${story.panels.map(pictureLearningStoryPanel).join('')}</div><div class="picture-story-practice"><h3>Tell one possible story.</h3><p>圖片沒有預設標題或唯一答案。試著用不同的人物關係、感受、原因與結果，把四格連成故事。</p>${pictureLearningReveal?pictureStorySample(story):''}<div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningAnswer()">${pictureLearningReveal?'Hide story · 隱藏說法':'Show one possible story · 顯示一種故事'}</button><button type="button" onclick="nextPictureStory()">Next story · 下一組 →</button></div></div></article>`;
   return
  }
  stage.innerHTML=`<article class="picture-study-card picture-stream-card">${pictureLearningImage(panel,`Panel ${pictureLearningPanelIndex+1} of a continuous wordless sequence`)}<div class="picture-study-content"><span class="picture-study-step">Set ${setNumber} · 組別 ${setNumber} · Panel ${pictureLearningPanelIndex+1} / ${story.panels.length} · 第 ${pictureLearningPanelIndex+1} 格</span><div class="picture-study-question"><h2>Watch the sequence develop.</h2><p>畫面會依序前進，但不預設故事標題與解釋；一組結束後，會隨機換到下一組。</p></div><div class="picture-sequence-dots" aria-label="Story progress">${story.panels.map((_,index)=>`<span class="${index===pictureLearningPanelIndex?'active':''}"></span>`).join('')}</div><div class="picture-study-actions"><button class="picture-primary-button" type="button" onclick="togglePictureLearningStream()">${pictureLearningStreamTimer?'Pause · 暫停':'Start sequence · 開始播放'}</button><button type="button" onclick="advancePictureSequence()">Next panel · 下一格</button><button type="button" onclick="nextPictureStory(true)">Random story · 隨機換組</button></div></div></article>`
