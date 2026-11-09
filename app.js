@@ -1221,6 +1221,20 @@ function roleplayReviewHome(){
  shell(content,'Review')
 }
 function roleplayReviewPart1(course){
+ const drills=course.patternDrills||[];
+ if(drills.length){
+  const cards=drills.map((drill,index)=>{
+   const variations=(drill.variations||[]).map(item=>`<li><b>${esc(item.en||'')}</b>${practiceZhPair(item.zh||'','review-roleplay-variation-zh','review-roleplay-variation-pinyin')}</li>`).join('');
+   return `<article class="review-roleplay-pattern-card review-roleplay-flex-card">
+    <div class="review-roleplay-pattern-meta"><span>Flexible frame ${String(index+1).padStart(2,'0')}</span><small>${esc(drill.focus||'Change the details to fit the situation.')}</small></div>
+    <h3>${esc(drill.frame||'')}</h3>
+    ${practiceZhPair(drill.zh||'','review-roleplay-pattern-zh','review-roleplay-pattern-pinyin')}
+    ${drill.note?`<p class="review-roleplay-pattern-note">${esc(drill.note)}</p>`:''}
+    ${variations?`<ul class="review-roleplay-variation-list">${variations}</ul>`:''}
+   </article>`
+  }).join('');
+  return `<section class="review-roleplay-part"><div class="review-roleplay-part-head"><span>PART 1</span><div><h2>Flexible Sentence Practice</h2><p>灵活句型练习</p></div></div><div class="review-roleplay-pattern-grid">${cards}</div></section>`
+ }
  const cards=(course.patterns||[]).map(id=>{
   const sentence=roleplayReviewSentence(id);if(!sentence)return '';
   const code=roleplayReviewPatternCode(sentence),route=translationPatternRoute(sentence);
