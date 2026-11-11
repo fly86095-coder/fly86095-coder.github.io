@@ -1225,10 +1225,12 @@ function roleplayReviewPart1(course){
  if(drills.length){
   const cards=drills.map((drill,index)=>{
    const variations=(drill.variations||[]).map(item=>`<li><b>${esc(item.en||'')}</b>${practiceZhPair(item.zh||'','review-roleplay-variation-zh','review-roleplay-variation-pinyin')}</li>`).join('');
+   const zhFrame=drill.zhFrame||drill.zh||'';
    return `<article class="review-roleplay-pattern-card review-roleplay-flex-card">
     <div class="review-roleplay-pattern-meta"><span>Flexible frame ${String(index+1).padStart(2,'0')}</span><small>${esc(drill.focus||'Change the details to fit the situation.')}</small></div>
+    <div class="review-roleplay-frame-label">English frame</div>
     <h3>${esc(drill.frame||'')}</h3>
-    ${practiceZhPair(drill.zh||'','review-roleplay-pattern-zh','review-roleplay-pattern-pinyin')}
+    <div class="review-roleplay-zh-frame"><small>Chinese frame · 中文架构</small>${practiceZhPair(zhFrame,'review-roleplay-pattern-zh','review-roleplay-pattern-pinyin')}</div>
     ${drill.note?`<p class="review-roleplay-pattern-note">${esc(drill.note)}</p>`:''}
     ${variations?`<ul class="review-roleplay-variation-list">${variations}</ul>`:''}
    </article>`

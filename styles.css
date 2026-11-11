@@ -880,6 +880,10 @@ html[data-theme="dark"] .translation-mode{background:var(--paper)}
 .review-roleplay-pattern-pinyin{margin-top:4px;color:#889ca9;font-size:12px;line-height:1.55;overflow-wrap:anywhere}
 .review-roleplay-pattern-card button{align-self:flex-start;margin-top:15px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:transparent;color:var(--gold);font-size:11px;cursor:pointer}
 .review-roleplay-flex-card .review-roleplay-pattern-meta>span{flex:0 0 auto;color:var(--gold);font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase}
+.review-roleplay-frame-label{margin-top:13px;color:#718896;font-size:9px;font-weight:850;letter-spacing:.08em;text-transform:uppercase}
+.review-roleplay-flex-card>h3{margin-top:4px}
+.review-roleplay-zh-frame{margin-top:12px;padding:10px 11px;border-left:2px solid color-mix(in srgb,var(--gold) 55%,var(--line));border-radius:0 9px 9px 0;background:rgba(185,145,67,.055)}
+.review-roleplay-zh-frame>small{display:block;margin-bottom:4px;color:var(--gold);font-size:9px;font-weight:800;letter-spacing:.04em}
 .review-roleplay-pattern-note{margin:10px 0 0;color:#8fa2ae;font-size:11px;line-height:1.55}
 .review-roleplay-variation-list{display:grid;gap:7px;margin:14px 0 0;padding:0;list-style:none}
 .review-roleplay-variation-list li{min-width:0;padding:10px 11px;border:1px solid color-mix(in srgb,var(--gold) 18%,var(--line));border-radius:10px;background:rgba(185,145,67,.045)}
